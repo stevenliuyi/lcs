@@ -3,12 +3,22 @@
 #include <tuple>
 #include <cassert>
 #include <stdexcept>
+#include <memory>
+
+template <typename T, unsigned Dim>
+class Position;
 
 template <typename T, unsigned Dim>
 class Velocity;
 
 template <typename T, unsigned Dim>
 class AnalyticVelocity;
+
+template <typename T, unsigned Dim>
+class FlowField;
+
+template <typename T, unsigned Dim>
+class AnalyticFlowField;
 
 // vector
 template <typename T, unsigned Dim = 2>
@@ -18,6 +28,94 @@ struct Vector
     Vector(const T& x, const T& y): x(x), y(y) {}
 
     T x, y;
+};
+
+// flow field
+template <typename T, unsigned Dim = 2>
+class FlowField
+{
+    public:
+        // constructor
+        FlowField(unsigned nx, unsigned ny):
+            nx_(nx), ny_(ny), delta_(), step_(),
+            initial_pos_(new Position<T,Dim>(nx,ny)),
+            current_pos_(new Position<T,Dim>(nx,ny)) {} 
+
+        auto& GetInitialPosition()
+        {
+            return *initial_pos_;
+        }
+
+        auto& GetCurrentPosition()
+        {
+            return *current_pos_;
+        }
+
+        auto& GetCurrentVelocity()
+        {
+            return *current_vel_;
+        }
+
+        void CopyInitialPositionToCurrentPosition()
+        {
+            current_pos_->SetAll(initial_pos_->GetAll());
+        }
+
+        void SetDelta(const T delta)
+        {
+            delta_ = delta;
+        }
+
+        void SetStep(const unsigned step)
+        {
+            step_ = step;
+        }
+
+        // overloaded in AnalyticFlowField class
+        virtual void SetCurrentVelocity()
+        {}
+
+        // calculate the trajectories
+        void Run()
+        {
+            CopyInitialPositionToCurrentPosition();
+
+            for (unsigned i = 0; i < step_; ++i)
+            {
+                SetCurrentVelocity();
+                current_pos_->Update(*current_vel_, delta_);
+            }
+        }
+
+        friend class AnalyticFlowField<T, Dim>;
+
+    private:
+        std::unique_ptr<Position<T, Dim>> initial_pos_;
+        std::unique_ptr<Position<T, Dim>> current_pos_;
+        std::unique_ptr<Velocity<T, Dim>> current_vel_;
+        const unsigned nx_;
+        const unsigned ny_;
+        T delta_;
+        unsigned step_;
+};
+
+template <typename T, unsigned Dim = 2>
+class AnalyticFlowField : public FlowField<T, Dim>
+{
+    public:
+        using func = std::tuple<T, T>(T, T);
+
+        // constructor
+        AnalyticFlowField(unsigned nx, unsigned ny, func& f):
+            FlowField<T, Dim>(nx, ny), f_(f) {}
+
+        void SetCurrentVelocity()
+        {
+            this->current_vel_.reset(new AnalyticVelocity<T,Dim>
+                (this->nx_, this->ny_, *(this->current_pos_),f_));
+        }
+    private:
+        func& f_;
 };
 
 // poisiton field
@@ -64,10 +162,20 @@ class Position
             SetAll(xrange, yrange);
         }
 
+        void SetAll(std::vector<std::vector<vec>> data)
+        {
+            data_ = data;
+        }
+
         // getter
         auto Get(const unsigned i, const unsigned j) const
         {
             return std::make_tuple(data_[i][j].x, data_[i][j].y);
+        }
+
+        auto& GetAll() const
+        {
+            return data_;
         }
 
         // update the position using the velocity field
