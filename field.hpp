@@ -55,7 +55,7 @@ class Position
                     [&]{ return xmin + (i++) * (xmax-xmin)/(nx_-1);});
             std::generate(yrange.begin(), yrange.end(),
                     [&]{ return ymin + (j++) * (ymax-ymin)/(ny_-1);});
-            Set(xrange, yrange);
+            SetAll(xrange, yrange);
         }
 
         // getter
@@ -66,6 +66,71 @@ class Position
 
     private:
         std::vector<std::vector<vec>> data_;
-        unsigned nx_;
-        unsigned ny_;
+        const unsigned nx_;
+        const unsigned ny_;
+};
+
+// velocity field
+template <typename T, unsigned Dim>
+class AnalyticVelocity;
+
+template <typename T, unsigned Dim = 2>
+class Velocity
+{
+    public:
+        using vec = Vector<T, Dim>;
+
+        // constructor
+        Velocity(unsigned nx, unsigned ny): nx_(nx), ny_(ny),
+            data_(nx, std::vector<vec>(ny, vec())) {}
+
+        // setter
+        void SetAll(std::vector<std::vector<vec>> data)
+        {
+            data_ = data;
+        }
+
+        // getter
+        auto Get(const unsigned i, const unsigned j) const
+        {
+            return std::make_tuple(data_[i][j].x, data_[i][j].y);
+        }
+
+        friend class AnalyticVelocity<T, Dim>;
+
+    private:
+        std::vector<std::vector<vec>> data_;
+        const unsigned nx_;
+        const unsigned ny_;
+};
+
+// velocity field with analytic velocity function
+template <typename T, unsigned Dim>
+class AnalyticVelocity : public Velocity<T, Dim>
+{
+    public:
+        using vec = Vector<T, Dim>;
+        using func = std::tuple<T, T>(T, T);
+
+        AnalyticVelocity(unsigned nx, unsigned ny, func& f):
+            Velocity<T, Dim>(nx, ny), f_(f) {}
+
+        // use analytic function to set all velocity values
+        void SetAll(const Position<T, Dim>& pos)
+        {
+            for (unsigned i = 0; i < this->nx_; ++i)
+            {
+                for (unsigned j = 0; j < this->ny_; ++j)
+                {
+                    T x, y, vx, vy;
+                    std::tie(x, y) = pos.Get(i, j);
+                    std::tie(vx, vy) = f_(x, y);
+                    this->data_[i][j] = vec(vx, vy);
+                    auto a = this->Get(0, 0);
+                }
+            }
+        }
+
+    private:
+        func& f_;
 };
