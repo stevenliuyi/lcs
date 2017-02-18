@@ -1,5 +1,7 @@
 #include "basic.hpp"
 
+namespace LCS {
+
 template <typename T, unsigned Dim>
 class Position;
 
@@ -27,17 +29,17 @@ class FlowField
             initial_pos_(new Position<T,Dim>(nx,ny)),
             current_pos_(new Position<T,Dim>(nx,ny)) {} 
 
-        inline auto& GetInitialPosition()
+        inline auto& InitialPosition()
         {
             return *initial_pos_;
         }
 
-        inline auto& GetCurrentPosition()
+        inline auto& CurrentPosition()
         {
             return *current_pos_;
         }
 
-        inline auto& GetCurrentVelocity()
+        inline auto& CurrentVelocity()
         {
             return *current_vel_;
         }
@@ -121,7 +123,7 @@ template <typename T, unsigned Dim = 2>
 class Position
 {
     public:
-        using vec = Vector<T, Dim>;
+        using vec = LCS::Vector<T, Dim>;
 
         // constructor
         Position(unsigned nx, unsigned ny): nx_(nx), ny_(ny), time_(),
@@ -155,7 +157,7 @@ class Position
             SetAll(xrange, yrange);
         }
 
-        void SetAll(Tensor<vec, Dim> data)
+        void SetAll(LCS::Tensor<vec, Dim> data)
         {
             data_ = data;
         }
@@ -198,7 +200,7 @@ class Position
 
     private:
         //std::vector<std::vector<vec>> data_;
-        Tensor<vec, Dim> data_;
+        LCS::Tensor<vec, Dim> data_;
         const unsigned nx_;
         const unsigned ny_;
         T time_;
@@ -209,7 +211,7 @@ template <typename T, unsigned Dim = 2>
 class Velocity
 {
     public:
-        using vec = Vector<T, Dim>;
+        using vec = LCS::Vector<T, Dim>;
 
         // constructor
         Velocity(unsigned nx, unsigned ny, Position<T, Dim>& pos):
@@ -220,7 +222,7 @@ class Velocity
             }
 
         // setter
-        void SetAll(Tensor<vec, Dim> data)
+        void SetAll(LCS::Tensor<vec, Dim> data)
         {
             data_ = data;
         }
@@ -245,7 +247,7 @@ class Velocity
         friend class AnalyticVelocity;
 
     private:
-        Tensor<vec, Dim> data_;
+        LCS::Tensor<vec, Dim> data_;
         const unsigned nx_;
         const unsigned ny_;
         Position<T, Dim>& pos_; // position field corresponding to this velocity field
@@ -257,7 +259,7 @@ template <typename T, typename Func, unsigned Dim>
 class AnalyticVelocity : public Velocity<T, Dim>
 {
     public:
-        using vec = Vector<T, Dim>;
+        using vec = LCS::Vector<T, Dim>;
 
         AnalyticVelocity(unsigned nx, unsigned ny, Position<T, Dim>& pos):
             Velocity<T, Dim>(nx, ny, pos), f_()
@@ -284,3 +286,5 @@ class AnalyticVelocity : public Velocity<T, Dim>
     private:
         Func f_;
 };
+
+}
