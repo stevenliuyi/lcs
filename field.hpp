@@ -6,13 +6,13 @@ class Position;
 template <typename T, unsigned Dim>
 class Velocity;
 
-template <typename T, unsigned Dim>
+template <typename T, typename Func, unsigned Dim>
 class AnalyticVelocity;
 
 template <typename T, unsigned Dim>
 class FlowField;
 
-template <typename T, unsigned Dim>
+template <typename T, typename Func, unsigned Dim>
 class AnalyticFlowField;
 
 
@@ -82,7 +82,9 @@ class FlowField
             }
         }
 
-        friend class AnalyticFlowField<T, Dim>;
+        template <typename A, typename B, unsigned C>
+        friend class AnalyticFlowField;
+
 
     private:
         std::unique_ptr<Position<T, Dim>> initial_pos_;
@@ -95,24 +97,23 @@ class FlowField
         unsigned step_;
 };
 
-template <typename T, unsigned Dim = 2>
+template <typename T, typename Func, unsigned Dim = 2>
 class AnalyticFlowField : public FlowField<T, Dim>
 {
     public:
-        using func = std::tuple<T, T>(T, T, T);
-
         // constructor
-        AnalyticFlowField(unsigned nx, unsigned ny, func& f):
-            FlowField<T, Dim>(nx, ny), f_(f) {}
+        AnalyticFlowField(unsigned nx, unsigned ny):
+            FlowField<T, Dim>(nx, ny), f_() {}
 
         inline void SetCurrentVelocity()
         {
-            this->current_vel_.reset(new AnalyticVelocity<T,Dim>
-                (this->nx_, this->ny_, *(this->current_pos_),f_));
+            this->current_vel_.reset(new AnalyticVelocity<T, Func, Dim>
+                (this->nx_, this->ny_, *(this->current_pos_)));
             this->current_vel_->UpdateTime(this->current_time_);
         }
+
     private:
-        func& f_;
+        Func f_;
 };
 
 // poisiton field
@@ -240,7 +241,8 @@ class Velocity
             return time_;
         }
 
-        friend class AnalyticVelocity<T, Dim>;
+        template <typename A, typename B, unsigned C>
+        friend class AnalyticVelocity;
 
     private:
         Tensor<vec, Dim> data_;
@@ -251,15 +253,14 @@ class Velocity
 };
 
 // velocity field with analytic velocity function
-template <typename T, unsigned Dim>
+template <typename T, typename Func, unsigned Dim>
 class AnalyticVelocity : public Velocity<T, Dim>
 {
     public:
-        using func = std::tuple<T, T>(T, T, T);
         using vec = Vector<T, Dim>;
 
-        AnalyticVelocity(unsigned nx, unsigned ny, Position<T, Dim>& pos, func& f):
-            Velocity<T, Dim>(nx, ny, pos), f_(f)
+        AnalyticVelocity(unsigned nx, unsigned ny, Position<T, Dim>& pos):
+            Velocity<T, Dim>(nx, ny, pos), f_()
         {
             SetAll();
         }
@@ -281,5 +282,5 @@ class AnalyticVelocity : public Velocity<T, Dim>
         }
 
     private:
-        func& f_;
+        Func f_;
 };
