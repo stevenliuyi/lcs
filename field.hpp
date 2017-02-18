@@ -4,6 +4,12 @@
 #include <cassert>
 #include <stdexcept>
 
+template <typename T, unsigned Dim>
+class Velocity;
+
+template <typename T, unsigned Dim>
+class AnalyticVelocity;
+
 // vector
 template <typename T, unsigned Dim = 2>
 struct Vector
@@ -64,6 +70,21 @@ class Position
             return std::make_tuple(data_[i][j].x, data_[i][j].y);
         }
 
+        // update the position using the velocity field
+        void Update(Velocity<T, Dim>& vel, T delta)
+        {
+            for (unsigned i = 0; i < nx_; ++i)
+            {
+                for (unsigned j = 0; j < ny_; ++j)
+                {
+                    T vx, vy;
+                    std::tie(vx, vy) = vel.Get(i,j);
+                    data_[i][j].x += vx * delta;
+                    data_[i][j].y += vy * delta;
+                }
+            }
+        }
+
     private:
         std::vector<std::vector<vec>> data_;
         const unsigned nx_;
@@ -71,9 +92,6 @@ class Position
 };
 
 // velocity field
-template <typename T, unsigned Dim>
-class AnalyticVelocity;
-
 template <typename T, unsigned Dim = 2>
 class Velocity
 {
@@ -81,8 +99,8 @@ class Velocity
         using vec = Vector<T, Dim>;
 
         // constructor
-        Velocity(unsigned nx, unsigned ny): nx_(nx), ny_(ny),
-            data_(nx, std::vector<vec>(ny, vec())) {}
+        Velocity(unsigned nx, unsigned ny, Position<T, Dim>& pos):
+            nx_(nx), ny_(ny), data_(nx, std::vector<vec>(ny, vec())), pos_(pos) {}
 
         // setter
         void SetAll(std::vector<std::vector<vec>> data)
@@ -102,6 +120,7 @@ class Velocity
         std::vector<std::vector<vec>> data_;
         const unsigned nx_;
         const unsigned ny_;
+        Position<T, Dim>& pos_; // position field corresponding to this velocity field
 };
 
 // velocity field with analytic velocity function
@@ -112,18 +131,21 @@ class AnalyticVelocity : public Velocity<T, Dim>
         using vec = Vector<T, Dim>;
         using func = std::tuple<T, T>(T, T);
 
-        AnalyticVelocity(unsigned nx, unsigned ny, func& f):
-            Velocity<T, Dim>(nx, ny), f_(f) {}
+        AnalyticVelocity(unsigned nx, unsigned ny, Position<T, Dim>& pos, func& f):
+            Velocity<T, Dim>(nx, ny, pos), f_(f)
+        {
+            SetAll();
+        }
 
         // use analytic function to set all velocity values
-        void SetAll(const Position<T, Dim>& pos)
+        void SetAll()
         {
             for (unsigned i = 0; i < this->nx_; ++i)
             {
                 for (unsigned j = 0; j < this->ny_; ++j)
                 {
                     T x, y, vx, vy;
-                    std::tie(x, y) = pos.Get(i, j);
+                    std::tie(x, y) = this->pos_.Get(i, j);
                     std::tie(vx, vy) = f_(x, y);
                     this->data_[i][j] = vec(vx, vy);
                     auto a = this->Get(0, 0);
