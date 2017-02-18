@@ -5,7 +5,6 @@
 #include <stdexcept>
 #include <memory>
 
-
 template <typename T, unsigned Dim>
 class Position;
 
@@ -31,6 +30,45 @@ struct Vector
     T x, y;
 };
 
+// matrix
+// represent matrix in a 1D vector
+template <typename T, unsigned Dim = 2>
+class Tensor
+{
+    public:
+        // constructor 
+        Tensor(unsigned nx, unsigned ny):
+            nx_(nx), ny_(ny), data_(nx * ny, T()) {}
+
+        // assignment
+        inline void operator= (const Tensor<T, Dim>& t)
+        {
+            // need to implement size check
+            data_ = t.GetAll();
+        }
+
+        inline T& operator() (unsigned i, unsigned j)
+        {
+            // need to implement size check
+            return data_[i*ny_ + j];
+        }
+
+        inline T operator() (unsigned i, unsigned j) const
+        {
+            return data_[i*ny_ + j];
+        }
+
+        inline auto GetAll() const
+        {
+            return data_;
+        }
+
+    private:
+        std::vector<T> data_;
+        const unsigned nx_;
+        const unsigned ny_;
+};
+
 // flow field
 template <typename T, unsigned Dim = 2>
 class FlowField
@@ -42,37 +80,37 @@ class FlowField
             initial_pos_(new Position<T,Dim>(nx,ny)),
             current_pos_(new Position<T,Dim>(nx,ny)) {} 
 
-        auto& GetInitialPosition()
+        inline auto& GetInitialPosition()
         {
             return *initial_pos_;
         }
 
-        auto& GetCurrentPosition()
+        inline auto& GetCurrentPosition()
         {
             return *current_pos_;
         }
 
-        auto& GetCurrentVelocity()
+        inline auto& GetCurrentVelocity()
         {
             return *current_vel_;
         }
 
-        auto GetTime()
+        inline auto GetTime()
         {
             return current_time_;
         }
 
-        void CopyInitialPositionToCurrentPosition()
+        inline void CopyInitialPositionToCurrentPosition()
         {
             current_pos_->SetAll(initial_pos_->GetAll());
         }
 
-        void SetDelta(const T delta)
+        inline void SetDelta(const T delta)
         {
             delta_ = delta;
         }
 
-        void SetStep(const unsigned step)
+        inline void SetStep(const unsigned step)
         {
             step_ = step;
         }
@@ -120,7 +158,7 @@ class AnalyticFlowField : public FlowField<T, Dim>
         AnalyticFlowField(unsigned nx, unsigned ny, func& f):
             FlowField<T, Dim>(nx, ny), f_(f) {}
 
-        void SetCurrentVelocity()
+        inline void SetCurrentVelocity()
         {
             this->current_vel_.reset(new AnalyticVelocity<T,Dim>
                 (this->nx_, this->ny_, *(this->current_pos_),f_));
@@ -139,7 +177,9 @@ class Position
 
         // constructor
         Position(unsigned nx, unsigned ny): nx_(nx), ny_(ny), time_(),
-            data_(nx, std::vector<vec>(ny, vec())) {}
+            data_(nx, ny) {
+            data_(1,1) = vec(2,2);
+            }
 
         // setter for all values in the field
         void SetAll(const std::vector<T>& xrange, const std::vector<T>& yrange)
@@ -149,16 +189,19 @@ class Position
                 throw std::domain_error("dimensions do not match!");
 
             // fill in the values
-            auto itx = xrange.begin();
-            std::generate(data_.begin(), data_.end(), [&]
-                {
-                    auto ity = yrange.begin();
-                    std::vector<vec> v(ny_, vec());
-                    std::generate(v.begin(), v.end(),
-                        [&]{ return vec(*itx, *(ity++)); });
-                    ++itx;
-                    return v;
-                });
+            //auto itx = xrange.begin();
+            //std::generate(data_.begin(), data_.end(), [&]
+            //    {
+            //        auto ity = yrange.begin();
+            //        std::vector<vec> v(ny_, vec());
+            //        std::generate(v.begin(), v.end(),
+            //            [&]{ return vec(*itx, *(ity++)); });
+            //        ++itx;
+            //        return v;
+            //    });
+            for (unsigned i = 0; i < nx_; ++i)
+                for (unsigned j = 0; j < ny_; ++j)
+                    data_(i,j) = vec(xrange[i], yrange[j]);
         }
 
         // overload, use end points to set values
@@ -174,28 +217,28 @@ class Position
             SetAll(xrange, yrange);
         }
 
-        void SetAll(std::vector<std::vector<vec>> data)
+        void SetAll(Tensor<vec, Dim> data)
         {
             data_ = data;
         }
 
-        void UpdateTime(const T time)
+        inline void UpdateTime(const T time)
         {
             time_ = time;
         }
 
         // getter
-        auto Get(const unsigned i, const unsigned j) const
+        inline auto Get(const unsigned i, const unsigned j) const
         {
-            return std::make_tuple(data_[i][j].x, data_[i][j].y);
+            return std::make_tuple(data_(i,j).x, data_(i,j).y);
         }
 
-        auto& GetAll() const
+        inline auto& GetAll() const
         {
             return data_;
         }
 
-        auto GetTime() const
+        inline auto GetTime() const
         {
             return time_;
         }
@@ -209,14 +252,15 @@ class Position
                 {
                     T vx, vy;
                     std::tie(vx, vy) = vel.Get(i,j);
-                    data_[i][j].x += vx * delta;
-                    data_[i][j].y += vy * delta;
+                    data_(i,j).x += vx * delta;
+                    data_(i,j).y += vy * delta;
                 }
             }
         }
 
     private:
-        std::vector<std::vector<vec>> data_;
+        //std::vector<std::vector<vec>> data_;
+        Tensor<vec, Dim> data_;
         const unsigned nx_;
         const unsigned ny_;
         T time_;
@@ -231,26 +275,30 @@ class Velocity
 
         // constructor
         Velocity(unsigned nx, unsigned ny, Position<T, Dim>& pos):
-            nx_(nx), ny_(ny), time_(), data_(nx, std::vector<vec>(ny, vec())), pos_(pos) {}
+            nx_(nx), ny_(ny), time_(), data_(nx, ny), pos_(pos) {
+                T x, y;
+                std::tie(x, y) = pos_.Get(2,2);
+                std::cout << x << std::endl;
+            }
 
         // setter
-        void SetAll(std::vector<std::vector<vec>> data)
+        void SetAll(Tensor<vec, Dim> data)
         {
             data_ = data;
         }
 
-        void UpdateTime(const T time)
+        inline void UpdateTime(const T time)
         {
             time_ = time;
         }
 
         // getter
-        auto Get(const unsigned i, const unsigned j) const
+        inline auto Get(const unsigned i, const unsigned j) const
         {
-            return std::make_tuple(data_[i][j].x, data_[i][j].y);
+            return std::make_tuple(data_(i,j).x, data_(i,j).y);
         }
 
-        auto GetTime() const
+        inline auto GetTime() const
         {
             return time_;
         }
@@ -258,7 +306,7 @@ class Velocity
         friend class AnalyticVelocity<T, Dim>;
 
     private:
-        std::vector<std::vector<vec>> data_;
+        Tensor<vec, Dim> data_;
         const unsigned nx_;
         const unsigned ny_;
         Position<T, Dim>& pos_; // position field corresponding to this velocity field
@@ -289,7 +337,7 @@ class AnalyticVelocity : public Velocity<T, Dim>
                     T x, y, vx, vy;
                     std::tie(x, y) = this->pos_.Get(i, j);
                     std::tie(vx, vy) = f_(x, y, this->time_);
-                    this->data_[i][j] = vec(vx, vy);
+                    this->data_(i,j) = vec(vx, vy);
                     auto a = this->Get(0, 0);
                 }
             }
