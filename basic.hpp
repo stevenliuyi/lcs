@@ -6,6 +6,8 @@
 #include <cassert>
 #include <stdexcept>
 #include <memory>
+#include <string>
+#include <fstream>
 
 namespace LCS {
 
@@ -47,9 +49,14 @@ class Tensor
             return data_[i*ny_ + j];
         }
 
-        inline auto GetAll() const
+        inline auto& GetAll() const
         {
             return data_;
+        }
+
+        inline auto Size() const
+        {
+            return std::make_tuple(nx_, ny_);
         }
 
     private:

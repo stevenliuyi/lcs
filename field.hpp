@@ -19,7 +19,6 @@ class FlowField;
 template <typename T, typename Func, unsigned Dim>
 class AnalyticFlowField;
 
-
 // flow field
 template <typename T, unsigned Dim = 2>
 class FlowField
@@ -182,9 +181,31 @@ class Position
             SetAll(xrange, yrange);
         }
 
-        void SetAll(LCS::Tensor<vec, Dim> data)
+        inline void SetAll(LCS::Tensor<vec, Dim> data)
         {
             data_ = data;
+        }
+
+        inline void ReadFromFile(const std::string& file_name)
+        {
+            std::ifstream file;
+            file.open(file_name, std::ios::in);
+            if (!file.is_open())
+                throw std::runtime_error("file does not open correctly!");
+
+            // check if sizes match
+            unsigned nx, ny;
+            file >> nx; file >> ny;
+            if (nx_!=nx || ny_!=ny)
+                throw std::domain_error("sizes do not match!");
+
+            // read in time stamp
+            file >> time_;
+
+            // read in data
+            file >> data_;
+
+            file.close();
         }
 
         inline void UpdateTime(const T time)
@@ -207,6 +228,21 @@ class Position
         {
             return time_;
         }
+
+        inline void WriteToFile(const std::string& file_name) const
+        {
+            std::ofstream file;
+            file.open(file_name);
+            if (!file.is_open())
+                throw std::runtime_error("file does not open correctly!");
+
+            file.clear();
+            file << nx_ << std::endl;
+            file << ny_ << std::endl;
+            file << time_ << std::endl;
+            file << data_;
+            file.close();
+        }
         
         // update the position using the velocity field
         void Update(Velocity<T, Dim>& vel, T delta)
@@ -222,6 +258,8 @@ class Position
                 }
             }
         }
+
+        //friend std::ostream& operator<< (std::ostream&, Position<T, Dim>&);
 
     private:
         LCS::Tensor<vec, Dim> data_;
@@ -256,6 +294,11 @@ class Velocity
         inline auto Get(const unsigned i, const unsigned j) const
         {
             return std::make_tuple(data_(i,j).x, data_(i,j).y);
+        }
+
+        inline auto& GetAll() const
+        {
+            return data_;
         }
 
         inline auto GetTime() const
