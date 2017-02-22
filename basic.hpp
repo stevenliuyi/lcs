@@ -1,9 +1,13 @@
+#pragma once
+
 #include <vector>
 #include <algorithm>
 #include <tuple>
 #include <cassert>
 #include <stdexcept>
 #include <memory>
+
+namespace LCS {
 
 // vector
 template <typename T, unsigned Dim = 2>
@@ -15,8 +19,8 @@ struct Vector
     T x, y;
 };
 
-// matrix
-// represent matrix in a 1D vector
+// tensor
+// represent tensor (matrix) in a 1D vector
 template <typename T, unsigned Dim = 2>
 class Tensor
 {
@@ -54,3 +58,4 @@ class Tensor
         const unsigned ny_;
 };
 
+}

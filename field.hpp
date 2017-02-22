@@ -1,3 +1,5 @@
+#pragma once
+
 #include "basic.hpp"
 
 namespace LCS {
@@ -39,8 +41,11 @@ class FlowField
             return *current_pos_;
         }
 
-        inline auto& CurrentVelocity()
+        inline virtual Velocity<T, Dim>& CurrentVelocity()
         {
+            if (current_vel_ == nullptr)
+                throw std::invalid_argument("current velocity not set!");
+
             return *current_vel_;
         }
 
@@ -52,6 +57,7 @@ class FlowField
         inline void CopyInitialPositionToCurrentPosition()
         {
             current_pos_->SetAll(initial_pos_->GetAll());
+            current_pos_->UpdateTime(initial_pos_->GetTime());
         }
 
         inline void SetDelta(const T delta)
@@ -87,11 +93,10 @@ class FlowField
         template <typename A, typename B, unsigned C>
         friend class AnalyticFlowField;
 
-
     private:
         std::unique_ptr<Position<T, Dim>> initial_pos_;
         std::unique_ptr<Position<T, Dim>> current_pos_;
-        std::unique_ptr<Velocity<T, Dim>> current_vel_;
+        std::shared_ptr<Velocity<T, Dim>> current_vel_;
         const unsigned nx_;
         const unsigned ny_;
         T delta_;
@@ -105,17 +110,37 @@ class AnalyticFlowField : public FlowField<T, Dim>
     public:
         // constructor
         AnalyticFlowField(unsigned nx, unsigned ny):
-            FlowField<T, Dim>(nx, ny), f_() {}
+            FlowField<T, Dim>(nx, ny), parameters_() {}
+
+        AnalyticFlowField(unsigned nx, unsigned ny, std::vector<T>& parameters):
+            FlowField<T, Dim>(nx, ny), parameters_(parameters) {}
 
         inline void SetCurrentVelocity()
         {
-            this->current_vel_.reset(new AnalyticVelocity<T, Func, Dim>
-                (this->nx_, this->ny_, *(this->current_pos_)));
-            this->current_vel_->UpdateTime(this->current_time_);
+            // no parameters
+            if (parameters_.size() == 0)
+                current_analytic_vel_.reset(new AnalyticVelocity<T, Func, Dim>
+                    (this->nx_, this->ny_, *(this->current_pos_)));
+            else
+            // there are parameters for analytic function 
+                current_analytic_vel_.reset(new AnalyticVelocity<T, Func, Dim>
+                    (this->nx_, this->ny_, *(this->current_pos_), parameters_));
+            
+            current_analytic_vel_->UpdateTime(this->current_time_);
+            this->current_vel_ = current_analytic_vel_;
+        }
+
+        inline AnalyticVelocity<T, Func, Dim>& CurrentVelocity()
+        {
+            if (current_analytic_vel_ == nullptr)
+                throw std::invalid_argument("current velocity not set!");
+
+            return *current_analytic_vel_;
         }
 
     private:
-        Func f_;
+        std::shared_ptr<AnalyticVelocity<T, Func, Dim>> current_analytic_vel_;
+        std::vector<T> parameters_;
 };
 
 // poisiton field
@@ -134,9 +159,9 @@ class Position
         // setter for all values in the field
         void SetAll(const std::vector<T>& xrange, const std::vector<T>& yrange)
         {
-            // make sure dimensions match
+            // make sure sizes match
             if (xrange.size()!=nx_||yrange.size()!=ny_)
-                throw std::domain_error("dimensions do not match!");
+                throw std::domain_error("sizes do not match!");
 
             // fill in the values
             for (unsigned i = 0; i < nx_; ++i)
@@ -199,7 +224,6 @@ class Position
         }
 
     private:
-        //std::vector<std::vector<vec>> data_;
         LCS::Tensor<vec, Dim> data_;
         const unsigned nx_;
         const unsigned ny_;
@@ -215,11 +239,7 @@ class Velocity
 
         // constructor
         Velocity(unsigned nx, unsigned ny, Position<T, Dim>& pos):
-            nx_(nx), ny_(ny), time_(), data_(nx, ny), pos_(pos) {
-                T x, y;
-                std::tie(x, y) = pos_.Get(2,2);
-                std::cout << x << std::endl;
-            }
+            nx_(nx), ny_(ny), time_(), data_(nx, ny), pos_(pos) {}
 
         // setter
         void SetAll(LCS::Tensor<vec, Dim> data)
@@ -261,8 +281,16 @@ class AnalyticVelocity : public Velocity<T, Dim>
     public:
         using vec = LCS::Vector<T, Dim>;
 
+        // constructor without parameters
         AnalyticVelocity(unsigned nx, unsigned ny, Position<T, Dim>& pos):
             Velocity<T, Dim>(nx, ny, pos), f_()
+        {
+            SetAll();
+        }
+
+        // constructor with parameters
+        AnalyticVelocity(unsigned nx, unsigned ny, Position<T, Dim>& pos,
+                std::vector<T>& parameters): Velocity<T, Dim>(nx, ny, pos), f_(parameters)
         {
             SetAll();
         }
@@ -281,6 +309,11 @@ class AnalyticVelocity : public Velocity<T, Dim>
                     auto a = this->Get(0, 0);
                 }
             }
+        }
+
+        inline Func& Function()
+        {
+            return f_;
         }
 
     private:
