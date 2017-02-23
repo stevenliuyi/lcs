@@ -59,21 +59,6 @@ class FTLE : public Field<T, Dim, 1>
             }
         }
 
-        inline void WriteToFile(const std::string& file_name) const
-        {
-            std::ofstream file;
-            file.open(file_name);
-            if (!file.is_open())
-                throw std::runtime_error("file does not open correctly!");
-
-            file.clear();
-            file << this->nx_ << std::endl;
-            file << this->ny_ << std::endl;
-            file << this->time_ << std::endl;
-            file << this->data_;
-            file.close();
-        }
-
     private:
         T initial_time_;
         FlowField<T, Dim>& flow_field_;

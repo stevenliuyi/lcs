@@ -16,6 +16,9 @@ class AnalyticVelocity;
 template <typename T, unsigned Dim>
 class FlowField;
 
+template <typename T, unsigned Dim, unsigned Size>
+class FieldPolicy;
+
 template <typename T, typename Func, unsigned Dim>
 class AnalyticFlowField;
 
@@ -162,6 +165,11 @@ class Field
             return time_;
         }
 
+        inline void ReadFromFile(const std::string& file_name)
+        {
+            FieldPolicy<T, Dim, Size>::ReadFromFile(*this, file_name);
+        }
+
         // setter
         inline void SetAll(Tensor<Vector<T, Size>, Dim>& data)
         {
@@ -173,11 +181,66 @@ class Field
             time_ = time;
         }
 
+        inline void WriteToFile(const std::string& file_name) const
+        {
+            FieldPolicy<T, Dim, Size>::WriteToFile(*this, file_name);
+        }
+
+        friend class FieldPolicy<T, Dim, Size>;
+
     protected:
         Tensor<Vector<T, Size>, Dim> data_;
         const unsigned nx_;
         const unsigned ny_;
         T time_;
+};
+
+
+template <typename T, unsigned Dim, unsigned Size>
+struct FieldPolicy {};
+
+template <typename T, unsigned Size>
+struct FieldPolicy<T, 2, Size>
+{
+    // write Field data to a file
+    static inline void WriteToFile(const Field<T, 2, Size>& field, const std::string& file_name)
+    {
+        std::ofstream file;
+        file.open(file_name);
+        if (!file.is_open())
+            throw std::runtime_error("file does not open correctly!");
+    
+        file.clear();
+        file << field.nx_ << std::endl;
+        file << field.ny_ << std::endl;
+        file << field.time_ << std::endl;
+        file << field.data_;
+        file.close();
+    }
+    
+    // read data form a file to Field
+    static inline void ReadFromFile(Field<T, 2, Size>& field, const std::string& file_name)
+    {
+        std::ifstream file;
+        file.open(file_name, std::ios::in);
+        if (!file.is_open())
+            throw std::runtime_error("file does not open correctly!");
+
+        // check if sizes match
+        unsigned nx, ny;
+        file >> nx; file >> ny;
+        if (field.nx_!=nx || field.ny_!=ny)
+            throw std::domain_error("sizes do not match!");
+
+        // read in time stamp
+        file >> field.time_;
+
+        // read in data
+        file >> field.data_;
+
+        file.close();
+    }
+
 };
 
 // poisiton field
@@ -222,49 +285,12 @@ class Position : public Field<T, Dim, Dim>
             Field<T, Dim, Dim>::SetAll(data);
         }
 
-        inline void ReadFromFile(const std::string& file_name)
-        {
-            std::ifstream file;
-            file.open(file_name, std::ios::in);
-            if (!file.is_open())
-                throw std::runtime_error("file does not open correctly!");
-
-            // check if sizes match
-            unsigned nx, ny;
-            file >> nx; file >> ny;
-            if (this->nx_!=nx || this->ny_!=ny)
-                throw std::domain_error("sizes do not match!");
-
-            // read in time stamp
-            file >> this->time_;
-
-            // read in data
-            file >> this->data_;
-
-            file.close();
-        }
-
         // getter
         inline auto Get(const unsigned i, const unsigned j) const
         {
             return std::make_tuple(this->data_(i,j).x, this->data_(i,j).y);
         }
 
-        inline void WriteToFile(const std::string& file_name) const
-        {
-            std::ofstream file;
-            file.open(file_name);
-            if (!file.is_open())
-                throw std::runtime_error("file does not open correctly!");
-
-            file.clear();
-            file << this->nx_ << std::endl;
-            file << this->ny_ << std::endl;
-            file << this->time_ << std::endl;
-            file << this->data_;
-            file.close();
-        }
-        
         // update the position using the velocity field
         void Update(Velocity<T, Dim>& vel, T delta)
         {
