@@ -143,46 +143,83 @@ class AnalyticFlowField : public FlowField<T, Dim>
         std::vector<T> parameters_;
 };
 
+// general field
+template <typename T, unsigned Dim = 2, unsigned Size = 2>
+class Field
+{
+    public:
+        Field(unsigned nx, unsigned ny): nx_(nx), ny_(ny), time_(),
+            data_(nx, ny) {}
+
+        // getter
+        inline auto& GetAll() const
+        {
+            return data_;
+        }
+
+        inline auto GetTime() const
+        {
+            return time_;
+        }
+
+        // setter
+        inline void SetAll(Tensor<Vector<T, Size>, Dim>& data)
+        {
+            data_ = data;
+        }
+
+        inline void UpdateTime(const T time)
+        {
+            time_ = time;
+        }
+
+    protected:
+        Tensor<Vector<T, Size>, Dim> data_;
+        const unsigned nx_;
+        const unsigned ny_;
+        T time_;
+};
+
 // poisiton field
 template <typename T, unsigned Dim = 2>
-class Position
+class Position : public Field<T, Dim, Dim>
 {
     public:
         using vec = LCS::Vector<T, Dim>;
 
         // constructor
-        Position(unsigned nx, unsigned ny): nx_(nx), ny_(ny), time_(),
-            data_(nx, ny) {}
+        Position(unsigned nx, unsigned ny): Field<T, Dim, Dim>(nx, ny) {}
 
         // setter for all values in the field
         void SetAll(const std::vector<T>& xrange, const std::vector<T>& yrange)
         {
             // make sure sizes match
-            if (xrange.size()!=nx_||yrange.size()!=ny_)
+            if (xrange.size()!=this->nx_||yrange.size()!=this->ny_)
                 throw std::domain_error("sizes do not match!");
 
             // fill in the values
-            for (unsigned i = 0; i < nx_; ++i)
-                for (unsigned j = 0; j < ny_; ++j)
-                    data_(i,j) = vec(xrange[i], yrange[j]);
+            for (unsigned i = 0; i < this->nx_; ++i)
+                for (unsigned j = 0; j < this->ny_; ++j)
+                    this->data_(i,j) = vec(xrange[i], yrange[j]);
         }
 
         // overload, use end points to set values
         void SetAll(const T& xmin, const T& xmax, const T& ymin, const T& ymax)
         {
-            std::vector<T> xrange(nx_, 0), yrange(ny_, 0);
+            std::vector<T> xrange(this->nx_, 0), yrange(this->ny_, 0);
             int i = 0, j = 0;
             // fill in the values with uniform step
             std::generate(xrange.begin(), xrange.end(),
-                    [&]{ return xmin + (i++) * (xmax-xmin)/(nx_-1);});
+                    [&]{ return xmin + (i++) * (xmax-xmin)/(this->nx_-1);});
             std::generate(yrange.begin(), yrange.end(),
-                    [&]{ return ymin + (j++) * (ymax-ymin)/(ny_-1);});
+                    [&]{ return ymin + (j++) * (ymax-ymin)/(this->ny_-1);});
             SetAll(xrange, yrange);
         }
 
-        inline void SetAll(LCS::Tensor<vec, Dim>& data)
+        // call function in base class
+        void SetAll(Tensor<vec, Dim>& data)
         {
-            data_ = data;
+            Field<T, Dim, Dim>::SetAll(data);
         }
 
         inline void ReadFromFile(const std::string& file_name)
@@ -195,37 +232,22 @@ class Position
             // check if sizes match
             unsigned nx, ny;
             file >> nx; file >> ny;
-            if (nx_!=nx || ny_!=ny)
+            if (this->nx_!=nx || this->ny_!=ny)
                 throw std::domain_error("sizes do not match!");
 
             // read in time stamp
-            file >> time_;
+            file >> this->time_;
 
             // read in data
-            file >> data_;
+            file >> this->data_;
 
             file.close();
-        }
-
-        inline void UpdateTime(const T time)
-        {
-            time_ = time;
         }
 
         // getter
         inline auto Get(const unsigned i, const unsigned j) const
         {
-            return std::make_tuple(data_(i,j).x, data_(i,j).y);
-        }
-
-        inline auto& GetAll() const
-        {
-            return data_;
-        }
-
-        inline auto GetTime() const
-        {
-            return time_;
+            return std::make_tuple(this->data_(i,j).x, this->data_(i,j).y);
         }
 
         inline void WriteToFile(const std::string& file_name) const
@@ -236,84 +258,51 @@ class Position
                 throw std::runtime_error("file does not open correctly!");
 
             file.clear();
-            file << nx_ << std::endl;
-            file << ny_ << std::endl;
-            file << time_ << std::endl;
-            file << data_;
+            file << this->nx_ << std::endl;
+            file << this->ny_ << std::endl;
+            file << this->time_ << std::endl;
+            file << this->data_;
             file.close();
         }
         
         // update the position using the velocity field
         void Update(Velocity<T, Dim>& vel, T delta)
         {
-            for (unsigned i = 0; i < nx_; ++i)
+            for (unsigned i = 0; i < this->nx_; ++i)
             {
-                for (unsigned j = 0; j < ny_; ++j)
+                for (unsigned j = 0; j < this->ny_; ++j)
                 {
                     T vx, vy;
                     std::tie(vx, vy) = vel.Get(i,j);
-                    data_(i,j).x += vx * delta;
-                    data_(i,j).y += vy * delta;
+                    this->data_(i,j).x += vx * delta;
+                    this->data_(i,j).y += vy * delta;
                 }
             }
         }
-
-        //friend std::ostream& operator<< (std::ostream&, Position<T, Dim>&);
-
-    private:
-        LCS::Tensor<vec, Dim> data_;
-        const unsigned nx_;
-        const unsigned ny_;
-        T time_;
 };
 
 // velocity field
 template <typename T, unsigned Dim = 2>
-class Velocity
+class Velocity : public Field<T, Dim, Dim>
 {
     public:
         using vec = LCS::Vector<T, Dim>;
 
         // constructor
         Velocity(unsigned nx, unsigned ny, Position<T, Dim>& pos):
-            nx_(nx), ny_(ny), time_(), data_(nx, ny), pos_(pos) {}
-
-        // setter
-        void SetAll(LCS::Tensor<vec, Dim>& data)
-        {
-            data_ = data;
-        }
-
-        inline void UpdateTime(const T time)
-        {
-            time_ = time;
-        }
+            Field<T, Dim, Dim>(nx, ny), pos_(pos) {}
 
         // getter
         inline auto Get(const unsigned i, const unsigned j) const
         {
-            return std::make_tuple(data_(i,j).x, data_(i,j).y);
-        }
-
-        inline auto& GetAll() const
-        {
-            return data_;
-        }
-
-        inline auto GetTime() const
-        {
-            return time_;
+            return std::make_tuple(this->data_(i,j).x, this->data_(i,j).y);
         }
 
         template <typename A, typename B, unsigned C>
         friend class AnalyticVelocity;
 
     private:
-        LCS::Tensor<vec, Dim> data_;
-        const unsigned nx_;
-        const unsigned ny_;
         Position<T, Dim>& pos_; // position field corresponding to this velocity field
-        T time_;
 };
 
 // velocity field with analytic velocity function

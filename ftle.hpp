@@ -8,32 +8,22 @@ namespace LCS {
 
 // FTLE field
 template <typename T, unsigned Dim = 2>
-class FTLE
+class FTLE : public Field<T, Dim, 1>
 {
     public:
         // constructor
         FTLE(FlowField<T, Dim>& ff): flow_field_(ff),
-            nx_(std::get<0>(ff.CurrentPosition().GetAll().Size())),
-            ny_(std::get<1>(ff.CurrentPosition().GetAll().Size())),
-            data_(std::get<0>(ff.CurrentPosition().GetAll().Size()),
-                  std::get<1>(ff.CurrentPosition().GetAll().Size())),
-            initial_time_(ff.InitialPosition().GetTime()),
-            current_time_(ff.GetTime()) {}
-
-        inline void SetAll(LCS::Tensor<T, Dim>& data)
+            Field<T, Dim, 1>(std::get<0>(ff.CurrentPosition().GetAll().Size()),
+                std::get<1>(ff.CurrentPosition().GetAll().Size())),
+            initial_time_(ff.InitialPosition().GetTime())
         {
-            data_ = data;
+            this->UpdateTime(ff.GetTime());
         }
 
         // getter
         inline T Get(const unsigned i, const unsigned j) const
         {
-            return data_(i,j);
-        }
-
-        inline auto& GetAll() const
-        {
-            return data_;
+            return this->data_(i,j);
         }
 
         // calculate FTLE
@@ -44,13 +34,13 @@ class FTLE
 
             auto initial_pos_data = flow_field_.InitialPosition().GetAll();
             auto current_pos_data = flow_field_.CurrentPosition().GetAll();
-            auto dt = current_time_ - initial_time_;
+            auto dt = this->time_ - initial_time_;
 
             Eigen::Matrix<T, 2, 2> deformation, ftle_mat;
 
-            for (unsigned i = 0; i < nx_; ++i)
+            for (unsigned i = 0; i < this->nx_; ++i)
             {
-                for (unsigned j = 0; j < ny_; ++j)
+                for (unsigned j = 0; j < this->ny_; ++j)
                 {
                     std::tie(x0_pre, x0_next, y0_pre, y0_next) = initial_pos_data.GetNearby(i,j);
                     std::tie(x_pre, x_next, y_pre, y_next) = current_pos_data.GetNearby(i,j);
@@ -64,7 +54,7 @@ class FTLE
                     ftle_mat = deformation.transpose() * deformation;
 
                     auto eivals = ftle_mat.template selfadjointView<Eigen::Lower>().eigenvalues();
-                    data_(i,j) = .5 * std::log(eivals.maxCoeff()) / dt;
+                    this->data_(i,j).value = .5 * std::log(eivals.maxCoeff()) / dt;
                 }
             }
         }
@@ -77,19 +67,15 @@ class FTLE
                 throw std::runtime_error("file does not open correctly!");
 
             file.clear();
-            file << nx_ << std::endl;
-            file << ny_ << std::endl;
-            file << current_time_ << std::endl;
-            file << data_;
+            file << this->nx_ << std::endl;
+            file << this->ny_ << std::endl;
+            file << this->time_ << std::endl;
+            file << this->data_;
             file.close();
         }
 
     private:
-        LCS::Tensor<T, Dim> data_;
-        const unsigned nx_;
-        const unsigned ny_;
         T initial_time_;
-        T current_time_;
         FlowField<T, Dim>& flow_field_;
 };
 

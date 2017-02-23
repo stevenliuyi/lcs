@@ -12,13 +12,26 @@
 namespace LCS {
 
 // vector
-template <typename T, unsigned Dim = 2>
+template <typename T, unsigned Size = 2>
 struct Vector
 {
     Vector(): x(), y() {}
     Vector(const T& x, const T& y): x(x), y(y) {}
 
     T x, y;
+};
+
+// scalar
+template <typename T>
+using Scalar = Vector<T, 1>;
+
+template <typename T>
+struct Vector<T, 1>
+{
+    Vector(): value() {}
+    Vector(const T& x): value(x) {}
+
+    T value;
 };
 
 // tensor

@@ -6,15 +6,23 @@ namespace LCS {
 
 // outputs
 
-template <typename T, unsigned Dim = 2>
-std::ostream& operator<< (std::ostream& os, const Vector<T, Dim>& vec)
+template <typename T>
+std::ostream& operator<< (std::ostream& os, const Vector<T, 2>& vec)
 {
     os << vec.x << std::endl << vec.y;
 
     return os;
 }
 
-template <typename T, unsigned Dim = 2>
+template <typename T>
+std::ostream& operator<< (std::ostream& os, const Scalar<T>& scalar)
+{
+    os << scalar.value;
+
+    return os;
+}
+
+template <typename T, unsigned Dim>
 std::ostream& operator<< (std::ostream& os, const Tensor<T, Dim>& tensor)
 {
     unsigned nx, ny;
@@ -27,41 +35,34 @@ std::ostream& operator<< (std::ostream& os, const Tensor<T, Dim>& tensor)
     return os;
 }
 
-template <typename T, unsigned Dim = 2>
-std::ostream& operator<< (std::ostream& os, const Position<T, Dim>& pos)
+template <typename T, unsigned Dim, unsigned Size>
+std::ostream& operator<< (std::ostream& os, const Field<T, Dim, Size>& field)
 {
-    os << pos.GetAll();
-
-    return os;
-}
-
-template <typename T, unsigned Dim = 2>
-std::ostream& operator<< (std::ostream& os, const Velocity<T, Dim>& vel)
-{
-    os << vel.GetAll();
-
-    return os;
-}
-
-template <typename T, unsigned Dim = 2>
-std::ostream& operator<< (std::ostream& os, const FTLE<T, Dim>& ftle)
-{
-    os << ftle.GetAll();
+    os << field.GetAll();
 
     return os;
 }
 
 // inputs
 
-template <typename T, unsigned Dim = 2>
-std::istream& operator>> (std::istream& is, Vector<T, Dim>& vec) {
+template <typename T>
+std::istream& operator>> (std::istream& is, Vector<T, 2>& vec)
+{
     is >> vec.x;
     is >> vec.y;
 
     return is;
 }
 
-template <typename T, unsigned Dim = 2>
+template <typename T>
+std::ostream& operator>> (std::ostream& is, Scalar<T>& scalar)
+{
+    is >> scalar.value;
+
+    return is;
+}
+
+template <typename T, unsigned Dim>
 std::istream& operator>> (std::istream& is, Tensor<T, Dim>& tensor)
 {
     unsigned nx, ny;
@@ -74,18 +75,10 @@ std::istream& operator>> (std::istream& is, Tensor<T, Dim>& tensor)
     return is;
 }
 
-template <typename T, unsigned Dim = 2>
-std::istream& operator>> (std::istream& is, Position<T, Dim>& pos)
+template <typename T, unsigned Dim, unsigned Size>
+std::istream& operator>> (std::istream& is, Field<T, Dim>& field)
 {
-    is >> pos.GetAll();
-
-    return is;
-}
-
-template <typename T, unsigned Dim = 2>
-std::istream& operator>> (std::istream& is, Velocity<T, Dim>& vel)
-{
-    is >> vel.GetAll();
+    is >> field.GetAll();
 
     return is;
 }
