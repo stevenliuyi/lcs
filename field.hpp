@@ -55,7 +55,8 @@ class FlowField
 
         inline void CopyInitialPositionToCurrentPosition()
         {
-            current_pos_->SetAll(initial_pos_->GetAll());
+            auto initial_pos_data = initial_pos_->GetAll();
+            current_pos_->SetAll(initial_pos_data);
             current_pos_->UpdateTime(initial_pos_->GetTime());
         }
 
@@ -151,9 +152,7 @@ class Position
 
         // constructor
         Position(unsigned nx, unsigned ny): nx_(nx), ny_(ny), time_(),
-            data_(nx, ny) {
-            data_(1,1) = vec(2,2);
-            }
+            data_(nx, ny) {}
 
         // setter for all values in the field
         void SetAll(const std::vector<T>& xrange, const std::vector<T>& yrange)
@@ -181,7 +180,7 @@ class Position
             SetAll(xrange, yrange);
         }
 
-        inline void SetAll(LCS::Tensor<vec, Dim> data)
+        inline void SetAll(LCS::Tensor<vec, Dim>& data)
         {
             data_ = data;
         }
@@ -280,7 +279,7 @@ class Velocity
             nx_(nx), ny_(ny), time_(), data_(nx, ny), pos_(pos) {}
 
         // setter
-        void SetAll(LCS::Tensor<vec, Dim> data)
+        void SetAll(LCS::Tensor<vec, Dim>& data)
         {
             data_ = data;
         }

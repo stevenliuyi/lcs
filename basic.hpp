@@ -49,9 +49,32 @@ class Tensor
             return data_[i*ny_ + j];
         }
 
+        inline T& Get(unsigned i, unsigned j)
+        {
+            return data_[i*ny_ + j];
+        }
+
+        inline T Get(unsigned i, unsigned j) const
+        {
+            return data_[i*ny_ + j];
+        }
+
         inline auto& GetAll() const
         {
             return data_;
+        }
+
+        // obtain nearby points of a given point
+        inline auto GetNearby(const unsigned i, const unsigned j) const
+        {
+            auto x_pre = (i != 0) ? Get(i-1,j) : Get(i,j);
+            auto x_next = (i != nx_-1) ? Get(i+1,j) : Get(i,j);
+
+            auto y_pre = (j != 0) ? Get(i,j-1) : Get(i,j);
+            auto y_next = (j != ny_-1) ? Get(i,j+1) : Get(i,j);
+
+            return std::make_tuple(x_pre, x_next, y_pre, y_next);
+
         }
 
         inline auto Size() const
@@ -64,5 +87,3 @@ class Tensor
         const unsigned nx_;
         const unsigned ny_;
 };
-
-}

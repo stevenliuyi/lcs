@@ -9,8 +9,7 @@ namespace LCS {
 template <typename T, unsigned Dim = 2>
 std::ostream& operator<< (std::ostream& os, const Vector<T, Dim>& vec)
 {
-    os << vec.x << std::endl;
-    os << vec.y << std::endl;
+    os << vec.x << std::endl << vec.y;
 
     return os;
 }
@@ -23,7 +22,7 @@ std::ostream& operator<< (std::ostream& os, const Tensor<T, Dim>& tensor)
 
     for (unsigned i = 0; i < nx; ++i)
         for (unsigned j = 0; j < ny; ++j)
-            os << tensor(i, j);
+            os << tensor(i, j) << std::endl;
 
     return os;
 }
@@ -40,6 +39,14 @@ template <typename T, unsigned Dim = 2>
 std::ostream& operator<< (std::ostream& os, const Velocity<T, Dim>& vel)
 {
     os << vel.GetAll();
+
+    return os;
+}
+
+template <typename T, unsigned Dim = 2>
+std::ostream& operator<< (std::ostream& os, const FTLE<T, Dim>& ftle)
+{
+    os << ftle.GetAll();
 
     return os;
 }
