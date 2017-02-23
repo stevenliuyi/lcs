@@ -87,3 +87,5 @@ class Tensor
         const unsigned nx_;
         const unsigned ny_;
 };
+
+}
