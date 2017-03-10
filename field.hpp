@@ -77,6 +77,10 @@ class FlowField
         virtual void SetCurrentVelocity()
         {}
 
+        // update time
+        virtual void UpdateTime()
+        {}
+
         // calculate the trajectories
         void Run()
         {
@@ -87,16 +91,11 @@ class FlowField
                 SetCurrentVelocity();
                 current_pos_->Update(*current_vel_, delta_);
 
-                // update time
-                current_time_ += delta_;
-                current_pos_->UpdateTime(current_time_);
+                UpdateTime();
             }
         }
 
-        template <typename A, typename B, unsigned C>
-        friend class AnalyticFlowField;
-
-    private:
+    protected:
         std::unique_ptr<Position<T, Dim>> initial_pos_;
         std::unique_ptr<Position<T, Dim>> current_pos_;
         std::shared_ptr<Velocity<T, Dim>> current_vel_;
@@ -106,6 +105,79 @@ class FlowField
         T current_time_;
         unsigned step_;
 };
+
+template <typename T, unsigned Dim = 2>
+class DiscreteFlowField : public FlowField<T, Dim>
+{
+    public:
+        // constructor
+        DiscreteFlowField(unsigned nx, unsigned ny, unsigned data_nx, unsigned data_ny):
+            data_nx_(data_nx), data_ny_(data_ny), FlowField<T, Dim>(nx, ny),
+            data_pos_(new Position<T,Dim>(data_nx, data_ny)),
+            current_data_vel_(new Velocity<T,Dim>(data_nx, data_ny, *data_pos_)),
+            vel_file_name_prefix_(""), vel_file_name_suffix_(".txt") {}
+
+        // datainal data and calculation data have the same resolution
+        DiscreteFlowField(unsigned nx, unsigned ny):
+            DiscreteFlowField(nx, ny, nx, ny) {}
+
+        inline void SetVelocityFileNamePrefix(const std::string prefix)
+        {
+            vel_file_name_prefix_ = prefix;
+        }
+
+        inline void SetVelocityFileNameSuffix(const std::string suffix)
+        {
+            vel_file_name_suffix_ = suffix;
+        }
+
+        inline void ReadCurrentDataVelocityFromFile()
+        {
+            std::string file_name = vel_file_name_prefix_ +
+                std::to_string(static_cast<int>(current_data_vel_->GetTime())) + 
+                vel_file_name_suffix_;
+
+            current_data_vel_->ReadFromFile(file_name);
+        }
+
+        inline void SetCurrentVelocity()
+        {
+            this->current_vel_.reset(new Velocity<T, Dim>
+                    (this->nx_, this->ny_, *(this->current_pos_)));
+            this->current_vel_->UpdateTime(this->current_time_);
+            ReadCurrentDataVelocityFromFile();
+            this->current_vel_->InterpolateFrom(*current_data_vel_);
+        }
+
+        inline void UpdateTime()
+        {
+            this->current_time_ += this->delta_;
+            this->current_pos_->UpdateTime(this->current_time_);
+            this->current_vel_->UpdateTime(this->current_time_);
+            current_data_vel_->UpdateTime(this->current_time_);
+        }
+
+        inline auto& DataPosition()
+        {
+            return *data_pos_;
+        }
+
+        inline auto& CurrentDataVelocity()
+        {
+            return *current_data_vel_;
+        }
+
+    private:
+        std::unique_ptr<Position<T, Dim>> data_pos_;
+        std::unique_ptr<Velocity<T, Dim>> current_data_vel_;
+        const unsigned data_nx_;
+        const unsigned data_ny_;
+        std::string vel_file_name_prefix_;
+        std::string vel_file_name_suffix_;
+        T data_time_;
+        T data_delta_;
+};
+
 
 template <typename T, typename Func, unsigned Dim = 2>
 class AnalyticFlowField : public FlowField<T, Dim>
@@ -139,6 +211,13 @@ class AnalyticFlowField : public FlowField<T, Dim>
                 throw std::invalid_argument("current velocity not set!");
 
             return *current_analytic_vel_;
+        }
+
+        inline void UpdateTime()
+        {
+            this->current_time_ += this->delta_;
+            this->current_pos_->UpdateTime(this->current_time_);
+            this->current_vel_->UpdateTime(this->current_time_);
         }
 
     private:
@@ -324,10 +403,74 @@ class Velocity : public Field<T, Dim, Dim>
             return std::make_tuple(this->data_(i,j).x, this->data_(i,j).y);
         }
 
-        template <typename A, typename B, unsigned C>
-        friend class AnalyticVelocity;
+        inline auto& GetPosition()
+        {
+            return pos_;
+        }
 
-    private:
+        // interploate from another velocity field
+        void InterpolateFrom(Velocity<T, Dim>& ref_vel)
+        {
+            // interpolation only works for orthogonal coordinates
+            unsigned ref_nx, ref_ny;
+            std::tie(ref_nx, ref_ny) = ref_vel.GetAll().Size();
+
+            auto ref_pos = ref_vel.GetPosition().GetAll();
+            std::vector<T> ref_pos_x;
+            for (unsigned i = 0; i < ref_nx; ++i)
+                ref_pos_x.emplace_back(ref_pos(i,0).x);
+            std::vector<T> ref_pos_y;
+            for (unsigned j = 0; j < ref_ny; ++j)
+                ref_pos_y.emplace_back(ref_pos(0,j).y);
+
+            T pos_x, pos_y;
+            Tensor<Vector<T, 2>, 2> ref_v(2,2);
+
+            for (unsigned i = 0; i < this->nx_; ++i)
+            {
+                for (unsigned j = 0; j < this->ny_; ++j)
+                {
+                    std::tie(pos_x, pos_y) = pos_.Get(i, j);
+
+                    auto iter_x = std::upper_bound(ref_pos_x.begin(), ref_pos_x.end(), pos_x);
+                    if (iter_x == ref_pos_x.end()) --iter_x;
+                    if (iter_x == ref_pos_x.begin()) ++iter_x;
+                    int i_next = std::distance(ref_pos_x.begin(), iter_x);
+                    int i_pre = i_next - 1;
+
+                    auto iter_y = std::upper_bound(ref_pos_y.begin(), ref_pos_y.end(), pos_y);
+                    if (iter_y == ref_pos_y.end()) --iter_y;
+                    if (iter_y == ref_pos_y.begin()) ++iter_y;
+                    int j_next = std::distance(ref_pos_y.begin(), iter_y);
+                    int j_pre = j_next - 1;
+
+                    // add another getter for Tensor class?
+                    std::tie(ref_v(0,0).x, ref_v(0,0).y) = ref_vel.Get(i_pre, j_pre);
+                    std::tie(ref_v(0,1).x, ref_v(0,1).y) = ref_vel.Get(i_pre, j_next);
+                    std::tie(ref_v(1,0).x, ref_v(1,0).y) = ref_vel.Get(i_next, j_pre);
+                    std::tie(ref_v(1,1).x, ref_v(1,1).y) = ref_vel.Get(i_next, j_next);
+                    
+                    auto vx1 = interpolate(ref_pos_x[i_pre], ref_pos_x[i_next],
+                            ref_v(0,0).x, ref_v(1,0).x, pos_x);
+                    auto vx2 = interpolate(ref_pos_x[i_pre], ref_pos_x[i_next],
+                            ref_v(0,1).x, ref_v(1,1).x, pos_x);
+                    auto vxm = interpolate(ref_pos_y[j_pre], ref_pos_y[j_next],
+                            vx1, vx2, pos_y);
+
+                    auto vy1 = interpolate(ref_pos_x[i_pre], ref_pos_x[i_next],
+                            ref_v(0,0).y, ref_v(1,0).y, pos_x);
+                    auto vy2 = interpolate(ref_pos_x[i_pre], ref_pos_x[i_next],
+                            ref_v(0,1).y, ref_v(1,1).y, pos_x);
+                    auto vym = interpolate(ref_pos_y[j_pre], ref_pos_y[j_next],
+                            vy1, vy2, pos_y);
+
+                    this->data_(i,j).x = vxm;
+                    this->data_(i,j).y = vym;
+                }
+            }
+        }
+
+    protected:
         Position<T, Dim>& pos_; // position field corresponding to this velocity field
 };
 

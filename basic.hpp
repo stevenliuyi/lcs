@@ -101,4 +101,11 @@ class Tensor
         const unsigned ny_;
 };
 
+// interpolation
+template <typename T>
+inline T interpolate(T x1, T x2, T y1, T y2, T xm)
+{
+    return y1 + (xm - x1) * (y2 - y1) / (x2 - x1);
+}
+
 }
