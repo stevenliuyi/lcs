@@ -79,15 +79,23 @@ class FlowField
         // calculate the trajectories
         void Run()
         {
+            std::cout << "Particle advection begins" << std::endl;
             CopyInitialPositionToCurrentPosition();
 
             for (unsigned i = 0; i < step_; ++i)
             {
+                std::cout << "Step " << i <<
+                    " (time = " << current_time_ << ") begins" << std::endl;
+
                 SetCurrentVelocity();
                 current_pos_->Update(*current_vel_, delta_);
 
                 UpdateTime();
+
+                std::cout << "Step " << i <<
+                    " (time = " << current_time_ << ") ends" << std::endl;
             }
+            std::cout << "Particle advection ends" << std::endl;
         }
 
     protected:
@@ -133,6 +141,9 @@ class DiscreteFlowField : public FlowField<T, Dim>
                 vel_file_name_suffix_;
 
             current_data_vel_->ReadFromFile(file_name);
+
+            std::cout << "Read velocity data at time = " <<
+                current_data_vel_->GetTime() << " from " << file_name << std::endl;
         }
 
         inline void SetCurrentVelocity()
@@ -411,6 +422,7 @@ class Position : public Field<T, Dim, Dim>
                     this->data_(i,j).y += vy * delta;
 
                     // check if the position is out of bound
+                    // need to deal with NAN values
                     if (out_of_bound_ != nullptr)
                         if (this->data_(i,j).x < pos_xrange_[0] ||
                                 this->data_(i,j).x > pos_xrange_[this->nx_-1] ||

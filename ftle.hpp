@@ -36,7 +36,9 @@ class FTLE : public Field<T, Dim, 1>
             auto current_pos_data = flow_field_.CurrentPosition().GetAll();
             auto dt = this->time_ - initial_time_;
 
-            Eigen::Matrix<T, 2, 2> deformation, ftle_mat;
+            Eigen::Matrix<T, 2, 2> deformation, cauchy_green;
+
+            std::cout << "FTLE calculation begins" << std::endl;
 
             for (unsigned i = 0; i < this->nx_; ++i)
             {
@@ -51,12 +53,14 @@ class FTLE : public Field<T, Dim, 1>
                     deformation(1,0) = (x_next.y-x_pre.y) / (x0_next.x-x0_pre.x);
                     deformation(1,1) = (y_next.y-y_pre.y) / (y0_next.y-y0_pre.y);
 
-                    ftle_mat = deformation.transpose() * deformation;
+                    cauchy_green = deformation.transpose() * deformation;
 
-                    auto eivals = ftle_mat.template selfadjointView<Eigen::Lower>().eigenvalues();
+                    auto eivals = cauchy_green.template selfadjointView<Eigen::Lower>().eigenvalues();
                     this->data_(i,j).value = .5 * std::log(eivals.maxCoeff()) / dt;
                 }
             }
+
+            std::cout << "FTLE calculation ends" << std::endl;
         }
 
     private:
