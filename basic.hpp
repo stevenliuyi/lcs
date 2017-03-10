@@ -72,6 +72,12 @@ class Tensor
             return data_[i*ny_ + j];
         }
 
+        // for bool type
+        inline T GetValue(unsigned i, unsigned j) const
+        {
+            return data_[i*ny_ + j];
+        }
+
         inline auto& GetAll() const
         {
             return data_;
@@ -88,6 +94,11 @@ class Tensor
 
             return std::make_tuple(x_pre, x_next, y_pre, y_next);
 
+        }
+
+        inline void SetValue(unsigned i, unsigned j, T value)
+        {
+            data_[i*ny_ + j] = value;
         }
 
         inline auto Size() const

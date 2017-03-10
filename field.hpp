@@ -56,12 +56,7 @@ class FlowField
             return current_time_;
         }
 
-        inline void CopyInitialPositionToCurrentPosition()
-        {
-            auto initial_pos_data = initial_pos_->GetAll();
-            current_pos_->SetAll(initial_pos_data);
-            current_pos_->UpdateTime(initial_pos_->GetTime());
-        }
+        virtual void CopyInitialPositionToCurrentPosition() {};
 
         inline void SetDelta(const T delta)
         {
@@ -142,8 +137,6 @@ class DiscreteFlowField : public FlowField<T, Dim>
 
         inline void SetCurrentVelocity()
         {
-            this->current_vel_.reset(new Velocity<T, Dim>
-                    (this->nx_, this->ny_, *(this->current_pos_)));
             this->current_vel_->UpdateTime(this->current_time_);
             ReadCurrentDataVelocityFromFile();
             this->current_vel_->InterpolateFrom(*current_data_vel_);
@@ -155,6 +148,20 @@ class DiscreteFlowField : public FlowField<T, Dim>
             this->current_pos_->UpdateTime(this->current_time_);
             this->current_vel_->UpdateTime(this->current_time_);
             current_data_vel_->UpdateTime(this->current_time_);
+        }
+
+        inline void CopyInitialPositionToCurrentPosition()
+        {
+            auto initial_pos_data = this->initial_pos_->GetAll();
+            this->current_pos_->SetAll(initial_pos_data);
+            this->current_pos_->GetRange(0) = this->initial_pos_->GetRange(0);
+            this->current_pos_->GetRange(1) = this->initial_pos_->GetRange(1);
+            this->current_pos_->UpdateTime(this->initial_pos_->GetTime());
+            this->current_pos_->InitializeOutOfBoundTensor();
+
+            // set corresponding velocity tensor
+            this->current_vel_.reset(new Velocity<T, Dim>
+                    (this->nx_, this->ny_, *(this->current_pos_)));
         }
 
         inline auto& DataPosition()
@@ -218,6 +225,15 @@ class AnalyticFlowField : public FlowField<T, Dim>
             this->current_time_ += this->delta_;
             this->current_pos_->UpdateTime(this->current_time_);
             this->current_vel_->UpdateTime(this->current_time_);
+        }
+
+        inline void CopyInitialPositionToCurrentPosition()
+        {
+            auto initial_pos_data = this->initial_pos_->GetAll();
+            this->current_pos_->SetAll(initial_pos_data);
+            this->current_pos_->GetRange(0) = this->initial_pos_->GetRange(0);
+            this->current_pos_->GetRange(1) = this->initial_pos_->GetRange(1);
+            this->current_pos_->UpdateTime(this->initial_pos_->GetTime());
         }
 
     private:
@@ -343,6 +359,9 @@ class Position : public Field<T, Dim, Dim>
             for (unsigned i = 0; i < this->nx_; ++i)
                 for (unsigned j = 0; j < this->ny_; ++j)
                     this->data_(i,j) = vec(xrange[i], yrange[j]);
+
+            pos_xrange_ = xrange;
+            pos_yrange_ = yrange;
         }
 
         // overload, use end points to set values
@@ -370,6 +389,15 @@ class Position : public Field<T, Dim, Dim>
             return std::make_tuple(this->data_(i,j).x, this->data_(i,j).y);
         }
 
+        inline auto& GetRange(const unsigned axis)
+        {
+            // need to check the input and if ranges exist
+            if (axis == 0)
+                return pos_xrange_;
+            else
+                return pos_yrange_;
+        }
+
         // update the position using the velocity field
         void Update(Velocity<T, Dim>& vel, T delta)
         {
@@ -381,9 +409,38 @@ class Position : public Field<T, Dim, Dim>
                     std::tie(vx, vy) = vel.Get(i,j);
                     this->data_(i,j).x += vx * delta;
                     this->data_(i,j).y += vy * delta;
+
+                    // check if the position is out of bound
+                    if (out_of_bound_ != nullptr)
+                        if (this->data_(i,j).x < pos_xrange_[0] ||
+                                this->data_(i,j).x > pos_xrange_[this->nx_-1] ||
+                                this->data_(i,j).y < pos_yrange_[0] ||
+                                this->data_(i,j).y > pos_yrange_[this->ny_-1])
+                            out_of_bound_->SetValue(i, j, true);
                 }
             }
         }
+
+        // initialize out of bound tensor
+        inline void InitializeOutOfBoundTensor()
+        {
+            // default value is false
+            out_of_bound_.reset(new Tensor<bool, Dim>(this->nx_, this->ny_));
+        }
+
+        inline bool IsOutOfBound(const unsigned i, const unsigned j)
+        {
+            if (out_of_bound_ != nullptr)
+                return out_of_bound_->GetValue(i,j);
+            else
+                return false; // default value
+        }
+
+    private:
+        std::unique_ptr<Tensor<bool, Dim>> out_of_bound_;
+        std::vector<T> pos_xrange_;
+        std::vector<T> pos_yrange_;
+
 };
 
 // velocity field
@@ -412,16 +469,8 @@ class Velocity : public Field<T, Dim, Dim>
         void InterpolateFrom(Velocity<T, Dim>& ref_vel)
         {
             // interpolation only works for orthogonal coordinates
-            unsigned ref_nx, ref_ny;
-            std::tie(ref_nx, ref_ny) = ref_vel.GetAll().Size();
-
-            auto ref_pos = ref_vel.GetPosition().GetAll();
-            std::vector<T> ref_pos_x;
-            for (unsigned i = 0; i < ref_nx; ++i)
-                ref_pos_x.emplace_back(ref_pos(i,0).x);
-            std::vector<T> ref_pos_y;
-            for (unsigned j = 0; j < ref_ny; ++j)
-                ref_pos_y.emplace_back(ref_pos(0,j).y);
+            auto ref_pos_x = ref_vel.GetPosition().GetRange(0);
+            auto ref_pos_y = ref_vel.GetPosition().GetRange(1);
 
             T pos_x, pos_y;
             Tensor<Vector<T, 2>, 2> ref_v(2,2);
@@ -430,6 +479,9 @@ class Velocity : public Field<T, Dim, Dim>
             {
                 for (unsigned j = 0; j < this->ny_; ++j)
                 {
+                    // skip if the current position is out of bound
+                    if (pos_.IsOutOfBound(i,j)) continue;
+
                     std::tie(pos_x, pos_y) = pos_.Get(i, j);
 
                     auto iter_x = std::upper_bound(ref_pos_x.begin(), ref_pos_x.end(), pos_x);
