@@ -50,5 +50,40 @@ struct BowerModel
 };
 
 
+// double gypre model that consists of a pair of counter-rotating gyres
+template <typename T>
+struct DoubleGyreModel
+{
+    // constructor with default parameters
+    DoubleGyreModel(): epsilon_(0.1), a_(0.1), omega_(4*std::atan(1)/5) {}
+
+    // constructor with customized parameters
+    DoubleGyreModel(std::vector<T>& p)
+    {
+        assert(p.size() == 3);
+        epsilon_ = p[0]; a_ = p[1]; omega_ = p[2];
+    }
+
+    inline auto operator() (const T x, const T y, const T t) const
+    {
+        T at = epsilon_ * std::sin(omega_ * t);
+        T bt = 1 - 2 * epsilon_ * std::sin(omega_ * t);
+        T f = at*x*x + bt*x;
+        T dfdx = 2*at*x + bt;
+
+        T pi = 4 * std::atan(1);
+        T u = -pi * a_ * std::sin(pi*f) * std::cos(pi*y);
+        T v = pi * a_ * std::cos(pi*f) * std::sin(pi*y) * dfdx;
+
+        return std::make_tuple(u, v);
+    }
+
+    T epsilon_;
+    T a_;
+    T omega_;
+
+};
+
+
 }
 }

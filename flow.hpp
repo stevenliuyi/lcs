@@ -11,6 +11,14 @@ class FlowField;
 template <typename T, typename Func, unsigned Dim>
 class ContinuousFlowField;
 
+
+// calculation direction
+enum Direction
+{
+    Forward,
+    Backward
+};
+
 // flow field
 template <typename T, unsigned Dim = 2>
 class FlowField
@@ -18,7 +26,7 @@ class FlowField
     public:
         // constructor
         FlowField(unsigned nx, unsigned ny):
-            nx_(nx), ny_(ny), delta_(), current_time_(), step_(), 
+            nx_(nx), ny_(ny), delta_(), initial_time_(), current_time_(), step_(), 
             initial_pos_(new Position<T,Dim>(nx,ny)),
             current_pos_(new Position<T,Dim>(nx,ny)) {}
 
@@ -49,6 +57,7 @@ class FlowField
 
         inline void SetDelta(const T delta)
         {
+            assert(delta > 0);
             delta_ = delta;
         }
 
@@ -61,12 +70,36 @@ class FlowField
         virtual void SetCurrentVelocity()
         {}
 
+        // set calculation direction
+        virtual void SetDirection(const Direction direction)
+        {}
+
+        // set initial time
+        inline void SetInitialTime(const T time)
+        {
+            initial_time_ = time;
+            initial_pos_->UpdateTime(time);
+            UpdateTime(time);
+        }
+
         // update time
         inline void UpdateTime()
         {
-            this->current_time_ += this->delta_;
-            this->current_pos_->UpdateTime(this->current_time_);
-            this->current_vel_->UpdateTime(this->current_time_);
+            switch(direction_)
+            {
+                case Forward: current_time_ += delta_; break;
+                case Backward: current_time_ -= delta_; break;
+                default: break;
+            }
+            current_pos_->UpdateTime(current_time_);
+            current_vel_->UpdateTime(current_time_);
+        }
+
+        inline void UpdateTime(const T time)
+        {
+            current_time_ = time;
+            current_pos_->UpdateTime(current_time_);
+            if (current_vel_ != nullptr) current_vel_->UpdateTime(current_time_);
         }
 
         // calculate the trajectories
@@ -81,7 +114,14 @@ class FlowField
                     " (time = " << current_time_ << ") begins" << std::endl;
 
                 SetCurrentVelocity();
-                current_pos_->Update(*current_vel_, delta_);
+
+                switch(direction_)
+                {
+                    case Forward: current_pos_->Update(*current_vel_, delta_); break;
+                    case Backward: current_pos_->Update(*current_vel_, -delta_); break;
+                    default: break;
+                }
+
                 UpdateTime();
 
                     
@@ -95,8 +135,10 @@ class FlowField
         const unsigned nx_;
         const unsigned ny_;
         T delta_; // time step for integration
+        T initial_time_;
         T current_time_;
         unsigned step_;
+        Direction direction_ = Forward;
         std::unique_ptr<Position<T, Dim>> initial_pos_;
         std::unique_ptr<Position<T, Dim>> current_pos_;
         std::shared_ptr<Velocity<T, Dim>> current_vel_;
@@ -144,31 +186,46 @@ class DiscreteFlowField : public FlowField<T, Dim>
 
         inline void SetCurrentVelocity()
         {
-            //this->current_vel_->UpdateTime(this->current_time_);
+            T signed_data_delta = (this->direction_ == Forward) ? data_delta_ : (-data_delta_);
 
             // initialize data velocities
-            if (this->current_time_ == 0)
+            if (this->current_time_ == this->initial_time_)
             {
-                previous_data_vel_->UpdateTime(begin_data_time_);
-                ReadDataVelocityFromFile(*previous_data_vel_);
-                //this->current_interp_data_vel_->InterpolateFrom(*current_data_vel_);
+                current_data_time_ = begin_data_time_;
 
-                next_data_vel_->UpdateTime(begin_data_time_ + data_delta_);
-                ReadDataVelocityFromFile(*next_data_vel_);
-                //this->next_interp_data_vel_->InterpolateFrom(*next_data_vel_);
+                switch(this->direction_)
+                {
+                    case Forward:
+                        while (current_data_time_ < this->initial_time_)
+                            current_data_time_ += signed_data_delta;
+                        break;
+                    case Backward:
+                        while (current_data_time_ > this->initial_time_)
+                            current_data_time_ -= signed_data_delta;
+                        break;
+                    default: break;
+                }
 
-            } else if ((this->current_time_ >= current_data_time_ + data_delta_) &&
-                    (end_data_time_ > current_data_time_ + data_delta_))
-            {
-                // update data velocities
-                current_data_time_ += data_delta_;
                 previous_data_vel_->UpdateTime(current_data_time_);
                 ReadDataVelocityFromFile(*previous_data_vel_);
-                //this->current_interp_data_vel_->InterpolateFrom(*current_data_vel_);
 
-                next_data_vel_->UpdateTime(current_data_time_ + data_delta_);
+                next_data_vel_->UpdateTime(current_data_time_ + signed_data_delta);
                 ReadDataVelocityFromFile(*next_data_vel_);
-                //this->next_interp_data_vel_->InterpolateFrom(*next_data_vel_);
+
+            } else if (((this->current_time_ >= current_data_time_ + signed_data_delta) &&
+                    (end_data_time_ > current_data_time_ + signed_data_delta) &&
+                    this->direction_ == Forward) ||
+                    ((this->current_time_ <= current_data_time_ + signed_data_delta) &&
+                    (end_data_time_ < current_data_time_ + signed_data_delta) &&
+                    this->direction_ == Backward))
+            {
+                // update data velocities
+                current_data_time_ += signed_data_delta;
+                previous_data_vel_->UpdateTime(current_data_time_);
+                ReadDataVelocityFromFile(*previous_data_vel_);
+
+                next_data_vel_->UpdateTime(current_data_time_ + signed_data_delta);
+                ReadDataVelocityFromFile(*next_data_vel_);
             }
             
             interpolate(previous_data_vel_->GetTime(),
@@ -178,6 +235,12 @@ class DiscreteFlowField : public FlowField<T, Dim>
 
             this->current_vel_->InterpolateFrom(*current_data_vel_);
 
+        }
+
+        inline void SetDirection(const Direction direction)
+        {
+            this->direction_ = direction;
+            SetDataTimeRange(begin_data_time_, end_data_time_);
         }
 
         inline void CopyInitialPositionToCurrentPosition()
@@ -216,10 +279,23 @@ class DiscreteFlowField : public FlowField<T, Dim>
             data_delta_ = delta;
         }
 
-        inline void SetDataTimeRange(const T begin_time, const T end_time)
+        inline void SetDataTimeRange(const T t1, const T t2)
         {
-            begin_data_time_ = begin_time;
-            end_data_time_ = end_time;
+            T begin_time = (t2 >= t1) ? t1 : t2;
+            T end_time = (t2 >= t1) ? t2 : t2;
+
+            switch(this->direction_)
+            {
+                case Forward:
+                    begin_data_time_ = begin_time;
+                    end_data_time_ = end_time;
+                    break;
+                case Backward:
+                    begin_data_time_ = end_time;
+                    end_data_time_ = begin_time;
+                    break;
+                default: break;
+            }
         }
 
     private:
@@ -254,11 +330,12 @@ class ContinuousFlowField : public FlowField<T, Dim>
             // no parameters
             if (parameters_.size() == 0)
                 current_continuous_vel_.reset(new ContinuousVelocity<T, Func, Dim>
-                    (this->nx_, this->ny_, *(this->current_pos_)));
+                    (this->nx_, this->ny_, *(this->current_pos_),this->current_time_));
             else
             // there are parameters for continuous function 
                 current_continuous_vel_.reset(new ContinuousVelocity<T, Func, Dim>
-                    (this->nx_, this->ny_, *(this->current_pos_), parameters_));
+                    (this->nx_, this->ny_, *(this->current_pos_),
+                     parameters_, this->current_time_));
             
             current_continuous_vel_->UpdateTime(this->current_time_);
             this->current_vel_ = current_continuous_vel_;
@@ -279,6 +356,11 @@ class ContinuousFlowField : public FlowField<T, Dim>
             this->current_pos_->GetRange(0) = this->initial_pos_->GetRange(0);
             this->current_pos_->GetRange(1) = this->initial_pos_->GetRange(1);
             this->current_pos_->UpdateTime(this->initial_pos_->GetTime());
+        }
+
+        inline void SetDirection(const Direction direction)
+        {
+            this->direction_ = direction;
         }
 
     private:

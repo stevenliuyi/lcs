@@ -322,16 +322,18 @@ class ContinuousVelocity : public Velocity<T, Dim>
         using vec = LCS::Vector<T, Dim>;
 
         // constructor without parameters
-        ContinuousVelocity(unsigned nx, unsigned ny, Position<T, Dim>& pos):
+        ContinuousVelocity(unsigned nx, unsigned ny, Position<T, Dim>& pos, T time=0):
             Velocity<T, Dim>(nx, ny, pos), f_()
         {
+            this->time_ = time;
             SetAll();
         }
 
         // constructor with parameters
         ContinuousVelocity(unsigned nx, unsigned ny, Position<T, Dim>& pos,
-                std::vector<T>& parameters): Velocity<T, Dim>(nx, ny, pos), f_(parameters)
+                std::vector<T>& parameters, T time=0): Velocity<T, Dim>(nx, ny, pos), f_(parameters)
         {
+            this->time_ = time;
             SetAll();
         }
 
