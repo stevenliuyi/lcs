@@ -89,9 +89,9 @@ class FlowField
 
                 SetCurrentVelocity();
                 current_pos_->Update(*current_vel_, delta_);
-
                 UpdateTime();
 
+                    
                 std::cout << "Step " << i <<
                     " (time = " << current_time_ << ") ends" << std::endl;
             }
@@ -104,7 +104,7 @@ class FlowField
         std::shared_ptr<Velocity<T, Dim>> current_vel_;
         const unsigned nx_;
         const unsigned ny_;
-        T delta_;
+        T delta_; // time step for integration
         T current_time_;
         unsigned step_;
 };
@@ -117,6 +117,9 @@ class DiscreteFlowField : public FlowField<T, Dim>
         DiscreteFlowField(unsigned nx, unsigned ny, unsigned data_nx, unsigned data_ny):
             data_nx_(data_nx), data_ny_(data_ny), FlowField<T, Dim>(nx, ny),
             data_pos_(new Position<T,Dim>(data_nx, data_ny)),
+            current_data_time_(), begin_data_time_(), end_data_time_(), data_delta_(),
+            previous_data_vel_(new Velocity<T,Dim>(data_nx, data_ny, *data_pos_)),
+            next_data_vel_(new Velocity<T,Dim>(data_nx, data_ny, *data_pos_)),
             current_data_vel_(new Velocity<T,Dim>(data_nx, data_ny, *data_pos_)),
             vel_file_name_prefix_(""), vel_file_name_suffix_(".txt") {}
 
@@ -134,23 +137,54 @@ class DiscreteFlowField : public FlowField<T, Dim>
             vel_file_name_suffix_ = suffix;
         }
 
-        inline void ReadCurrentDataVelocityFromFile()
+        inline void ReadDataVelocityFromFile(Velocity<T, Dim>& data_vel)
         {
             std::string file_name = vel_file_name_prefix_ +
-                std::to_string(static_cast<int>(current_data_vel_->GetTime())) + 
+                std::to_string(static_cast<int>(data_vel.GetTime())) + 
                 vel_file_name_suffix_;
 
-            current_data_vel_->ReadFromFile(file_name);
+            data_vel.ReadFromFile(file_name);
 
             std::cout << "Read velocity data at time = " <<
-                current_data_vel_->GetTime() << " from " << file_name << std::endl;
+                data_vel.GetTime() << " from " << file_name << std::endl;
         }
 
         inline void SetCurrentVelocity()
         {
-            this->current_vel_->UpdateTime(this->current_time_);
-            ReadCurrentDataVelocityFromFile();
+            //this->current_vel_->UpdateTime(this->current_time_);
+
+            // initialize data velocities
+            if (this->current_time_ == 0)
+            {
+                previous_data_vel_->UpdateTime(begin_data_time_);
+                ReadDataVelocityFromFile(*previous_data_vel_);
+                //this->current_interp_data_vel_->InterpolateFrom(*current_data_vel_);
+
+                next_data_vel_->UpdateTime(begin_data_time_ + data_delta_);
+                ReadDataVelocityFromFile(*next_data_vel_);
+                //this->next_interp_data_vel_->InterpolateFrom(*next_data_vel_);
+
+            } else if ((this->current_time_ >= current_data_time_ + data_delta_) &&
+                    (end_data_time_ > current_data_time_ + data_delta_))
+            {
+                // update data velocities
+                current_data_time_ += data_delta_;
+                previous_data_vel_->UpdateTime(current_data_time_);
+                ReadDataVelocityFromFile(*previous_data_vel_);
+                //this->current_interp_data_vel_->InterpolateFrom(*current_data_vel_);
+
+                next_data_vel_->UpdateTime(current_data_time_ + data_delta_);
+                ReadDataVelocityFromFile(*next_data_vel_);
+                //this->next_interp_data_vel_->InterpolateFrom(*next_data_vel_);
+            }
+            
+            interpolate(previous_data_vel_->GetTime(),
+                    next_data_vel_->GetTime(),
+                    *previous_data_vel_, *next_data_vel_,
+                    this->current_time_, *current_data_vel_);
+
             this->current_vel_->InterpolateFrom(*current_data_vel_);
+
         }
 
         inline void UpdateTime()
@@ -158,7 +192,7 @@ class DiscreteFlowField : public FlowField<T, Dim>
             this->current_time_ += this->delta_;
             this->current_pos_->UpdateTime(this->current_time_);
             this->current_vel_->UpdateTime(this->current_time_);
-            current_data_vel_->UpdateTime(this->current_time_);
+            //current_data_vel_->UpdateTime(this->current_data_time_);
         }
 
         inline void CopyInitialPositionToCurrentPosition()
@@ -169,6 +203,13 @@ class DiscreteFlowField : public FlowField<T, Dim>
             this->current_pos_->GetRange(1) = this->initial_pos_->GetRange(1);
             this->current_pos_->UpdateTime(this->initial_pos_->GetTime());
             this->current_pos_->InitializeOutOfBoundTensor();
+
+
+            // sed out boundary
+            T xmin, xmax, ymin, ymax;
+            std::tie(xmin, ymin) = data_pos_->Get(0,0);
+            std::tie(xmax, ymax) = data_pos_->Get(data_nx_-1,data_ny_-1);
+            this->current_pos_->SetBound(xmin, xmax, ymin, ymax);
 
             // set corresponding velocity tensor
             this->current_vel_.reset(new Velocity<T, Dim>
@@ -182,18 +223,37 @@ class DiscreteFlowField : public FlowField<T, Dim>
 
         inline auto& CurrentDataVelocity()
         {
-            return *current_data_vel_;
+            return *previous_data_vel_;
+        }
+
+        inline void SetDataDelta(const T delta)
+        {
+            data_delta_ = delta;
+        }
+
+        inline void SetDataTimeRange(const T begin_time, const T end_time)
+        {
+            begin_data_time_ = begin_time;
+            end_data_time_ = end_time;
         }
 
     private:
         std::unique_ptr<Position<T, Dim>> data_pos_;
+        
+        std::unique_ptr<Velocity<T, Dim>> previous_data_vel_;
+        std::unique_ptr<Velocity<T, Dim>> next_data_vel_;
+
+        // time interpolation of two adjenct data file 
         std::unique_ptr<Velocity<T, Dim>> current_data_vel_;
+
         const unsigned data_nx_;
         const unsigned data_ny_;
         std::string vel_file_name_prefix_;
         std::string vel_file_name_suffix_;
-        T data_time_;
-        T data_delta_;
+        T current_data_time_;
+        T data_delta_; // time difference between two adjacent data files
+        T begin_data_time_;
+        T end_data_time_;
 };
 
 
@@ -424,10 +484,10 @@ class Position : public Field<T, Dim, Dim>
                     // check if the position is out of bound
                     // need to deal with NAN values
                     if (out_of_bound_ != nullptr)
-                        if (this->data_(i,j).x < pos_xrange_[0] ||
-                                this->data_(i,j).x > pos_xrange_[this->nx_-1] ||
-                                this->data_(i,j).y < pos_yrange_[0] ||
-                                this->data_(i,j).y > pos_yrange_[this->ny_-1])
+                        if (this->data_(i,j).x < bound_xmin_ ||
+                                this->data_(i,j).x > bound_xmax_ ||
+                                this->data_(i,j).y < bound_ymin_ ||
+                                this->data_(i,j).y > bound_ymax_)
                             out_of_bound_->SetValue(i, j, true);
                 }
             }
@@ -447,12 +507,24 @@ class Position : public Field<T, Dim, Dim>
             else
                 return false; // default value
         }
+        // set the out boundary 
+        inline void SetBound(const T& xmin, const T& xmax, const T& ymin, const T& ymax)
+        {
+            bound_xmin_ = xmin;
+            bound_xmax_ = xmax;
+            bound_ymin_ = ymin;
+            bound_ymax_ = ymax;
+        }
 
     private:
         std::unique_ptr<Tensor<bool, Dim>> out_of_bound_;
         std::vector<T> pos_xrange_;
         std::vector<T> pos_yrange_;
 
+        T bound_xmin_;
+        T bound_xmax_;
+        T bound_ymin_;
+        T bound_ymax_;
 };
 
 // velocity field

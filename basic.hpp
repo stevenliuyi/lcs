@@ -8,8 +8,48 @@
 #include <memory>
 #include <string>
 #include <fstream>
+#include <functional>
+#include <type_traits>
 
 namespace LCS {
+
+// elementwise addition for STL vectors
+template <typename T>
+std::vector<T> operator+(const std::vector<T>& a, const std::vector<T>& b)
+{
+    assert(a.size() == b.size());
+
+    std::vector<T> result;
+    result.reserve(a.size());
+
+    std::transform(a.begin(), a.end(), b.begin(), 
+                   std::back_inserter(result), std::plus<T>());
+    return result;
+}
+
+// elementwise substraction for STL vectors
+template <typename T>
+std::vector<T> operator-(const std::vector<T>& a, const std::vector<T>& b)
+{
+    assert(a.size() == b.size());
+
+    std::vector<T> result;
+    result.reserve(a.size());
+
+    std::transform(a.begin(), a.end(), b.begin(), 
+                   std::back_inserter(result), std::minus<T>());
+    return result;
+}
+
+// multiplication of a scalar with STL vector
+template <class T, class T2>
+std::vector<T> operator* (const T2 c, std::vector<T> a)
+{
+    for (unsigned i = 0; i < a.size(); ++i)
+        a[i] = c * a[i];
+
+    return a;
+}
 
 // vector
 template <typename T, unsigned Size = 2>
@@ -20,6 +60,28 @@ struct Vector
 
     T x, y;
 };
+
+template <typename T, unsigned Size>
+Vector<T, Size> operator+(const Vector<T, Size>& a, const Vector<T, Size>& b)
+{
+    Vector<T,Size> result(a.x+b.x, a.y+b.y);
+    return result;
+}
+
+template <typename T, unsigned Size>
+Vector<T, Size> operator-(const Vector<T, Size>& a, const Vector<T, Size>& b)
+{
+    Vector<T,Size> result(a.x-b.x, a.y-b.y);
+    return result;
+}
+
+template <typename T, unsigned Size>
+Vector<T, Size> operator*(const T c, Vector<T, Size> a)
+{
+    a.x *= c;
+    a.y *= c;
+    return a;
+}
 
 // scalar
 template <typename T>
@@ -101,16 +163,22 @@ class Tensor
             data_[i*ny_ + j] = value;
         }
 
+        inline void SetAll(std::vector<T>& data)
+        {
+            data_ = data;
+        }
+
         inline auto Size() const
         {
             return std::make_tuple(nx_, ny_);
         }
-
+    
     private:
         std::vector<T> data_;
         const unsigned nx_;
         const unsigned ny_;
 };
+
 
 // interpolation
 template <typename T>
@@ -118,5 +186,22 @@ inline T interpolate(T x1, T x2, T y1, T y2, T xm)
 {
     return y1 + (xm - x1) * (y2 - y1) / (x2 - x1);
 }
+
+template <typename Field, typename T>
+void interpolate(T x1, T x2, Field& f1, Field& f2, T xm, Field& result)
+{
+    auto tensor_result = f1.GetAll();
+    if (x1 != x2)
+    {
+        auto vec1 = f1.GetAll().GetAll();
+        auto vec2 = f2.GetAll().GetAll();
+        auto vec_result = vec1 + ((xm - x1)/(x2 - x1)) * (vec2 - vec1);
+
+        tensor_result.SetAll(vec_result);
+    }
+    result.SetAll(tensor_result);
+}
+
+
 
 }
