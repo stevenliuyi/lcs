@@ -11,7 +11,7 @@ template <typename T, unsigned Dim>
 class Velocity;
 
 template <typename T, typename Func, unsigned Dim>
-class AnalyticVelocity;
+class ContinuousVelocity;
 
 template <typename T, unsigned Dim>
 class FlowField;
@@ -20,7 +20,7 @@ template <typename T, unsigned Dim, unsigned Size>
 class FieldPolicy;
 
 template <typename T, typename Func, unsigned Dim>
-class AnalyticFlowField;
+class ContinuousFlowField;
 
 // flow field
 template <typename T, unsigned Dim = 2>
@@ -68,7 +68,7 @@ class FlowField
             step_ = step;
         }
 
-        // overloaded in AnalyticFlowField class
+        // overloaded in ContinuousFlowField class
         virtual void SetCurrentVelocity()
         {}
 
@@ -258,37 +258,37 @@ class DiscreteFlowField : public FlowField<T, Dim>
 
 
 template <typename T, typename Func, unsigned Dim = 2>
-class AnalyticFlowField : public FlowField<T, Dim>
+class ContinuousFlowField : public FlowField<T, Dim>
 {
     public:
         // constructor
-        AnalyticFlowField(unsigned nx, unsigned ny):
+        ContinuousFlowField(unsigned nx, unsigned ny):
             FlowField<T, Dim>(nx, ny), parameters_() {}
 
-        AnalyticFlowField(unsigned nx, unsigned ny, std::vector<T>& parameters):
+        ContinuousFlowField(unsigned nx, unsigned ny, std::vector<T>& parameters):
             FlowField<T, Dim>(nx, ny), parameters_(parameters) {}
 
         inline void SetCurrentVelocity()
         {
             // no parameters
             if (parameters_.size() == 0)
-                current_analytic_vel_.reset(new AnalyticVelocity<T, Func, Dim>
+                current_continuous_vel_.reset(new ContinuousVelocity<T, Func, Dim>
                     (this->nx_, this->ny_, *(this->current_pos_)));
             else
-            // there are parameters for analytic function 
-                current_analytic_vel_.reset(new AnalyticVelocity<T, Func, Dim>
+            // there are parameters for continuous function 
+                current_continuous_vel_.reset(new ContinuousVelocity<T, Func, Dim>
                     (this->nx_, this->ny_, *(this->current_pos_), parameters_));
             
-            current_analytic_vel_->UpdateTime(this->current_time_);
-            this->current_vel_ = current_analytic_vel_;
+            current_continuous_vel_->UpdateTime(this->current_time_);
+            this->current_vel_ = current_continuous_vel_;
         }
 
-        inline AnalyticVelocity<T, Func, Dim>& CurrentVelocity()
+        inline ContinuousVelocity<T, Func, Dim>& CurrentVelocity()
         {
-            if (current_analytic_vel_ == nullptr)
+            if (current_continuous_vel_ == nullptr)
                 throw std::invalid_argument("current velocity not set!");
 
-            return *current_analytic_vel_;
+            return *current_continuous_vel_;
         }
 
         inline void UpdateTime()
@@ -308,7 +308,7 @@ class AnalyticFlowField : public FlowField<T, Dim>
         }
 
     private:
-        std::shared_ptr<AnalyticVelocity<T, Func, Dim>> current_analytic_vel_;
+        std::shared_ptr<ContinuousVelocity<T, Func, Dim>> current_continuous_vel_;
         std::vector<T> parameters_;
 };
 
@@ -610,28 +610,28 @@ class Velocity : public Field<T, Dim, Dim>
         Position<T, Dim>& pos_; // position field corresponding to this velocity field
 };
 
-// velocity field with analytic velocity function
+// velocity field with continuous velocity function
 template <typename T, typename Func, unsigned Dim>
-class AnalyticVelocity : public Velocity<T, Dim>
+class ContinuousVelocity : public Velocity<T, Dim>
 {
     public:
         using vec = LCS::Vector<T, Dim>;
 
         // constructor without parameters
-        AnalyticVelocity(unsigned nx, unsigned ny, Position<T, Dim>& pos):
+        ContinuousVelocity(unsigned nx, unsigned ny, Position<T, Dim>& pos):
             Velocity<T, Dim>(nx, ny, pos), f_()
         {
             SetAll();
         }
 
         // constructor with parameters
-        AnalyticVelocity(unsigned nx, unsigned ny, Position<T, Dim>& pos,
+        ContinuousVelocity(unsigned nx, unsigned ny, Position<T, Dim>& pos,
                 std::vector<T>& parameters): Velocity<T, Dim>(nx, ny, pos), f_(parameters)
         {
             SetAll();
         }
 
-        // use analytic function to set all velocity values
+        // use continuous function to set all velocity values
         void SetAll()
         {
             for (unsigned i = 0; i < this->nx_; ++i)
