@@ -1,6 +1,6 @@
 #pragma once
 
-#include "field.hpp"
+#include "flow.hpp"
 #include <Eigen/Dense>
 #include <Eigen/Eigenvalues>
 
@@ -12,9 +12,10 @@ class FTLE : public Field<T, Dim, 1>
 {
     public:
         // constructor
-        FTLE(FlowField<T, Dim>& ff): flow_field_(ff),
+        FTLE(FlowField<T, Dim>& ff):
             Field<T, Dim, 1>(std::get<0>(ff.CurrentPosition().GetAll().Size()),
                 std::get<1>(ff.CurrentPosition().GetAll().Size())),
+            flow_field_(ff), 
             initial_time_(ff.InitialPosition().GetTime())
         {
             this->UpdateTime(ff.GetTime());
@@ -64,8 +65,8 @@ class FTLE : public Field<T, Dim, 1>
         }
 
     private:
-        T initial_time_;
         FlowField<T, Dim>& flow_field_;
+        T initial_time_;
 };
 
 }

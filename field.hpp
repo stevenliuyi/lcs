@@ -5,7 +5,7 @@
 namespace LCS {
 
 template <typename T, unsigned Dim, unsigned Size>
-class FieldPolicy;
+struct FieldPolicy;
 
 template <typename T, unsigned Dim>
 class Position;
@@ -22,8 +22,7 @@ template <typename T, unsigned Dim = 2, unsigned Size = 2>
 class Field
 {
     public:
-        Field(unsigned nx, unsigned ny): nx_(nx), ny_(ny), time_(),
-            data_(nx, ny) {}
+        Field(unsigned nx, unsigned ny): nx_(nx), ny_(ny), data_(nx, ny), time_() {}
 
         // getter
         inline auto& GetAll() const
@@ -57,12 +56,12 @@ class Field
             FieldPolicy<T, Dim, Size>::WriteToFile(*this, file_name);
         }
 
-        friend class FieldPolicy<T, Dim, Size>;
+        friend struct FieldPolicy<T, Dim, Size>;
 
     protected:
-        Tensor<Vector<T, Size>, Dim> data_;
         const unsigned nx_;
         const unsigned ny_;
+        Tensor<Vector<T, Size>, Dim> data_;
         T time_;
 };
 
@@ -347,7 +346,6 @@ class ContinuousVelocity : public Velocity<T, Dim>
                     std::tie(x, y) = this->pos_.Get(i, j);
                     std::tie(vx, vy) = f_(x, y, this->time_);
                     this->data_(i,j) = vec(vx, vy);
-                    auto a = this->Get(0, 0);
                 }
             }
         }

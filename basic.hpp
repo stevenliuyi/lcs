@@ -104,7 +104,7 @@ class Tensor
     public:
         // constructor 
         Tensor(unsigned nx, unsigned ny):
-            nx_(nx), ny_(ny), data_(nx * ny, T()) {}
+            data_(nx * ny, T()), nx_(nx), ny_(ny) {}
 
         // assignment
         inline void operator= (const Tensor<T, Dim>& t)

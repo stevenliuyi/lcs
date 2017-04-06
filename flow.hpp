@@ -18,9 +18,9 @@ class FlowField
     public:
         // constructor
         FlowField(unsigned nx, unsigned ny):
-            nx_(nx), ny_(ny), delta_(), step_(), current_time_(),
+            nx_(nx), ny_(ny), delta_(), current_time_(), step_(), 
             initial_pos_(new Position<T,Dim>(nx,ny)),
-            current_pos_(new Position<T,Dim>(nx,ny)) {} 
+            current_pos_(new Position<T,Dim>(nx,ny)) {}
 
         inline auto& InitialPosition()
         {
@@ -62,8 +62,12 @@ class FlowField
         {}
 
         // update time
-        virtual void UpdateTime()
-        {}
+        inline void UpdateTime()
+        {
+            this->current_time_ += this->delta_;
+            this->current_pos_->UpdateTime(this->current_time_);
+            this->current_vel_->UpdateTime(this->current_time_);
+        }
 
         // calculate the trajectories
         void Run()
@@ -88,14 +92,14 @@ class FlowField
         }
 
     protected:
-        std::unique_ptr<Position<T, Dim>> initial_pos_;
-        std::unique_ptr<Position<T, Dim>> current_pos_;
-        std::shared_ptr<Velocity<T, Dim>> current_vel_;
         const unsigned nx_;
         const unsigned ny_;
         T delta_; // time step for integration
         T current_time_;
         unsigned step_;
+        std::unique_ptr<Position<T, Dim>> initial_pos_;
+        std::unique_ptr<Position<T, Dim>> current_pos_;
+        std::shared_ptr<Velocity<T, Dim>> current_vel_;
 };
 
 template <typename T, unsigned Dim = 2>
@@ -104,13 +108,13 @@ class DiscreteFlowField : public FlowField<T, Dim>
     public:
         // constructor
         DiscreteFlowField(unsigned nx, unsigned ny, unsigned data_nx, unsigned data_ny):
-            data_nx_(data_nx), data_ny_(data_ny), FlowField<T, Dim>(nx, ny),
+            FlowField<T, Dim>(nx, ny), data_nx_(data_nx), data_ny_(data_ny),
+            data_delta_(), current_data_time_(), begin_data_time_(), end_data_time_(),
+            vel_file_name_prefix_(""), vel_file_name_suffix_(".txt"),
             data_pos_(new Position<T,Dim>(data_nx, data_ny)),
-            current_data_time_(), begin_data_time_(), end_data_time_(), data_delta_(),
             previous_data_vel_(new Velocity<T,Dim>(data_nx, data_ny, *data_pos_)),
             next_data_vel_(new Velocity<T,Dim>(data_nx, data_ny, *data_pos_)),
-            current_data_vel_(new Velocity<T,Dim>(data_nx, data_ny, *data_pos_)),
-            vel_file_name_prefix_(""), vel_file_name_suffix_(".txt") {}
+            current_data_vel_(new Velocity<T,Dim>(data_nx, data_ny, *data_pos_)) {}
 
         // datainal data and calculation data have the same resolution
         DiscreteFlowField(unsigned nx, unsigned ny):
@@ -176,14 +180,6 @@ class DiscreteFlowField : public FlowField<T, Dim>
 
         }
 
-        inline void UpdateTime()
-        {
-            this->current_time_ += this->delta_;
-            this->current_pos_->UpdateTime(this->current_time_);
-            this->current_vel_->UpdateTime(this->current_time_);
-            //current_data_vel_->UpdateTime(this->current_data_time_);
-        }
-
         inline void CopyInitialPositionToCurrentPosition()
         {
             auto initial_pos_data = this->initial_pos_->GetAll();
@@ -194,7 +190,7 @@ class DiscreteFlowField : public FlowField<T, Dim>
             this->current_pos_->InitializeOutOfBoundTensor();
 
 
-            // sed out boundary
+            // set out boundary
             T xmin, xmax, ymin, ymax;
             std::tie(xmin, ymin) = data_pos_->Get(0,0);
             std::tie(xmax, ymax) = data_pos_->Get(data_nx_-1,data_ny_-1);
@@ -227,22 +223,18 @@ class DiscreteFlowField : public FlowField<T, Dim>
         }
 
     private:
-        std::unique_ptr<Position<T, Dim>> data_pos_;
-        
-        std::unique_ptr<Velocity<T, Dim>> previous_data_vel_;
-        std::unique_ptr<Velocity<T, Dim>> next_data_vel_;
-
-        // time interpolation of two adjenct data file 
-        std::unique_ptr<Velocity<T, Dim>> current_data_vel_;
-
         const unsigned data_nx_;
         const unsigned data_ny_;
-        std::string vel_file_name_prefix_;
-        std::string vel_file_name_suffix_;
-        T current_data_time_;
         T data_delta_; // time difference between two adjacent data files
+        T current_data_time_;
         T begin_data_time_;
         T end_data_time_;
+        std::string vel_file_name_prefix_;
+        std::string vel_file_name_suffix_;
+        std::unique_ptr<Position<T, Dim>> data_pos_;
+        std::unique_ptr<Velocity<T, Dim>> previous_data_vel_;
+        std::unique_ptr<Velocity<T, Dim>> next_data_vel_;
+        std::unique_ptr<Velocity<T, Dim>> current_data_vel_; // time interpolation of two adjenct data file 
 };
 
 
@@ -278,13 +270,6 @@ class ContinuousFlowField : public FlowField<T, Dim>
                 throw std::invalid_argument("current velocity not set!");
 
             return *current_continuous_vel_;
-        }
-
-        inline void UpdateTime()
-        {
-            this->current_time_ += this->delta_;
-            this->current_pos_->UpdateTime(this->current_time_);
-            this->current_vel_->UpdateTime(this->current_time_);
         }
 
         inline void CopyInitialPositionToCurrentPosition()

@@ -45,8 +45,8 @@ struct BowerModel
     T sc_; // magnitude of downstream speed at the jet center (km/day)
     T a_; // wave amplitude (km)
     T l_; // wave length (km)
-    T lambda_; // scale width of the jet (40km)
     T cx_; // jet phase speed (km/day)
+    T lambda_; // scale width of the jet (40km)
 };
 
 
