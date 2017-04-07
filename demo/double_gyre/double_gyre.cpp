@@ -1,7 +1,7 @@
 #include <iostream>
-#include "../../ftle.hpp"
-#include "../../velocity_function.hpp"
-#include "../../io.hpp"
+#include "../../src/ftle.hpp"
+#include "../../src/velocity_function.hpp"
+#include "../../src/io.hpp"
 
 using namespace LCS;
 
