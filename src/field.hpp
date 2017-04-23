@@ -1,6 +1,7 @@
 #pragma once
 
 #include "basic.hpp"
+#include <omp.h>
 
 namespace LCS {
 
@@ -131,6 +132,7 @@ class Position : public Field<T, Dim, Dim>
                 throw std::domain_error("sizes do not match!");
 
             // fill in the values
+            #pragma omp parallel for
             for (unsigned i = 0; i < this->nx_; ++i)
                 for (unsigned j = 0; j < this->ny_; ++j)
                     this->data_(i,j) = vec(xrange[i], yrange[j]);
@@ -176,6 +178,7 @@ class Position : public Field<T, Dim, Dim>
         // update the position using the velocity field
         void Update(Velocity<T, Dim>& vel, T delta)
         {
+            #pragma omp parallel for
             for (unsigned i = 0; i < this->nx_; ++i)
             {
                 for (unsigned j = 0; j < this->ny_; ++j)
@@ -257,14 +260,15 @@ class Velocity : public Field<T, Dim, Dim>
         void InterpolateFrom(Velocity<T, Dim>& ref_vel)
         {
             // interpolation only works for orthogonal coordinates
-            auto ref_pos_x = ref_vel.GetPosition().GetRange(0);
-            auto ref_pos_y = ref_vel.GetPosition().GetRange(1);
+            auto const ref_pos_x = ref_vel.GetPosition().GetRange(0);
+            auto const ref_pos_y = ref_vel.GetPosition().GetRange(1);
 
-            T pos_x, pos_y;
-            Tensor<Vector<T, 2>, 2> ref_v(2,2);
-
+            #pragma omp parallel for
             for (unsigned i = 0; i < this->nx_; ++i)
             {
+                T pos_x, pos_y;
+                Tensor<Vector<T, 2>, 2> ref_v(2,2);
+
                 for (unsigned j = 0; j < this->ny_; ++j)
                 {
                     // skip if the current position is out of bound
@@ -340,6 +344,7 @@ class ContinuousVelocity : public Velocity<T, Dim>
         // use continuous function to set all velocity values
         void SetAll()
         {
+            #pragma omp parallel for
             for (unsigned i = 0; i < this->nx_; ++i)
             {
                 for (unsigned j = 0; j < this->ny_; ++j)

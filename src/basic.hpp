@@ -10,6 +10,8 @@
 #include <fstream>
 #include <functional>
 #include <type_traits>
+#include <chrono>
+#include <omp.h>
 
 namespace LCS {
 
@@ -202,6 +204,54 @@ void interpolate(T x1, T x2, Field& f1, Field& f2, T xm, Field& result)
     result.SetAll(tensor_result);
 }
 
+// clock for time recording
+class Clock
+{
+    public:
+        // constructor
+        Clock():
+            total_elapsed_time_(0), begin_time_(), end_time_(), started_(false) {}
+
+        inline void Begin()
+        {
+            // TODO: make sure clock is not started
+            if (!started_)
+            {
+                begin_time_ = std::chrono::system_clock::now();
+                started_ = true;
+            }
+        }
+
+        inline void End()
+        {
+            // TODO: make sure clock is started
+            if (started_)
+            {
+                end_time_ = std::chrono::system_clock::now();
+                started_ = false;
+
+                // calculate elapsed time (in seconds) and add it to total_time_
+                elapsed_time_ = std::chrono::duration_cast<std::chrono::nanoseconds>
+                    (end_time_ - begin_time_).count() / 1e9;
+                total_elapsed_time_ += elapsed_time_;
+            }
+        }
+
+        inline double GetElapsedTime() const
+        {
+            return elapsed_time_;
+        }
+
+        inline double GetTotalElapsedTime() const
+        {
+            return total_elapsed_time_;
+        }
+
+    private:
+        double total_elapsed_time_, elapsed_time_;
+        std::chrono::time_point<std::chrono::system_clock> begin_time_, end_time_;
+        bool started_; // if the clock is started
+};
 
 
 }

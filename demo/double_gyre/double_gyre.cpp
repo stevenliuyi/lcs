@@ -7,6 +7,9 @@ using namespace LCS;
 
 int main()
 {
+    // number of threads for OpenMP
+    std::cout << "Number of threads: " << omp_get_max_threads() << std::endl;
+
     ContinuousFlowField<double,VelocityFunction::DoubleGyreModel<double>,2> double_gyre(1000,500);
     double_gyre.InitialPosition().SetAll(0,2,0,1);
 

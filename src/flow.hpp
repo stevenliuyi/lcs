@@ -108,8 +108,10 @@ class FlowField
             std::cout << "Particle advection begins" << std::endl;
             CopyInitialPositionToCurrentPosition();
 
+            Clock clock;
             for (unsigned i = 0; i < step_; ++i)
             {
+                clock.Begin();
                 std::cout << "Step " << i <<
                     " (time = " << current_time_ << ") begins" << std::endl;
 
@@ -124,9 +126,12 @@ class FlowField
 
                 UpdateTime();
 
-                    
                 std::cout << "Step " << i <<
                     " (time = " << current_time_ << ") ends" << std::endl;
+                clock.End();
+                std::cout << "Step executing time: " << clock.GetElapsedTime() <<
+                    "s  Total executing time: " << clock.GetTotalElapsedTime() <<
+                    "s" << std::endl;
             }
             std::cout << "Particle advection ends" << std::endl;
         }
@@ -206,11 +211,16 @@ class DiscreteFlowField : public FlowField<T, Dim>
                     default: break;
                 }
 
-                previous_data_vel_->UpdateTime(current_data_time_);
-                ReadDataVelocityFromFile(*previous_data_vel_);
-
-                next_data_vel_->UpdateTime(current_data_time_ + signed_data_delta);
-                ReadDataVelocityFromFile(*next_data_vel_);
+                #pragma omp parallel
+                #pragma omp single nowait
+                {
+                    #pragma omp task
+                    previous_data_vel_->UpdateTime(current_data_time_);
+                    ReadDataVelocityFromFile(*previous_data_vel_);
+                    #pragma omp task
+                    next_data_vel_->UpdateTime(current_data_time_ + signed_data_delta);
+                    ReadDataVelocityFromFile(*next_data_vel_);
+                }
 
             } else if (((this->current_time_ >= current_data_time_ + signed_data_delta) &&
                     (end_data_time_ > current_data_time_ + signed_data_delta) &&
@@ -221,11 +231,17 @@ class DiscreteFlowField : public FlowField<T, Dim>
             {
                 // update data velocities
                 current_data_time_ += signed_data_delta;
-                previous_data_vel_->UpdateTime(current_data_time_);
-                ReadDataVelocityFromFile(*previous_data_vel_);
+                #pragma omp parallel
+                #pragma omp single nowait
+                {
+                    #pragma omp task
+                    previous_data_vel_->UpdateTime(current_data_time_);
+                    ReadDataVelocityFromFile(*previous_data_vel_);
 
-                next_data_vel_->UpdateTime(current_data_time_ + signed_data_delta);
-                ReadDataVelocityFromFile(*next_data_vel_);
+                    #pragma omp task
+                    next_data_vel_->UpdateTime(current_data_time_ + signed_data_delta);
+                    ReadDataVelocityFromFile(*next_data_vel_);
+                }
             }
             
             interpolate(previous_data_vel_->GetTime(),

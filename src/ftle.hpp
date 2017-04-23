@@ -30,19 +30,20 @@ class FTLE : public Field<T, Dim, 1>
         // calculate FTLE
         void Calculate()
         {
-            Vector<T, Dim> x_pre, x_next, y_pre, y_next;
-            Vector<T, Dim> x0_pre, x0_next, y0_pre, y0_next;
-
             auto initial_pos_data = flow_field_.InitialPosition().GetAll();
             auto current_pos_data = flow_field_.CurrentPosition().GetAll();
             auto dt = this->time_ - initial_time_;
 
-            Eigen::Matrix<T, 2, 2> deformation, cauchy_green;
-
             std::cout << "FTLE calculation begins" << std::endl;
 
+            #pragma omp parallel for
             for (unsigned i = 0; i < this->nx_; ++i)
             {
+                Vector<T, Dim> x_pre, x_next, y_pre, y_next;
+                Vector<T, Dim> x0_pre, x0_next, y0_pre, y0_next;
+
+                Eigen::Matrix<T, 2, 2> deformation, cauchy_green;
+
                 for (unsigned j = 0; j < this->ny_; ++j)
                 {
                     std::tie(x0_pre, x0_next, y0_pre, y0_next) = initial_pos_data.GetNearby(i,j);
