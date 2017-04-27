@@ -24,3 +24,6 @@ $(TARGET): | $(BINDIR)
 
 $(BINDIR):
 	mkdir -p $(BINDIR)
+
+clean:
+	rm -f $(TARGET)
