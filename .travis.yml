@@ -1,17 +1,26 @@
-dist: trusty
-sudo: require
 language: cpp
 compiler:
     - gcc
-os:
-    - linux
+matrix:
+    include:
+        - os: linux
+          dist: trusty
+          sudo: required
+        - os: osx
+
 addons:
     apt:
         sources:
             - ubuntu-toolchain-r-test
         packages:
             - g++-6
+
+before_install:
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo ln -s /usr/bin/g++-6 /usr/local/bin/g++; g++ -v; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then travis_wait 120 brew install gcc; g++-6 -v; fi
+
 script:
-    - sudo ln -s /usr/bin/g++-6 /usr/local/bin/g++
-    - g++ -v
     - make
+
+notifications:
+    email: false
