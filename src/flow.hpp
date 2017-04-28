@@ -112,8 +112,9 @@ class FlowField
             for (unsigned i = 0; i < step_; ++i)
             {
                 clock.Begin();
-                std::cout << "Step " << i <<
-                    " (time = " << current_time_ << ") begins" << std::endl;
+                std::cout << "[" << std::setw(std::to_string(step_).length()) << (i+1)
+                    << "/" << step_ << "]" <<
+                    " Simulation time: " << current_time_;
 
                 SetCurrentVelocity();
 
@@ -126,12 +127,11 @@ class FlowField
 
                 UpdateTime();
 
-                std::cout << "Step " << i <<
-                    " (time = " << current_time_ << ") ends" << std::endl;
+                std::cout << " - " << current_time_;
                 clock.End();
-                std::cout << "Step executing time: " << clock.GetElapsedTime() <<
-                    "s  Total executing time: " << clock.GetTotalElapsedTime() <<
-                    "s" << std::endl;
+                std::cout << " (Execution time: " <<
+                    std::setprecision(4) << clock.GetTotalElapsedTime() <<
+                    "s)" << std::endl;
             }
             std::cout << "Particle advection ends" << std::endl;
         }

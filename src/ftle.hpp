@@ -30,6 +30,8 @@ class FTLE : public Field<T, Dim, 1>
         // calculate FTLE
         void Calculate()
         {
+            Clock clock;
+            clock.Begin();
             auto initial_pos_data = flow_field_.InitialPosition().GetAll();
             auto current_pos_data = flow_field_.CurrentPosition().GetAll();
             auto dt = this->time_ - initial_time_;
@@ -62,7 +64,9 @@ class FTLE : public Field<T, Dim, 1>
                 }
             }
 
-            std::cout << "FTLE calculation ends" << std::endl;
+            clock.End();
+            std::cout << "FTLE calculation ends (Execution time: " <<
+                std::setprecision(4) << clock.GetTotalElapsedTime() << "s)" << std::endl;
         }
 
     private:

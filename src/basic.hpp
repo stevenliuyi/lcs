@@ -11,6 +11,7 @@
 #include <functional>
 #include <type_traits>
 #include <chrono>
+#include <iomanip>
 #include <omp.h>
 
 namespace LCS {
