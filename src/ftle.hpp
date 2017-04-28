@@ -36,7 +36,16 @@ class FTLE : public Field<T, Dim, 1>
             auto current_pos_data = flow_field_.CurrentPosition().GetAll();
             auto dt = this->time_ - initial_time_;
 
-            std::cout << "FTLE calculation begins" << std::endl;
+            switch(flow_field_.GetDirection())
+            {
+                case Forward:
+                    std::cout << "Forward FTLE calculation begins" << std::endl;
+                    break;
+                case Backward:
+                    std::cout << "Backward FTLE calculation begins" << std::endl;
+                    break;
+                default: break;
+            }
 
             #pragma omp parallel for
             for (unsigned i = 0; i < this->nx_; ++i)
@@ -65,7 +74,17 @@ class FTLE : public Field<T, Dim, 1>
             }
 
             clock.End();
-            std::cout << "FTLE calculation ends (Execution time: " <<
+            switch(flow_field_.GetDirection())
+            {
+                case Forward:
+                    std::cout << "Forward FTLE calculation ends";
+                    break;
+                case Backward:
+                    std::cout << "Backward FTLE calculation ends";
+                    break;
+                default: break;
+            }
+            std::cout << " (Execution time: " <<
                 std::setprecision(4) << clock.GetTotalElapsedTime() << "s)" << std::endl;
         }
 

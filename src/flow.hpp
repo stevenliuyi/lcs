@@ -53,6 +53,11 @@ class FlowField
             return current_time_;
         }
 
+        inline auto GetDirection()
+        {
+            return direction_;
+        }
+
         virtual void CopyInitialPositionToCurrentPosition() {};
 
         inline void SetDelta(const T delta)
@@ -105,7 +110,16 @@ class FlowField
         // calculate the trajectories
         void Run()
         {
-            std::cout << "Particle advection begins" << std::endl;
+            switch(direction_)
+            {
+                case Forward:
+                    std::cout << "Particle forward advection begins" << std::endl;
+                    break;
+                case Backward:
+                    std::cout << "Particle backward advection begins" << std::endl;
+                    break;
+                default: break;
+            }
             CopyInitialPositionToCurrentPosition();
 
             Clock clock;
@@ -133,7 +147,16 @@ class FlowField
                     std::setprecision(4) << clock.GetTotalElapsedTime() <<
                     "s)" << std::endl;
             }
-            std::cout << "Particle advection ends" << std::endl;
+            switch(direction_)
+            {
+                case Forward:
+                    std::cout << "Particle forward advection ends" << std::endl;
+                    break;
+                case Backward:
+                    std::cout << "Particle backward advection ends" << std::endl;
+                    break;
+                default: break;
+            }
         }
 
     protected:
