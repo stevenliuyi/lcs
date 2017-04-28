@@ -221,6 +221,7 @@ class DiscreteFlowField : public FlowField<T, Dim>
             {
                 current_data_time_ = begin_data_time_;
 
+                // find the data velocity field that is temporally closest to the initial time
                 switch(this->direction_)
                 {
                     case Forward:
@@ -234,6 +235,7 @@ class DiscreteFlowField : public FlowField<T, Dim>
                     default: break;
                 }
 
+                // read two temporally adjacent data field (for later interpolation)
                 #pragma omp parallel
                 #pragma omp single nowait
                 {
@@ -245,6 +247,8 @@ class DiscreteFlowField : public FlowField<T, Dim>
                     ReadDataVelocityFromFile(*next_data_vel_);
                 }
 
+            // check if the current time is outside the time
+            // range of two temporally adjacent data field
             } else if (((this->current_time_ >= current_data_time_ + signed_data_delta) &&
                     (end_data_time_ > current_data_time_ + signed_data_delta) &&
                     this->direction_ == Forward) ||
@@ -253,7 +257,11 @@ class DiscreteFlowField : public FlowField<T, Dim>
                     this->direction_ == Backward))
             {
                 // update data velocities
+
                 current_data_time_ += signed_data_delta;
+
+                // read the next two temporally adjacent data velocity field so that
+                // the current time could be within the time range of the two data field
                 #pragma omp parallel
                 #pragma omp single nowait
                 {
@@ -267,11 +275,13 @@ class DiscreteFlowField : public FlowField<T, Dim>
                 }
             }
             
+            // temporal interpolation
             interpolate(previous_data_vel_->GetTime(),
                     next_data_vel_->GetTime(),
                     *previous_data_vel_, *next_data_vel_,
                     this->current_time_, *current_data_vel_);
 
+            // spatial interpolation
             this->current_vel_->InterpolateFrom(*current_data_vel_);
 
         }

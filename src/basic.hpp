@@ -183,13 +183,14 @@ class Tensor
 };
 
 
-// interpolation
+// linear interpolation
 template <typename T>
 inline T interpolate(T x1, T x2, T y1, T y2, T xm)
 {
     return y1 + (xm - x1) * (y2 - y1) / (x2 - x1);
 }
 
+// temporal interpolation of two fields
 template <typename Field, typename T>
 void interpolate(T x1, T x2, Field& f1, Field& f2, T xm, Field& result)
 {
