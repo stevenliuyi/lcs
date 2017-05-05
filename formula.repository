@@ -23,3 +23,9 @@
 \form#22:$b(t)=1-2\epsilon\sin(\omega t)$
 \form#23:$\epsilon$
 \form#24:$\omega$
+\form#25:$\phi(t_0+T,\mathbf{x}_0,t_0)$
+\form#26:$\mathbf{x}_0$
+\form#27:$t_0$
+\form#28:$T$
+\form#29:\[ FTLE(\mathbf{x}_0,t_0) =\frac{1}{2T}\log\Big\{\lambda_{\max}\Big[\Big(\frac{\partial\phi}{\partial\mathbf{x}_0}\Big)^T\Big(\frac{\partial\phi}{\partial\mathbf{x}_0}\Big)\Big]\Big\}, \]
+\form#30:$\lambda_{\max}$
