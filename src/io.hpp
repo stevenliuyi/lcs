@@ -6,6 +6,11 @@ namespace LCS {
 
 // outputs
 
+/** Output a Vector.
+    @param os Output stream object.
+    @param vec Vector to be outputted.
+    @return Updated output stream object.
+    */
 template <typename T>
 std::ostream& operator<< (std::ostream& os, const Vector<T, 2>& vec)
 {
@@ -14,6 +19,11 @@ std::ostream& operator<< (std::ostream& os, const Vector<T, 2>& vec)
     return os;
 }
 
+/** Output a Scalar.
+    @param os Output stream object.
+    @param scalar Scalar to be outputted.
+    @return Updated output stream object.
+    */
 template <typename T>
 std::ostream& operator<< (std::ostream& os, const Scalar<T>& scalar)
 {
@@ -22,6 +32,11 @@ std::ostream& operator<< (std::ostream& os, const Scalar<T>& scalar)
     return os;
 }
 
+/** Output a Tensor.
+    @param os Output stream object.
+    @param tensor Tensor to be outputted.
+    @return Updated output stream object.
+    */
 template <typename T, unsigned Dim>
 std::ostream& operator<< (std::ostream& os, const Tensor<T, Dim>& tensor)
 {
@@ -35,6 +50,11 @@ std::ostream& operator<< (std::ostream& os, const Tensor<T, Dim>& tensor)
     return os;
 }
 
+/** Output a Field.
+    @param os Output stream object.
+    @param field Field to be outputted.
+    @return Updated output stream object.
+    */
 template <typename T, unsigned Dim, unsigned Size>
 std::ostream& operator<< (std::ostream& os, const Field<T, Dim, Size>& field)
 {
@@ -45,6 +65,11 @@ std::ostream& operator<< (std::ostream& os, const Field<T, Dim, Size>& field)
 
 // inputs
 
+/** Input a Vector.
+    @param is Input stream object.
+    @param vec Vector to be outputted.
+    @return Updated input stream object.
+    */
 template <typename T>
 std::istream& operator>> (std::istream& is, Vector<T, 2>& vec)
 {
@@ -54,6 +79,11 @@ std::istream& operator>> (std::istream& is, Vector<T, 2>& vec)
     return is;
 }
 
+/** Input a Scalar.
+    @param is Input stream object.
+    @param scalar Scalar to be outputted.
+    @return Updated input stream object.
+    */
 template <typename T>
 std::ostream& operator>> (std::ostream& is, Scalar<T>& scalar)
 {
@@ -62,6 +92,11 @@ std::ostream& operator>> (std::ostream& is, Scalar<T>& scalar)
     return is;
 }
 
+/** Input a Tensor.
+    @param is Input stream object.
+    @param tensor Tensor to be outputted.
+    @return Updated input stream object.
+    */
 template <typename T, unsigned Dim>
 std::istream& operator>> (std::istream& is, Tensor<T, Dim>& tensor)
 {
@@ -75,6 +110,11 @@ std::istream& operator>> (std::istream& is, Tensor<T, Dim>& tensor)
     return is;
 }
 
+/** Input a Field.
+    @param is Input stream object.
+    @param field Field to be outputted.
+    @return Updated input stream object.
+    */
 template <typename T, unsigned Dim, unsigned Size>
 std::istream& operator>> (std::istream& is, Field<T, Dim>& field)
 {

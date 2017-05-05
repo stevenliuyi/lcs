@@ -12,34 +12,51 @@ template <typename T, typename Func, unsigned Dim>
 class ContinuousFlowField;
 
 
-// calculation direction
+/** Direction for particle advection.  */
 enum Direction
 {
     Forward,
     Backward
 };
 
-// flow field
+/** @brief Class for flow field.
+
+    This class is used for representing flow fields, which contains many information (such as positions and velocities for all fluid particles) about the flow field.
+    @tparam T Numeric data type of all the numeric values in the flow.
+    @tparam Dim Dimension of the flow field (2 or 3).
+    */
 template <typename T, unsigned Dim = 2>
 class FlowField
 {
     public:
-        // constructor
+        /** Constructor for initializating the flow field.
+            @param nx The number of grid points in \f$x\f$-direction.
+            @param ny The number of grid points in \f$y\f$-direction.
+            */
         FlowField(unsigned nx, unsigned ny):
             nx_(nx), ny_(ny), delta_(), initial_time_(), current_time_(), step_(), 
             initial_pos_(new Position<T,Dim>(nx,ny)),
             current_pos_(new Position<T,Dim>(nx,ny)) {}
 
+        /** Get the initial positions of all particles.
+            @return Position field associated with the initial time of the flow.
+            */
         inline auto& InitialPosition()
         {
             return *initial_pos_;
         }
 
+        /** Get the current positions of all particles.
+            @return Position field associated with the current time of the flow.
+            */
         inline auto& CurrentPosition()
         {
             return *current_pos_;
         }
 
+        /** Get the current velocities of all particles.
+            @return Velocity field associated with the current time of the flow.
+            */
         inline virtual Velocity<T, Dim>& CurrentVelocity()
         {
             if (current_vel_ == nullptr)
@@ -48,38 +65,57 @@ class FlowField
             return *current_vel_;
         }
 
+        /** Get the current time of the flow.
+            @return Current time of the flow.
+            */
         inline auto GetTime()
         {
             return current_time_;
         }
 
+        /** Get the direction associated with the flow field.
+            @return Direction that shows that the flow advection is forward or backward.
+            */
         inline auto GetDirection()
         {
             return direction_;
         }
 
+        /** Copy the initial position to the current position. It is used before particle advection. The actual implementaions are in the subclasses.
+            */
         virtual void CopyInitialPositionToCurrentPosition() {};
 
+        /** Set the time step for particle advection.
+            @param delta Time step for advection.
+            */
         inline void SetDelta(const T delta)
         {
             assert(delta > 0);
             delta_ = delta;
         }
 
+        /** Set the number of steps for particle advection.
+            @param step Number of total advection steps.
+            */
         inline void SetStep(const unsigned step)
         {
             step_ = step;
         }
 
-        // overloaded in ContinuousFlowField class
+        /** Set the current velocity. The actual implementations are in the subclasses.
+            */
         virtual void SetCurrentVelocity()
         {}
 
-        // set calculation direction
+        /** Set the advection direction. The actual implementations are in the subclesses.
+            @param direction Direction for particle advection.
+            */
         virtual void SetDirection(const Direction direction)
         {}
 
-        // set initial time
+        /** Set the initial time.
+            @param time Initial time of calculation.
+            */
         inline void SetInitialTime(const T time)
         {
             initial_time_ = time;
@@ -87,7 +123,8 @@ class FlowField
             UpdateTime(time);
         }
 
-        // update time
+        /** Update time of the flow field using the time step.
+            */ 
         inline void UpdateTime()
         {
             switch(direction_)
@@ -100,6 +137,9 @@ class FlowField
             current_vel_->UpdateTime(current_time_);
         }
 
+        /** Update time of the flow field using the provided time.
+            @param time New time for the flow field.
+            */
         inline void UpdateTime(const T time)
         {
             current_time_ = time;
@@ -107,7 +147,7 @@ class FlowField
             if (current_vel_ != nullptr) current_vel_->UpdateTime(current_time_);
         }
 
-        // calculate the trajectories
+        /** Particle advection (calculating particle trajectories).  */
         void Run()
         {
             switch(direction_)
@@ -160,23 +200,34 @@ class FlowField
         }
 
     protected:
-        const unsigned nx_;
-        const unsigned ny_;
-        T delta_; // time step for integration
-        T initial_time_;
-        T current_time_;
-        unsigned step_;
-        Direction direction_ = Forward;
-        std::unique_ptr<Position<T, Dim>> initial_pos_;
-        std::unique_ptr<Position<T, Dim>> current_pos_;
-        std::shared_ptr<Velocity<T, Dim>> current_vel_;
+        const unsigned nx_;/**<The number of grid points in \f$x\f$-direction.*/
+        const unsigned ny_;/**<The number of grid points in \f$y\f$-direction.*/
+        T delta_; /**<Time step for integration.*/
+        T initial_time_;/**<Initial time of the calculation.*/
+        T current_time_;/**<Current time of the calculation.*/
+        unsigned step_;/**<Number of calculation steps.*/
+        Direction direction_ = Forward;/**<Direction of the calculation.*/
+        std::unique_ptr<Position<T, Dim>> initial_pos_;/**<Pointer to the Position field at the initial time.*/
+        std::unique_ptr<Position<T, Dim>> current_pos_;/**<Pointer to the Position field at the current time.*/
+        std::shared_ptr<Velocity<T, Dim>> current_vel_;/**<Pointer to the Velocity field at the current time.*/
 };
 
+/** @brief Class for flow fields with discrete data.
+
+    This class is used for representing flow fields with discrete data which typically come from experiments or CFD simulations.
+    @tparam T Numeric data type of all the numeric values in the flow.
+    @tparam Dim Dimension of the flow field (2 or 3).
+    */
 template <typename T, unsigned Dim = 2>
 class DiscreteFlowField : public FlowField<T, Dim>
 {
     public:
-        // constructor
+        /** Constructor for initializating the discrete flow field.
+            @param nx The number of grid points in \f$x\f$-direction for calculation.
+            @param ny The number of grid points in \f$y\f$-direction for calculation.
+            @param data_nx The number of grid points in \f$x\f$-direction in the input flow data.
+            @param data_ny The number of grid points in \f$y\f$-direction in the input flow data.
+            */
         DiscreteFlowField(unsigned nx, unsigned ny, unsigned data_nx, unsigned data_ny):
             FlowField<T, Dim>(nx, ny), data_nx_(data_nx), data_ny_(data_ny),
             data_delta_(), current_data_time_(), begin_data_time_(), end_data_time_(),
@@ -186,20 +237,32 @@ class DiscreteFlowField : public FlowField<T, Dim>
             next_data_vel_(new Velocity<T,Dim>(data_nx, data_ny, *data_pos_)),
             current_data_vel_(new Velocity<T,Dim>(data_nx, data_ny, *data_pos_)) {}
 
-        // datainal data and calculation data have the same resolution
+        /** Constructor for initializating the discrete flow field when the input data and calculation data have the same resolution.
+            @param nx The number of grid points in \f$x\f$-direction.
+            @param ny The number of grid points in \f$y\f$-direction.
+            */
         DiscreteFlowField(unsigned nx, unsigned ny):
             DiscreteFlowField(nx, ny, nx, ny) {}
 
+        /** Set the prefix of the file names of the input velocity data.
+            @param prefix A string contains the prefix of file names.
+            */
         inline void SetVelocityFileNamePrefix(const std::string prefix)
         {
             vel_file_name_prefix_ = prefix;
         }
 
+        /** Set the suffix of the file names of the input velocity data.
+            @param suffix A string contains the prefix of file names.
+            */
         inline void SetVelocityFileNameSuffix(const std::string suffix)
         {
             vel_file_name_suffix_ = suffix;
         }
 
+        /** Read velocity data from a file.
+            @param data_vel Velocity fields that contains the input velocity data from a file.
+            */
         inline void ReadDataVelocityFromFile(Velocity<T, Dim>& data_vel)
         {
             std::string file_name = vel_file_name_prefix_ +
@@ -212,6 +275,8 @@ class DiscreteFlowField : public FlowField<T, Dim>
                 data_vel.GetTime() << " from " << file_name << std::endl;
         }
 
+        /** Calculate and set the current velocities of the flow particles from temporal and spatical interpolations of the velocity data.
+            */
         inline void SetCurrentVelocity()
         {
             T signed_data_delta = (this->direction_ == Forward) ? data_delta_ : (-data_delta_);
@@ -286,12 +351,17 @@ class DiscreteFlowField : public FlowField<T, Dim>
 
         }
 
+        /** Set the advection direction.
+            @param direction Direction for particle advection.
+            */
         inline void SetDirection(const Direction direction)
         {
             this->direction_ = direction;
             SetDataTimeRange(begin_data_time_, end_data_time_);
         }
 
+        /** Copy the initial position to the current position.
+            */
         inline void CopyInitialPositionToCurrentPosition()
         {
             auto initial_pos_data = this->initial_pos_->GetAll();
@@ -313,21 +383,32 @@ class DiscreteFlowField : public FlowField<T, Dim>
                     (this->nx_, this->ny_, *(this->current_pos_)));
         }
 
+        /** Get the Position field of the input data.
+            */
         inline auto& DataPosition()
         {
             return *data_pos_;
         }
 
+        /** Get the current velocity field of the input data.
+            */
         inline auto& CurrentDataVelocity()
         {
             return *previous_data_vel_;
         }
 
+        /** Set the time difference between two adjacent data files.
+            @param delta Time difference between two adjacent data files.
+            */
         inline void SetDataDelta(const T delta)
         {
             data_delta_ = delta;
         }
 
+        /** Set the time range of the data files.
+            @param t1 One end point of the data time range.
+            @param t2 The another end point of the data time range.
+            */
         inline void SetDataTimeRange(const T t1, const T t2)
         {
             T begin_time = (t2 >= t1) ? t1 : t2;
@@ -348,32 +429,49 @@ class DiscreteFlowField : public FlowField<T, Dim>
         }
 
     private:
-        const unsigned data_nx_;
-        const unsigned data_ny_;
-        T data_delta_; // time difference between two adjacent data files
-        T current_data_time_;
-        T begin_data_time_;
-        T end_data_time_;
-        std::string vel_file_name_prefix_;
-        std::string vel_file_name_suffix_;
-        std::unique_ptr<Position<T, Dim>> data_pos_;
-        std::unique_ptr<Velocity<T, Dim>> previous_data_vel_;
-        std::unique_ptr<Velocity<T, Dim>> next_data_vel_;
-        std::unique_ptr<Velocity<T, Dim>> current_data_vel_; // time interpolation of two adjenct data file 
+        const unsigned data_nx_; /**<The number of grid points in \f$x\f$-direction in the input flow data.*/
+        const unsigned data_ny_; /**<The number of grid points in \f$y\f$-direction in the input flow data.*/
+        T data_delta_; /**<Time difference between two adjacent data files.*/
+        T current_data_time_;/**<Time of the currently used velocity data file.*/
+        T begin_data_time_;/**<Time of the data file that is used at the beginning of calculation.*/
+        T end_data_time_;/**<Time of the data file that is used at the end of the calculation.*/
+        std::string vel_file_name_prefix_;/**<Prefix of the data file names.*/
+        std::string vel_file_name_suffix_;/**<Suffix of the data file names.*/
+        std::unique_ptr<Position<T, Dim>> data_pos_;/**<Pointer to the Position field of the input data.*/
+        std::unique_ptr<Velocity<T, Dim>> previous_data_vel_;/**<Pointer to the Velocity field of the input data whose time is earlier than the curren time.*/
+        std::unique_ptr<Velocity<T, Dim>> next_data_vel_;/**<Pointer to the Velocity field of the input data whose time is later than the current time.*/
+        std::unique_ptr<Velocity<T, Dim>> current_data_vel_; /**<Pointer to the Velocity filed that is the temporal interpolation of two adjenct data files.*/ 
 };
 
 
+/** @brief Class for flow fields with a continous velocity function.
+
+    This class is used for representing flow fields with a given continous velocity function, which means that we could obtain the exact velocities of any point in the field.
+    @tparam T Numeric data type of all the numeric values in the flow.
+    @tparam Func Continous velocity function for this field.
+    @tparam Dim Dimension of the flow field (2 or 3).
+    */
 template <typename T, typename Func, unsigned Dim = 2>
 class ContinuousFlowField : public FlowField<T, Dim>
 {
     public:
-        // constructor
+        /** Constructor for initializating the flow field.
+            @param nx The number of grid points in \f$x\f$-direction.
+            @param ny The number of grid points in \f$y\f$-direction.
+            */
         ContinuousFlowField(unsigned nx, unsigned ny):
             FlowField<T, Dim>(nx, ny), parameters_() {}
 
+        /** Constructor for initializating the flow field that the velocity function has parameters.
+            @param nx The number of grid points in \f$x\f$-direction.
+            @param ny The number of grid points in \f$y\f$-direction.
+            @param parameters A vector that contains all the parameters of the velocity function.
+            */
         ContinuousFlowField(unsigned nx, unsigned ny, std::vector<T>& parameters):
             FlowField<T, Dim>(nx, ny), parameters_(parameters) {}
 
+        /** Calculate and set the current velocities of the flow particles using the velocity function.
+            */
         inline void SetCurrentVelocity()
         {
             // no parameters
@@ -390,6 +488,9 @@ class ContinuousFlowField : public FlowField<T, Dim>
             this->current_vel_ = current_continuous_vel_;
         }
 
+        /** Get the velocity field at the current time
+            @return ContinuousVelocity field that contains the current velocities.
+            */
         inline ContinuousVelocity<T, Func, Dim>& CurrentVelocity()
         {
             if (current_continuous_vel_ == nullptr)
@@ -398,6 +499,8 @@ class ContinuousFlowField : public FlowField<T, Dim>
             return *current_continuous_vel_;
         }
 
+        /** Copy the initial position to the current position.
+            */
         inline void CopyInitialPositionToCurrentPosition()
         {
             auto initial_pos_data = this->initial_pos_->GetAll();
@@ -407,14 +510,17 @@ class ContinuousFlowField : public FlowField<T, Dim>
             this->current_pos_->UpdateTime(this->initial_pos_->GetTime());
         }
 
+        /** Set the advection direction.
+            @param direction Direction for particle advection.
+            */
         inline void SetDirection(const Direction direction)
         {
             this->direction_ = direction;
         }
 
     private:
-        std::shared_ptr<ContinuousVelocity<T, Func, Dim>> current_continuous_vel_;
-        std::vector<T> parameters_;
+        std::shared_ptr<ContinuousVelocity<T, Func, Dim>> current_continuous_vel_;/**<Pointer to the ContinuousVelocity field at the current time.*/
+        std::vector<T> parameters_;/**<A vector of parameters for the velocity function associated with this flow field.*/
 };
 
 }

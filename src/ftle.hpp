@@ -6,12 +6,19 @@
 
 namespace LCS {
 
-// FTLE field
+/** @brief Class for finite-time Lyapunov exponent (FTLE) fields.
+
+    This class is used for representing the finite-time Lyapunov exponent (FTLE) fields, which are scalar fields. It is a subclass of the Field class, and there is a FlowField associated with it.
+    @tparam T Numeric data type of the FTLE values.
+    @tparam Dim Dimension of the FTLE field.
+    */
 template <typename T, unsigned Dim = 2>
 class FTLE : public Field<T, Dim, 1>
 {
     public:
-        // constructor
+        /** Constructor for initializing the FTLE field.
+            @param ff FlowField that is associated with the FTLE field.
+            */
         FTLE(FlowField<T, Dim>& ff):
             Field<T, Dim, 1>(std::get<0>(ff.CurrentPosition().GetAll().Size()),
                 std::get<1>(ff.CurrentPosition().GetAll().Size())),
@@ -21,13 +28,17 @@ class FTLE : public Field<T, Dim, 1>
             this->UpdateTime(ff.GetTime());
         }
 
-        // getter
+        /** Get the FTLE value of the given point.
+            @param i Index in \f$x\f$-coordinate.
+            @param j Index in \f$y\f$-coordinate.
+            @return FTLE value at the point.
+            */
         inline T Get(const unsigned i, const unsigned j) const
         {
             return this->data_(i,j);
         }
 
-        // calculate FTLE
+        /** Calculate FTLE field from the flow map that is obtained from the flow field. OpenMP is used for calculation.*/
         void Calculate()
         {
             Clock clock;
@@ -89,8 +100,8 @@ class FTLE : public Field<T, Dim, 1>
         }
 
     private:
-        FlowField<T, Dim>& flow_field_;
-        T initial_time_;
+        FlowField<T, Dim>& flow_field_;/**<FlowField that is associated with the FTLE field.*/
+        T initial_time_;/**<Initial time for FTLE calculation.*/
 };
 
 }

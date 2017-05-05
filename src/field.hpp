@@ -18,40 +18,66 @@ template <typename T, typename Func, unsigned Dim>
 class ContinuousVelocity;
 
 
-// general field
+/** @brief Class for general physical fields.
+
+    This class is used for representing scalar or vector fields, such as displacement and velocity fields.
+    @tparam T Numeric data type of the field.
+    @tparam Dim Dimension of the field (2 or 3).
+    @tparam Size Length of the vector aassociated with each point in the field (e.g. 1 for scalar fields).
+    */
 template <typename T, unsigned Dim = 2, unsigned Size = 2>
 class Field
 {
     public:
+        /** Constructor for initializating the Field.    
+            @param nx The number of grid points in \f$x\f$-direction.
+            @param ny The number of grid points in \f$y\f$-direction.
+            */
         Field(unsigned nx, unsigned ny): nx_(nx), ny_(ny), data_(nx, ny), time_() {}
 
-        // getter
+        /** Get all data values of the Field.
+            @return A Tensor containing all data values of the Field.
+            */
         inline auto& GetAll() const
         {
             return data_;
         }
 
+        /** Get the time associated with the Field.
+            @return Time of the Field.
+            */
         inline auto GetTime() const
         {
             return time_;
         }
 
+        /** Read data from a file.
+            @param file_name Input data file name.
+            */
         inline void ReadFromFile(const std::string& file_name)
         {
             FieldPolicy<T, Dim, Size>::ReadFromFile(*this, file_name);
         }
 
-        // setter
+        /** Set all data vlues of the Field with an existing Tensor.
+            @param data Input Tensor.
+            */
         inline void SetAll(Tensor<Vector<T, Size>, Dim>& data)
         {
             data_ = data;
         }
 
+        /** Update the time associated with the Field.
+            @param time New time for the Field.
+            */
         inline void UpdateTime(const T time)
         {
             time_ = time;
         }
 
+        /** Write data to a file.
+            @param file_name Output data file name.
+            */
         inline void WriteToFile(const std::string& file_name) const
         {
             FieldPolicy<T, Dim, Size>::WriteToFile(*this, file_name);
@@ -60,20 +86,28 @@ class Field
         friend struct FieldPolicy<T, Dim, Size>;
 
     protected:
-        const unsigned nx_;
-        const unsigned ny_;
-        Tensor<Vector<T, Size>, Dim> data_;
-        T time_;
+        const unsigned nx_;/**<Number of grid points in \f$x\f$-direction.*/
+        const unsigned ny_;/**<Number of grid points in \f$y\f$-direction.*/
+        Tensor<Vector<T, Size>, Dim> data_;/**<Tensor containing all Field data values.*/
+        T time_;/**<Time of the Field.*/
 };
 
-
+/** @brief Dimension-dependent implementations of Field class.
+    */
 template <typename T, unsigned Dim, unsigned Size>
 struct FieldPolicy {};
 
+/** @brief 2D implementations of Field class.
+    
+    This is a specialization of FieldPolicy template struct that for 2-dimension Field.
+    */
 template <typename T, unsigned Size>
 struct FieldPolicy<T, 2, Size>
 {
-    // write Field data to a file
+    /** Write Field data to a file.
+        @param field Input field.
+        @param file_name Output data file name.
+        */
     static inline void WriteToFile(const Field<T, 2, Size>& field, const std::string& file_name)
     {
         std::ofstream file;
@@ -89,7 +123,10 @@ struct FieldPolicy<T, 2, Size>
         file.close();
     }
     
-    // read data form a file to Field
+    /** Read data form a file to Field.
+        @param field Field that needs to read the data.
+        @param file_name Input data file name.
+        */
     static inline void ReadFromFile(Field<T, 2, Size>& field, const std::string& file_name)
     {
         std::ifstream file;
@@ -114,17 +151,28 @@ struct FieldPolicy<T, 2, Size>
 
 };
 
-// poisiton field
+/** @brief Field of particle positions.
+
+    This class is used for representing positions (displacements) of particles. It is a subclass of Field.
+    @tparam T Numeric data type of the field.
+    @tparam Dim Dimension of the field (2 or 3).
+    */
 template <typename T, unsigned Dim = 2>
 class Position : public Field<T, Dim, Dim>
 {
     public:
         using vec = LCS::Vector<T, Dim>;
 
-        // constructor
+        /** Constructor for initializating the position field.    
+            @param nx The number of points in \f$x\f$-direction.
+            @param ny The number of points in \f$y\f$-direction.
+            */
         Position(unsigned nx, unsigned ny): Field<T, Dim, Dim>(nx, ny) {}
 
-        // setter for all values in the field
+        /** Set data values of the field using \f$x\f$- and \f$y\f$-coordinates. The grid is assumed to be a Cartesian grid when using this function. This is an overloaded function.
+            @param xrange Vector that contains \f$x\f$-coordinates of the grid.
+            @param yrange Vector that contains \f$y\f$-coordinates of the grid.
+            */
         void SetAll(const std::vector<T>& xrange, const std::vector<T>& yrange)
         {
             // make sure sizes match
@@ -141,7 +189,12 @@ class Position : public Field<T, Dim, Dim>
             pos_yrange_ = yrange;
         }
 
-        // overload, use end points to set values
+        /** Set data values of the field using the coordinates of end points. The grid is assumed to be an uniform Cartesian grid when using this function. This is a overloaded function.
+            @param xmin The minimum \f$x\f$-coordinate.
+            @param xmax The maximum \f$x\f$-coordinate.
+            @param ymin The minimum \f$y\f$-coordinate.
+            @param ymax The maximum \f$y\f$-coordinate.
+            */
         void SetAll(const T& xmin, const T& xmax, const T& ymin, const T& ymax)
         {
             std::vector<T> xrange(this->nx_, 0), yrange(this->ny_, 0);
@@ -154,18 +207,26 @@ class Position : public Field<T, Dim, Dim>
             SetAll(xrange, yrange);
         }
 
-        // call function in base class
+        /** Set data values of the field. This function would class the function with the same name in the base class.
+            */
         void SetAll(Tensor<vec, Dim>& data)
         {
             Field<T, Dim, Dim>::SetAll(data);
         }
 
-        // getter
+        /** Get the positions of a grid point.
+            @param i Index in \f$x\f$-coordinate.
+            @param j Index in \f$y\f$-coordinate.
+            @return Tuple contains \f$x\f$- and \f$y\f$-coordinates of a given grid point.
+            */
         inline auto Get(const unsigned i, const unsigned j) const
         {
             return std::make_tuple(this->data_(i,j).x, this->data_(i,j).y);
         }
 
+        /** Get the range of coordinates for a given axis.
+            @param axis Integer that represents an axis (0 for \f$x\f$-axis, 1 for \f$y\f$-axis).
+        */
         inline auto& GetRange(const unsigned axis)
         {
             // need to check the input and if ranges exist
@@ -175,7 +236,10 @@ class Position : public Field<T, Dim, Dim>
                 return pos_yrange_;
         }
 
-        // update the position using the velocity field
+        /** Update positions of each grid point using a velocity field. OpenMP is used here for accelerating the calculations.
+            @param vel Velocity field contains the velocity information of each grid point.
+            @param delta Time step for updating the positions.
+            */
         void Update(Velocity<T, Dim>& vel, T delta)
         {
             #pragma omp parallel for
@@ -200,13 +264,19 @@ class Position : public Field<T, Dim, Dim>
             }
         }
 
-        // initialize out of bound tensor
+        /** Initialize the Tensor that contains out-of-bound information. All points are assumed to be inside the boundary.
+            */
         inline void InitializeOutOfBoundTensor()
         {
             // default value is false
             out_of_bound_.reset(new Tensor<bool, Dim>(this->nx_, this->ny_));
         }
 
+        /** Check if a point is out of the boundary.
+            @param i Index in \f$x\f$-coordinate.
+            @param j Index in \f$y\f$-coordinate.
+            @return A bool that shows if the point is out of boundary.
+            */
         inline bool IsOutOfBound(const unsigned i, const unsigned j)
         {
             if (out_of_bound_ != nullptr)
@@ -214,7 +284,13 @@ class Position : public Field<T, Dim, Dim>
             else
                 return false; // default value
         }
-        // set the out boundary 
+
+        /** Set the out boundary of the field.
+            @param xmin The minimum \f$x\f$-coordinate of the out boundary.
+            @param xmax The maximum \f$x\f$-coordinate of the out boundary.
+            @param ymin The minimum \f$y\f$-coordinate of the out boundary.
+            @param ymax The maximum \f$y\f$-coordinate of the out boundary.
+            */
         inline void SetBound(const T& xmin, const T& xmax, const T& ymin, const T& ymax)
         {
             bound_xmin_ = xmin;
@@ -224,39 +300,58 @@ class Position : public Field<T, Dim, Dim>
         }
 
     private:
-        std::unique_ptr<Tensor<bool, Dim>> out_of_bound_;
-        std::vector<T> pos_xrange_;
-        std::vector<T> pos_yrange_;
+        std::unique_ptr<Tensor<bool, Dim>> out_of_bound_;/**<Pointer to a Tensor that shows if the points are out of boundary.*/
+        std::vector<T> pos_xrange_;/**<Range of \f$x\$-coordinates.*/
+        std::vector<T> pos_yrange_;/**<Range of \f$y\$-coordinates.*/
 
-        T bound_xmin_;
-        T bound_xmax_;
-        T bound_ymin_;
-        T bound_ymax_;
+        T bound_xmin_;/**<The minimum \f$x\f$-coordinate of the out boundary.*/
+        T bound_xmax_;/**<The maximum \f$x\f$-coordinate of the out boundary.*/
+        T bound_ymin_;/**<The minimum \f$y\f$-coordinate of the out boundary.*/
+        T bound_ymax_;/**<The maximum \f$y\f$-coordinate of the out boundary.*/
 };
 
-// velocity field
+/** @brief Field of particle velocities.
+
+    This class is used for representing velocities of particles. It is a subclass of Field.
+    A Position field is associated with each Velocity field.
+    @tparam T Numeric data type of the field.
+    @tparam Dim Dimension of the field (2 or 3).
+    */
 template <typename T, unsigned Dim = 2>
 class Velocity : public Field<T, Dim, Dim>
 {
     public:
         using vec = LCS::Vector<T, Dim>;
 
-        // constructor
+        /** Constructor for initializating the velocity field.    
+            @param nx The number of points in \f$x\f$-direction.
+            @param ny The number of points in \f$y\f$-direction.
+            @param pos The Position field that associated with the Velocity field.
+            */
         Velocity(unsigned nx, unsigned ny, Position<T, Dim>& pos):
             Field<T, Dim, Dim>(nx, ny), pos_(pos) {}
 
-        // getter
+        /** Get the velocities of a grid point.
+            @param i Index in \f$x\f$-coordinate.
+            @param j Index in \f$y\f$-coordinate.
+            @return Tuple contains \f$x\f$- and \f$y\f$-coordinates of a given grid point.
+            */
         inline auto Get(const unsigned i, const unsigned j) const
         {
             return std::make_tuple(this->data_(i,j).x, this->data_(i,j).y);
         }
 
+        /** Get the Position field that associated with the Velocity field.
+            @return Position field for this Velocity field.
+            */
         inline auto& GetPosition()
         {
             return pos_;
         }
 
-        // interploate from another velocity field
+        /** Interploate another Velocity field to set the velocities of this field.
+            @param ref_vel The reference Velocity field.
+            */
         void InterpolateFrom(Velocity<T, Dim>& ref_vel)
         {
             // interpolation only works for orthogonal coordinates
@@ -315,17 +410,28 @@ class Velocity : public Field<T, Dim, Dim>
         }
 
     protected:
-        Position<T, Dim>& pos_; // position field corresponding to this velocity field
+        Position<T, Dim>& pos_; /**<Position field associated with this Velocity field*/
 };
 
-// velocity field with continuous velocity function
+/** @brief Velocity field with continuous velocity function
+    
+    This class represents velocity fields that are defined by known continuous velocity function. It is a subclass of Velocity.
+    @tparam T Numeric data type of the field.
+    @tparam Func Continous velocity function for this field.
+    @tparam Dim Dimension of the field (2 or 3).
+    */
 template <typename T, typename Func, unsigned Dim>
 class ContinuousVelocity : public Velocity<T, Dim>
 {
     public:
         using vec = LCS::Vector<T, Dim>;
 
-        // constructor without parameters
+        /** Constructor for initializating the continous velocity field.    
+            @param nx The number of points in \f$x\f$-direction.
+            @param ny The number of points in \f$y\f$-direction.
+            @param pos The Position field that associated with the ContinuousVelocity field.
+            @param time Initial time, default value is 0.
+            */
         ContinuousVelocity(unsigned nx, unsigned ny, Position<T, Dim>& pos, T time=0):
             Velocity<T, Dim>(nx, ny, pos), f_()
         {
@@ -333,7 +439,13 @@ class ContinuousVelocity : public Velocity<T, Dim>
             SetAll();
         }
 
-        // constructor with parameters
+        /** Constructor for initializating the continous velocity field that the velocity function has parameters.
+            @param nx The number of points in \f$x\f$-direction.
+            @param ny The number of points in \f$y\f$-direction.
+            @param pos The Position field that associated with the ContinuousVelocity field.
+            @param parameters A vector that contains all the parameters of the velocity function.
+            @param time Initial time, default value is 0.
+            */
         ContinuousVelocity(unsigned nx, unsigned ny, Position<T, Dim>& pos,
                 std::vector<T>& parameters, T time=0): Velocity<T, Dim>(nx, ny, pos), f_(parameters)
         {
@@ -341,7 +453,8 @@ class ContinuousVelocity : public Velocity<T, Dim>
             SetAll();
         }
 
-        // use continuous function to set all velocity values
+        /** Use continuous function to set all velocity values.
+            */
         void SetAll()
         {
             #pragma omp parallel for
@@ -357,13 +470,16 @@ class ContinuousVelocity : public Velocity<T, Dim>
             }
         }
 
+        /** Get the velocity function of this field.
+            @return Continuous velocity function of this field.
+            */
         inline Func& Function()
         {
             return f_;
         }
 
     private:
-        Func f_;
+        Func f_;/**<Continous velocity function of this field.*/
 };
 
 }
