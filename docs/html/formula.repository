@@ -22,3 +22,5 @@
 \form#21:$f(x,t)=ax^2+bx$
 \form#22:$\epsilon$
 \form#23:$\omega$
+\form#24:$a(t)=\epsilon\sin(\omega t)$
+\form#25:$b(t)=1-2\epsilon\sin(\omega t)$
