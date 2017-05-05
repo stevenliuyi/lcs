@@ -6,7 +6,12 @@ matrix:
         - os: linux
           dist: trusty
           sudo: required
+          env: DIST=trusty
         - os: osx
+
+branches:
+    except:
+        - gh-pages
 
 addons:
     apt:
@@ -14,6 +19,8 @@ addons:
             - ubuntu-toolchain-r-test
         packages:
             - g++-6
+            - doxygen
+            - doxygen-latex
 
 before_install:
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo ln -s /usr/bin/g++-6 /usr/local/bin/g++; g++ -v; fi
@@ -21,6 +28,9 @@ before_install:
 
 script:
     - make
+
+after_success:
+    - if [[ "$DIST" == "trusty" ]]; then cd $TRAVIS_BUILD_DIR; chmod +x code_docs.sh; ./code_docs.sh; fi
 
 notifications:
     email: false
