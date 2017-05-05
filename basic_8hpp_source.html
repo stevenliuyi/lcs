@@ -40,6 +40,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -70,7 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -89,281 +90,290 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">basic.hpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;algorithm&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;tuple&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;cassert&gt;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;stdexcept&gt;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;fstream&gt;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;functional&gt;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;type_traits&gt;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;chrono&gt;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;iomanip&gt;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;omp.h&gt;</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">namespace </span>LCS {</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;std::vector&lt;T&gt; operator+(<span class="keyword">const</span> std::vector&lt;T&gt;&amp; a, <span class="keyword">const</span> std::vector&lt;T&gt;&amp; b)</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;{</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    assert(a.size() == b.size());</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    std::vector&lt;T&gt; result;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    result.reserve(a.size());</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    std::transform(a.begin(), a.end(), b.begin(), </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                   std::back_inserter(result), std::plus&lt;T&gt;());</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordflow">return</span> result;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;}</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;std::vector&lt;T&gt; operator-(<span class="keyword">const</span> std::vector&lt;T&gt;&amp; a, <span class="keyword">const</span> std::vector&lt;T&gt;&amp; b)</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;{</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    assert(a.size() == b.size());</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    std::vector&lt;T&gt; result;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    result.reserve(a.size());</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    std::transform(a.begin(), a.end(), b.begin(), </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                   std::back_inserter(result), std::minus&lt;T&gt;());</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordflow">return</span> result;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;}</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> T, <span class="keyword">class</span> T2&gt;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;std::vector&lt;T&gt; operator* (<span class="keyword">const</span> T2 c, std::vector&lt;T&gt; a)</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;{</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; a.size(); ++i)</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        a[i] = c * a[i];</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keywordflow">return</span> a;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;}</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keywordtype">unsigned</span> Size = 2&gt;</div>
-<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="struct_l_c_s_1_1_vector.html">   80</a></span>&#160;<span class="keyword">struct </span><a class="code" href="struct_l_c_s_1_1_vector.html">Vector</a></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;{</div>
-<div class="line"><a name="l00083"></a><span class="lineno"><a class="line" href="struct_l_c_s_1_1_vector.html#afe6850de8c22687eaa2fad6aa43c9bd0">   83</a></span>&#160;    <a class="code" href="struct_l_c_s_1_1_vector.html#afe6850de8c22687eaa2fad6aa43c9bd0">Vector</a>(): <a class="code" href="struct_l_c_s_1_1_vector.html#a5c5e441d378bdbbe7e330212ff35a297">x</a>(), <a class="code" href="struct_l_c_s_1_1_vector.html#a72990997335947a41f4f550764a08406">y</a>() {}</div>
+<a href="basic_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;algorithm&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;tuple&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;cassert&gt;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;stdexcept&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &lt;fstream&gt;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &lt;functional&gt;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &lt;type_traits&gt;</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#include &lt;chrono&gt;</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &lt;iomanip&gt;</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &lt;omp.h&gt;</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">namespace </span>LCS {</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="namespace_l_c_s.html#a4e73697b321d3105de6c8cbb7e5683d8">   38</a></span>&#160;std::vector&lt;T&gt; <a class="code" href="namespace_l_c_s.html#a4e73697b321d3105de6c8cbb7e5683d8">operator+</a>(<span class="keyword">const</span> std::vector&lt;T&gt;&amp; a, <span class="keyword">const</span> std::vector&lt;T&gt;&amp; b)</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;{</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    assert(a.size() == b.size());</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    std::vector&lt;T&gt; result;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    result.reserve(a.size());</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    std::transform(a.begin(), a.end(), b.begin(), </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                   std::back_inserter(result), std::plus&lt;T&gt;());</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;}</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="namespace_l_c_s.html#ae35e89bd9dca5a7017aa23d88ecfa33a">   57</a></span>&#160;std::vector&lt;T&gt; <a class="code" href="namespace_l_c_s.html#ae35e89bd9dca5a7017aa23d88ecfa33a">operator-</a>(<span class="keyword">const</span> std::vector&lt;T&gt;&amp; a, <span class="keyword">const</span> std::vector&lt;T&gt;&amp; b)</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;{</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    assert(a.size() == b.size());</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    std::vector&lt;T&gt; result;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    result.reserve(a.size());</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    std::transform(a.begin(), a.end(), b.begin(), </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                   std::back_inserter(result), std::minus&lt;T&gt;());</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;}</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> T, <span class="keyword">class</span> T2&gt;</div>
+<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="namespace_l_c_s.html#aa67dceb84088fcbcc29658778de4aff7">   77</a></span>&#160;std::vector&lt;T&gt; <a class="code" href="namespace_l_c_s.html#aa67dceb84088fcbcc29658778de4aff7">operator* </a>(<span class="keyword">const</span> T2 c, std::vector&lt;T&gt; a)</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;{</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; a.size(); ++i)</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        a[i] = c * a[i];</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keywordflow">return</span> a;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;}</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;</div>
-<div class="line"><a name="l00089"></a><span class="lineno"><a class="line" href="struct_l_c_s_1_1_vector.html#a6a432a866d84805c3441c9837c99f7d2">   89</a></span>&#160;    <a class="code" href="struct_l_c_s_1_1_vector.html#a6a432a866d84805c3441c9837c99f7d2">Vector</a>(<span class="keyword">const</span> T&amp; <a class="code" href="struct_l_c_s_1_1_vector.html#a5c5e441d378bdbbe7e330212ff35a297">x</a>, <span class="keyword">const</span> T&amp; <a class="code" href="struct_l_c_s_1_1_vector.html#a72990997335947a41f4f550764a08406">y</a>): x(x), y(y) {}</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;</div>
-<div class="line"><a name="l00091"></a><span class="lineno"><a class="line" href="struct_l_c_s_1_1_vector.html#a5c5e441d378bdbbe7e330212ff35a297">   91</a></span>&#160;    T <a class="code" href="struct_l_c_s_1_1_vector.html#a5c5e441d378bdbbe7e330212ff35a297">x</a>;</div>
-<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="struct_l_c_s_1_1_vector.html#a72990997335947a41f4f550764a08406">   92</a></span>&#160;    T <a class="code" href="struct_l_c_s_1_1_vector.html#a72990997335947a41f4f550764a08406">y</a>;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;};</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keywordtype">unsigned</span> Size&gt;</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<a class="code" href="struct_l_c_s_1_1_vector.html">Vector&lt;T, Size&gt;</a> operator+(<span class="keyword">const</span> <a class="code" href="struct_l_c_s_1_1_vector.html">Vector&lt;T, Size&gt;</a>&amp; a, <span class="keyword">const</span> <a class="code" href="struct_l_c_s_1_1_vector.html">Vector&lt;T, Size&gt;</a>&amp; b)</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;{</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <a class="code" href="struct_l_c_s_1_1_vector.html">Vector&lt;T,Size&gt;</a> result(a.<a class="code" href="struct_l_c_s_1_1_vector.html#a5c5e441d378bdbbe7e330212ff35a297">x</a>+b.<a class="code" href="struct_l_c_s_1_1_vector.html#a5c5e441d378bdbbe7e330212ff35a297">x</a>, a.<a class="code" href="struct_l_c_s_1_1_vector.html#a72990997335947a41f4f550764a08406">y</a>+b.<a class="code" href="struct_l_c_s_1_1_vector.html#a72990997335947a41f4f550764a08406">y</a>);</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    <span class="keywordflow">return</span> result;</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;}</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keywordtype">unsigned</span> Size&gt;</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;Vector&lt;T, Size&gt; operator-(<span class="keyword">const</span> Vector&lt;T, Size&gt;&amp; a, <span class="keyword">const</span> Vector&lt;T, Size&gt;&amp; b)</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;{</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    Vector&lt;T,Size&gt; result(a.x-b.x, a.y-b.y);</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    <span class="keywordflow">return</span> result;</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;}</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keywordtype">unsigned</span> Size&gt;</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;Vector&lt;T, Size&gt; operator*(<span class="keyword">const</span> T c, Vector&lt;T, Size&gt; a)</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;{</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    a.x *= c;</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    a.y *= c;</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <span class="keywordflow">return</span> a;</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;}</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;<span class="keyword">using</span> Scalar = Vector&lt;T, 1&gt;;</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00151"></a><span class="lineno"><a class="line" href="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4.html">  151</a></span>&#160;<span class="keyword">struct </span><a class="code" href="struct_l_c_s_1_1_vector.html">Vector</a>&lt;T, 1&gt;</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;{</div>
-<div class="line"><a name="l00154"></a><span class="lineno"><a class="line" href="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4.html#a3fa258a497e6ebe25636aaef3a2c1dfc">  154</a></span>&#160;    <a class="code" href="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4.html#a3fa258a497e6ebe25636aaef3a2c1dfc">Vector</a>(): value() {}</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keywordtype">unsigned</span> Size = 2&gt;</div>
+<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="struct_l_c_s_1_1_vector.html">   92</a></span>&#160;<span class="keyword">struct </span><a class="code" href="struct_l_c_s_1_1_vector.html">Vector</a></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;{</div>
+<div class="line"><a name="l00095"></a><span class="lineno"><a class="line" href="struct_l_c_s_1_1_vector.html#afe6850de8c22687eaa2fad6aa43c9bd0">   95</a></span>&#160;    <a class="code" href="struct_l_c_s_1_1_vector.html#afe6850de8c22687eaa2fad6aa43c9bd0">Vector</a>(): <a class="code" href="struct_l_c_s_1_1_vector.html#a5c5e441d378bdbbe7e330212ff35a297">x</a>(), <a class="code" href="struct_l_c_s_1_1_vector.html#a72990997335947a41f4f550764a08406">y</a>() {}</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;</div>
+<div class="line"><a name="l00101"></a><span class="lineno"><a class="line" href="struct_l_c_s_1_1_vector.html#a6a432a866d84805c3441c9837c99f7d2">  101</a></span>&#160;    <a class="code" href="struct_l_c_s_1_1_vector.html#a6a432a866d84805c3441c9837c99f7d2">Vector</a>(<span class="keyword">const</span> T&amp; <a class="code" href="struct_l_c_s_1_1_vector.html#a5c5e441d378bdbbe7e330212ff35a297">x</a>, <span class="keyword">const</span> T&amp; <a class="code" href="struct_l_c_s_1_1_vector.html#a72990997335947a41f4f550764a08406">y</a>): x(x), y(y) {}</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;</div>
+<div class="line"><a name="l00103"></a><span class="lineno"><a class="line" href="struct_l_c_s_1_1_vector.html#a5c5e441d378bdbbe7e330212ff35a297">  103</a></span>&#160;    T <a class="code" href="struct_l_c_s_1_1_vector.html#a5c5e441d378bdbbe7e330212ff35a297">x</a>;</div>
+<div class="line"><a name="l00104"></a><span class="lineno"><a class="line" href="struct_l_c_s_1_1_vector.html#a72990997335947a41f4f550764a08406">  104</a></span>&#160;    T <a class="code" href="struct_l_c_s_1_1_vector.html#a72990997335947a41f4f550764a08406">y</a>;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;};</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keywordtype">unsigned</span> Size&gt;</div>
+<div class="line"><a name="l00115"></a><span class="lineno"><a class="line" href="namespace_l_c_s.html#aa88f5263d79b72849bc951dc89b10c76">  115</a></span>&#160;<a class="code" href="struct_l_c_s_1_1_vector.html">Vector&lt;T, Size&gt;</a> <a class="code" href="namespace_l_c_s.html#a4e73697b321d3105de6c8cbb7e5683d8">operator+</a>(<span class="keyword">const</span> <a class="code" href="struct_l_c_s_1_1_vector.html">Vector&lt;T, Size&gt;</a>&amp; a, <span class="keyword">const</span> <a class="code" href="struct_l_c_s_1_1_vector.html">Vector&lt;T, Size&gt;</a>&amp; b)</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;{</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <a class="code" href="struct_l_c_s_1_1_vector.html">Vector&lt;T,Size&gt;</a> result(a.<a class="code" href="struct_l_c_s_1_1_vector.html#a5c5e441d378bdbbe7e330212ff35a297">x</a>+b.<a class="code" href="struct_l_c_s_1_1_vector.html#a5c5e441d378bdbbe7e330212ff35a297">x</a>, a.<a class="code" href="struct_l_c_s_1_1_vector.html#a72990997335947a41f4f550764a08406">y</a>+b.<a class="code" href="struct_l_c_s_1_1_vector.html#a72990997335947a41f4f550764a08406">y</a>);</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;}</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keywordtype">unsigned</span> Size&gt;</div>
+<div class="line"><a name="l00129"></a><span class="lineno"><a class="line" href="namespace_l_c_s.html#a9fd0495f157184648c9fe42825ba8cb1">  129</a></span>&#160;<a class="code" href="struct_l_c_s_1_1_vector.html">Vector&lt;T, Size&gt;</a> <a class="code" href="namespace_l_c_s.html#ae35e89bd9dca5a7017aa23d88ecfa33a">operator-</a>(<span class="keyword">const</span> <a class="code" href="struct_l_c_s_1_1_vector.html">Vector&lt;T, Size&gt;</a>&amp; a, <span class="keyword">const</span> <a class="code" href="struct_l_c_s_1_1_vector.html">Vector&lt;T, Size&gt;</a>&amp; b)</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;{</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <a class="code" href="struct_l_c_s_1_1_vector.html">Vector&lt;T,Size&gt;</a> result(a.<a class="code" href="struct_l_c_s_1_1_vector.html#a5c5e441d378bdbbe7e330212ff35a297">x</a>-b.<a class="code" href="struct_l_c_s_1_1_vector.html#a5c5e441d378bdbbe7e330212ff35a297">x</a>, a.<a class="code" href="struct_l_c_s_1_1_vector.html#a72990997335947a41f4f550764a08406">y</a>-b.<a class="code" href="struct_l_c_s_1_1_vector.html#a72990997335947a41f4f550764a08406">y</a>);</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;}</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keywordtype">unsigned</span> Size&gt;</div>
+<div class="line"><a name="l00143"></a><span class="lineno"><a class="line" href="namespace_l_c_s.html#a1fedf066f41a71ec7b978f49ded2312c">  143</a></span>&#160;<a class="code" href="struct_l_c_s_1_1_vector.html">Vector&lt;T, Size&gt;</a> <a class="code" href="namespace_l_c_s.html#aa67dceb84088fcbcc29658778de4aff7">operator*</a>(<span class="keyword">const</span> T c, <a class="code" href="struct_l_c_s_1_1_vector.html">Vector&lt;T, Size&gt;</a> a)</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;{</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    a.<a class="code" href="struct_l_c_s_1_1_vector.html#a5c5e441d378bdbbe7e330212ff35a297">x</a> *= c;</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    a.<a class="code" href="struct_l_c_s_1_1_vector.html#a72990997335947a41f4f550764a08406">y</a> *= c;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    <span class="keywordflow">return</span> a;</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;}</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00154"></a><span class="lineno"><a class="line" href="namespace_l_c_s.html#a3101ff9dd2944337985b88beeba7f01e">  154</a></span>&#160;<span class="keyword">using</span> <a class="code" href="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4.html">Scalar</a> = <a class="code" href="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4.html">Vector&lt;T, 1&gt;</a>;</div>
 <div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;</div>
-<div class="line"><a name="l00159"></a><span class="lineno"><a class="line" href="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4.html#a70075ca3b80846a69c2ee67886281190">  159</a></span>&#160;    <a class="code" href="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4.html#a70075ca3b80846a69c2ee67886281190">Vector</a>(<span class="keyword">const</span> T&amp; <a class="code" href="struct_l_c_s_1_1_vector.html#a5c5e441d378bdbbe7e330212ff35a297">x</a>): value(x) {}</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;</div>
-<div class="line"><a name="l00161"></a><span class="lineno"><a class="line" href="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4.html#a8020d810aaac4b76fac4541b28eecd24">  161</a></span>&#160;    T <a class="code" href="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4.html#a8020d810aaac4b76fac4541b28eecd24">value</a>; </div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;};</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keywordtype">unsigned</span> Dim = 2&gt;</div>
-<div class="line"><a name="l00171"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html">  171</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_l_c_s_1_1_tensor.html">Tensor</a></div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;{</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00178"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html#a3c0d906882259a635d81d86d332d0d5a">  178</a></span>&#160;        <a class="code" href="class_l_c_s_1_1_tensor.html#a3c0d906882259a635d81d86d332d0d5a">Tensor</a>(<span class="keywordtype">unsigned</span> nx, <span class="keywordtype">unsigned</span> ny):</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;            data_(nx * ny, T()), nx_(nx), ny_(ny) {}</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;</div>
-<div class="line"><a name="l00184"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html#a083da0f18b0a2d05b35449c0d99633f9">  184</a></span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="class_l_c_s_1_1_tensor.html#a083da0f18b0a2d05b35449c0d99633f9">operator= </a>(<span class="keyword">const</span> <a class="code" href="class_l_c_s_1_1_tensor.html">Tensor&lt;T, Dim&gt;</a>&amp; t)</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;        {</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;            <span class="comment">// need to implement size check</span></div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;            data_ = t.<a class="code" href="class_l_c_s_1_1_tensor.html#a1d895ea81c24dce13ac83798b842bf0a">GetAll</a>();</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        }</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;</div>
-<div class="line"><a name="l00195"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html#a37c5eec2358e2677cba7dd35c80f3f55">  195</a></span>&#160;        <span class="keyword">inline</span> T&amp; <a class="code" href="class_l_c_s_1_1_tensor.html#a37c5eec2358e2677cba7dd35c80f3f55">operator() </a>(<span class="keywordtype">unsigned</span> i, <span class="keywordtype">unsigned</span> j)</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;        {</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;            <span class="comment">// need to implement size check</span></div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;            <span class="keywordflow">return</span> data_[i*ny_ + j];</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;        }</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;</div>
-<div class="line"><a name="l00206"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html#ab61a089866a77151e66e3a8236cff01f">  206</a></span>&#160;        <span class="keyword">inline</span> T <a class="code" href="class_l_c_s_1_1_tensor.html#a37c5eec2358e2677cba7dd35c80f3f55">operator() </a>(<span class="keywordtype">unsigned</span> i, <span class="keywordtype">unsigned</span> j)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;            <span class="keywordflow">return</span> data_[i*ny_ + j];</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;        }</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;</div>
-<div class="line"><a name="l00216"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html#a2a8741390845a9253a9fe193ffaaec12">  216</a></span>&#160;        <span class="keyword">inline</span> T&amp; <a class="code" href="class_l_c_s_1_1_tensor.html#a2a8741390845a9253a9fe193ffaaec12">Get</a>(<span class="keywordtype">unsigned</span> i, <span class="keywordtype">unsigned</span> j)</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;        {</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;            <span class="keywordflow">return</span> data_[i*ny_ + j];</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;        }</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;</div>
-<div class="line"><a name="l00226"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html#a93d0554e08ae223a2dcb017e4eb0621f">  226</a></span>&#160;        <span class="keyword">inline</span> T <a class="code" href="class_l_c_s_1_1_tensor.html#a93d0554e08ae223a2dcb017e4eb0621f">Get</a>(<span class="keywordtype">unsigned</span> i, <span class="keywordtype">unsigned</span> j)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;            <span class="keywordflow">return</span> data_[i*ny_ + j];</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;        }</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;</div>
-<div class="line"><a name="l00236"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html#ab704af17408a04bc9b8c4997259a114e">  236</a></span>&#160;        <span class="keyword">inline</span> T <a class="code" href="class_l_c_s_1_1_tensor.html#ab704af17408a04bc9b8c4997259a114e">GetValue</a>(<span class="keywordtype">unsigned</span> i, <span class="keywordtype">unsigned</span> j)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;            <span class="keywordflow">return</span> data_[i*ny_ + j];</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;        }</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;</div>
-<div class="line"><a name="l00244"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html#a1d895ea81c24dce13ac83798b842bf0a">  244</a></span>&#160;        <span class="keyword">inline</span> <span class="keyword">auto</span>&amp; <a class="code" href="class_l_c_s_1_1_tensor.html#a1d895ea81c24dce13ac83798b842bf0a">GetAll</a>()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;            <span class="keywordflow">return</span> data_;</div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;        }</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;</div>
-<div class="line"><a name="l00254"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html#a7a480682d197d9dc0db856f0758a66f4">  254</a></span>&#160;        <span class="keyword">inline</span> <span class="keyword">auto</span> <a class="code" href="class_l_c_s_1_1_tensor.html#a7a480682d197d9dc0db856f0758a66f4">GetNearby</a>(<span class="keyword">const</span> <span class="keywordtype">unsigned</span> i, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> j)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;            <span class="keyword">auto</span> x_pre = (i != 0) ? <a class="code" href="class_l_c_s_1_1_tensor.html#a2a8741390845a9253a9fe193ffaaec12">Get</a>(i-1,j) : <a class="code" href="class_l_c_s_1_1_tensor.html#a2a8741390845a9253a9fe193ffaaec12">Get</a>(i,j);</div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;            <span class="keyword">auto</span> x_next = (i != nx_-1) ? <a class="code" href="class_l_c_s_1_1_tensor.html#a2a8741390845a9253a9fe193ffaaec12">Get</a>(i+1,j) : <a class="code" href="class_l_c_s_1_1_tensor.html#a2a8741390845a9253a9fe193ffaaec12">Get</a>(i,j);</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;            <span class="keyword">auto</span> y_pre = (j != 0) ? <a class="code" href="class_l_c_s_1_1_tensor.html#a2a8741390845a9253a9fe193ffaaec12">Get</a>(i,j-1) : <a class="code" href="class_l_c_s_1_1_tensor.html#a2a8741390845a9253a9fe193ffaaec12">Get</a>(i,j);</div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;            <span class="keyword">auto</span> y_next = (j != ny_-1) ? <a class="code" href="class_l_c_s_1_1_tensor.html#a2a8741390845a9253a9fe193ffaaec12">Get</a>(i,j+1) : <a class="code" href="class_l_c_s_1_1_tensor.html#a2a8741390845a9253a9fe193ffaaec12">Get</a>(i,j);</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;</div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;            <span class="keywordflow">return</span> std::make_tuple(x_pre, x_next, y_pre, y_next);</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;        }</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;</div>
-<div class="line"><a name="l00271"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html#a3825fc3377c89d9b58502c9d4263c8d2">  271</a></span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="class_l_c_s_1_1_tensor.html#a3825fc3377c89d9b58502c9d4263c8d2">SetValue</a>(<span class="keywordtype">unsigned</span> i, <span class="keywordtype">unsigned</span> j, T value)</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;        {</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;            data_[i*ny_ + j] = value;</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;        }</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00163"></a><span class="lineno"><a class="line" href="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4.html">  163</a></span>&#160;<span class="keyword">struct </span><a class="code" href="struct_l_c_s_1_1_vector.html">Vector</a>&lt;T, 1&gt;</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;{</div>
+<div class="line"><a name="l00166"></a><span class="lineno"><a class="line" href="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4.html#a3fa258a497e6ebe25636aaef3a2c1dfc">  166</a></span>&#160;    <a class="code" href="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4.html#a3fa258a497e6ebe25636aaef3a2c1dfc">Vector</a>(): value() {}</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;</div>
+<div class="line"><a name="l00171"></a><span class="lineno"><a class="line" href="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4.html#a70075ca3b80846a69c2ee67886281190">  171</a></span>&#160;    <a class="code" href="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4.html#a70075ca3b80846a69c2ee67886281190">Vector</a>(<span class="keyword">const</span> T&amp; <a class="code" href="struct_l_c_s_1_1_vector.html#a5c5e441d378bdbbe7e330212ff35a297">x</a>): value(x) {}</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;</div>
+<div class="line"><a name="l00173"></a><span class="lineno"><a class="line" href="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4.html#a8020d810aaac4b76fac4541b28eecd24">  173</a></span>&#160;    T <a class="code" href="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4.html#a8020d810aaac4b76fac4541b28eecd24">value</a>; </div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;};</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keywordtype">unsigned</span> Dim = 2&gt;</div>
+<div class="line"><a name="l00183"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html">  183</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_l_c_s_1_1_tensor.html">Tensor</a></div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;{</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00190"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html#a3c0d906882259a635d81d86d332d0d5a">  190</a></span>&#160;        <a class="code" href="class_l_c_s_1_1_tensor.html#a3c0d906882259a635d81d86d332d0d5a">Tensor</a>(<span class="keywordtype">unsigned</span> nx, <span class="keywordtype">unsigned</span> ny):</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;            data_(nx * ny, T()), nx_(nx), ny_(ny) {}</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;</div>
+<div class="line"><a name="l00196"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html#a083da0f18b0a2d05b35449c0d99633f9">  196</a></span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="class_l_c_s_1_1_tensor.html#a083da0f18b0a2d05b35449c0d99633f9">operator= </a>(<span class="keyword">const</span> <a class="code" href="class_l_c_s_1_1_tensor.html">Tensor&lt;T, Dim&gt;</a>&amp; t)</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;        {</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;            <span class="comment">// need to implement size check</span></div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;            data_ = t.<a class="code" href="class_l_c_s_1_1_tensor.html#a1d895ea81c24dce13ac83798b842bf0a">GetAll</a>();</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;        }</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;</div>
+<div class="line"><a name="l00207"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html#a37c5eec2358e2677cba7dd35c80f3f55">  207</a></span>&#160;        <span class="keyword">inline</span> T&amp; <a class="code" href="class_l_c_s_1_1_tensor.html#a37c5eec2358e2677cba7dd35c80f3f55">operator() </a>(<span class="keywordtype">unsigned</span> i, <span class="keywordtype">unsigned</span> j)</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;        {</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;            <span class="comment">// need to implement size check</span></div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;            <span class="keywordflow">return</span> data_[i*ny_ + j];</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;        }</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;</div>
+<div class="line"><a name="l00218"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html#ab61a089866a77151e66e3a8236cff01f">  218</a></span>&#160;        <span class="keyword">inline</span> T <a class="code" href="class_l_c_s_1_1_tensor.html#a37c5eec2358e2677cba7dd35c80f3f55">operator() </a>(<span class="keywordtype">unsigned</span> i, <span class="keywordtype">unsigned</span> j)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;<span class="keyword">        </span>{</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;            <span class="keywordflow">return</span> data_[i*ny_ + j];</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;        }</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;</div>
+<div class="line"><a name="l00228"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html#a2a8741390845a9253a9fe193ffaaec12">  228</a></span>&#160;        <span class="keyword">inline</span> T&amp; <a class="code" href="class_l_c_s_1_1_tensor.html#a2a8741390845a9253a9fe193ffaaec12">Get</a>(<span class="keywordtype">unsigned</span> i, <span class="keywordtype">unsigned</span> j)</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;        {</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;            <span class="keywordflow">return</span> data_[i*ny_ + j];</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;        }</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;</div>
+<div class="line"><a name="l00238"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html#a93d0554e08ae223a2dcb017e4eb0621f">  238</a></span>&#160;        <span class="keyword">inline</span> T <a class="code" href="class_l_c_s_1_1_tensor.html#a93d0554e08ae223a2dcb017e4eb0621f">Get</a>(<span class="keywordtype">unsigned</span> i, <span class="keywordtype">unsigned</span> j)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;<span class="keyword">        </span>{</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;            <span class="keywordflow">return</span> data_[i*ny_ + j];</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;        }</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;</div>
+<div class="line"><a name="l00248"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html#ab704af17408a04bc9b8c4997259a114e">  248</a></span>&#160;        <span class="keyword">inline</span> T <a class="code" href="class_l_c_s_1_1_tensor.html#ab704af17408a04bc9b8c4997259a114e">GetValue</a>(<span class="keywordtype">unsigned</span> i, <span class="keywordtype">unsigned</span> j)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;<span class="keyword">        </span>{</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;            <span class="keywordflow">return</span> data_[i*ny_ + j];</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;        }</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;</div>
+<div class="line"><a name="l00256"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html#a1d895ea81c24dce13ac83798b842bf0a">  256</a></span>&#160;        <span class="keyword">inline</span> <span class="keyword">auto</span>&amp; <a class="code" href="class_l_c_s_1_1_tensor.html#a1d895ea81c24dce13ac83798b842bf0a">GetAll</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;<span class="keyword">        </span>{</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;            <span class="keywordflow">return</span> data_;</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;        }</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;</div>
+<div class="line"><a name="l00266"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html#a7a480682d197d9dc0db856f0758a66f4">  266</a></span>&#160;        <span class="keyword">inline</span> <span class="keyword">auto</span> <a class="code" href="class_l_c_s_1_1_tensor.html#a7a480682d197d9dc0db856f0758a66f4">GetNearby</a>(<span class="keyword">const</span> <span class="keywordtype">unsigned</span> i, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> j)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;<span class="keyword">        </span>{</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;            <span class="keyword">auto</span> x_pre = (i != 0) ? <a class="code" href="class_l_c_s_1_1_tensor.html#a2a8741390845a9253a9fe193ffaaec12">Get</a>(i-1,j) : <a class="code" href="class_l_c_s_1_1_tensor.html#a2a8741390845a9253a9fe193ffaaec12">Get</a>(i,j);</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;            <span class="keyword">auto</span> x_next = (i != nx_-1) ? <a class="code" href="class_l_c_s_1_1_tensor.html#a2a8741390845a9253a9fe193ffaaec12">Get</a>(i+1,j) : <a class="code" href="class_l_c_s_1_1_tensor.html#a2a8741390845a9253a9fe193ffaaec12">Get</a>(i,j);</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;            <span class="keyword">auto</span> y_pre = (j != 0) ? <a class="code" href="class_l_c_s_1_1_tensor.html#a2a8741390845a9253a9fe193ffaaec12">Get</a>(i,j-1) : <a class="code" href="class_l_c_s_1_1_tensor.html#a2a8741390845a9253a9fe193ffaaec12">Get</a>(i,j);</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;            <span class="keyword">auto</span> y_next = (j != ny_-1) ? <a class="code" href="class_l_c_s_1_1_tensor.html#a2a8741390845a9253a9fe193ffaaec12">Get</a>(i,j+1) : <a class="code" href="class_l_c_s_1_1_tensor.html#a2a8741390845a9253a9fe193ffaaec12">Get</a>(i,j);</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;            <span class="keywordflow">return</span> std::make_tuple(x_pre, x_next, y_pre, y_next);</div>
 <div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;</div>
-<div class="line"><a name="l00279"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html#af69f2257054e594767a6ee2a13c1668d">  279</a></span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="class_l_c_s_1_1_tensor.html#af69f2257054e594767a6ee2a13c1668d">SetAll</a>(std::vector&lt;T&gt;&amp; data)</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;        {</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;            data_ = data;</div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;        }</div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;</div>
-<div class="line"><a name="l00287"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html#ad70811f678b39be09f8c3243523756e3">  287</a></span>&#160;        <span class="keyword">inline</span> <span class="keyword">auto</span> <a class="code" href="class_l_c_s_1_1_tensor.html#ad70811f678b39be09f8c3243523756e3">Size</a>()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;            <span class="keywordflow">return</span> std::make_tuple(nx_, ny_);</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;        }</div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;    </div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;        std::vector&lt;T&gt; data_; </div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">unsigned</span> nx_; </div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">unsigned</span> ny_; </div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;};</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;<span class="keyword">inline</span> T interpolate(T x1, T x2, T y1, T y2, T xm)</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;{</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;    <span class="keywordflow">return</span> y1 + (xm - x1) * (y2 - y1) / (x2 - x1);</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;}</div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;</div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Field, <span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;<span class="keywordtype">void</span> interpolate(T x1, T x2, Field&amp; f1, Field&amp; f2, T xm, Field&amp; result)</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;{</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    <span class="keyword">auto</span> tensor_result = f1.GetAll();</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    <span class="keywordflow">if</span> (x1 != x2)</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    {</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;        <span class="keyword">auto</span> vec1 = f1.GetAll().GetAll();</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;        <span class="keyword">auto</span> vec2 = f2.GetAll().GetAll();</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;        <span class="keyword">auto</span> vec_result = vec1 + ((xm - x1)/(x2 - x1)) * (vec2 - vec1);</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;        tensor_result.SetAll(vec_result);</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;    }</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;    result.SetAll(tensor_result);</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;}</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;</div>
-<div class="line"><a name="l00342"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_clock.html">  342</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_l_c_s_1_1_clock.html">Clock</a></div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;{</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00347"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_clock.html#a972394d61b2aa167292a948a2d2105b8">  347</a></span>&#160;        <a class="code" href="class_l_c_s_1_1_clock.html#a972394d61b2aa167292a948a2d2105b8">Clock</a>():</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;            total_elapsed_time_(0), begin_time_(), end_time_(), started_(false) {}</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;        }</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;</div>
+<div class="line"><a name="l00283"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html#a3825fc3377c89d9b58502c9d4263c8d2">  283</a></span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="class_l_c_s_1_1_tensor.html#a3825fc3377c89d9b58502c9d4263c8d2">SetValue</a>(<span class="keywordtype">unsigned</span> i, <span class="keywordtype">unsigned</span> j, T value)</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;        {</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;            data_[i*ny_ + j] = value;</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;        }</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;</div>
+<div class="line"><a name="l00291"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html#af69f2257054e594767a6ee2a13c1668d">  291</a></span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="class_l_c_s_1_1_tensor.html#af69f2257054e594767a6ee2a13c1668d">SetAll</a>(std::vector&lt;T&gt;&amp; data)</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;        {</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;            data_ = data;</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;        }</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;</div>
+<div class="line"><a name="l00299"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_tensor.html#ad70811f678b39be09f8c3243523756e3">  299</a></span>&#160;        <span class="keyword">inline</span> <span class="keyword">auto</span> <a class="code" href="class_l_c_s_1_1_tensor.html#ad70811f678b39be09f8c3243523756e3">Size</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;<span class="keyword">        </span>{</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;            <span class="keywordflow">return</span> std::make_tuple(nx_, ny_);</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;        }</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;    </div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;        std::vector&lt;T&gt; data_; </div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">unsigned</span> nx_; </div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">unsigned</span> ny_; </div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;};</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00321"></a><span class="lineno"><a class="line" href="namespace_l_c_s.html#ab9d127246f1e01de1b3cdb204fa5d645">  321</a></span>&#160;<span class="keyword">inline</span> T <a class="code" href="namespace_l_c_s.html#ab9d127246f1e01de1b3cdb204fa5d645">interpolate</a>(T x1, T x2, T y1, T y2, T xm)</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;{</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;    <span class="keywordflow">return</span> y1 + (xm - x1) * (y2 - y1) / (x2 - x1);</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;}</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Field, <span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00336"></a><span class="lineno"><a class="line" href="namespace_l_c_s.html#a4024cd02d57df5ec89e36942fa45d7b9">  336</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespace_l_c_s.html#ab9d127246f1e01de1b3cdb204fa5d645">interpolate</a>(T x1, T x2, <a class="code" href="class_l_c_s_1_1_field.html">Field</a>&amp; f1, <a class="code" href="class_l_c_s_1_1_field.html">Field</a>&amp; f2, T xm, <a class="code" href="class_l_c_s_1_1_field.html">Field</a>&amp; result)</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;{</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;    <span class="keyword">auto</span> tensor_result = f1.<a class="code" href="class_l_c_s_1_1_field.html#a336b0729fc0eace2913767f4acbfdcf6">GetAll</a>();</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;    <span class="keywordflow">if</span> (x1 != x2)</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;    {</div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;        <span class="keyword">auto</span> vec1 = f1.<a class="code" href="class_l_c_s_1_1_field.html#a336b0729fc0eace2913767f4acbfdcf6">GetAll</a>().GetAll();</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;        <span class="keyword">auto</span> vec2 = f2.<a class="code" href="class_l_c_s_1_1_field.html#a336b0729fc0eace2913767f4acbfdcf6">GetAll</a>().GetAll();</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;        <span class="keyword">auto</span> vec_result = vec1 + ((xm - x1)/(x2 - x1)) * (vec2 - vec1);</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;        tensor_result.SetAll(vec_result);</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;    }</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;    result.<a class="code" href="class_l_c_s_1_1_field.html#a05b3d133f5188ec1c9531ab16ef2d069">SetAll</a>(tensor_result);</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;}</div>
 <div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;</div>
-<div class="line"><a name="l00351"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_clock.html#abe9afbf1bb6a29fba4bf9c32b7616dea">  351</a></span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="class_l_c_s_1_1_clock.html#abe9afbf1bb6a29fba4bf9c32b7616dea">Begin</a>()</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;        {</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;            <span class="comment">// TODO: make sure clock is not started</span></div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;            <span class="keywordflow">if</span> (!started_)</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;            {</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;                begin_time_ = std::chrono::system_clock::now();</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;                started_ = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;            }</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;        }</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;</div>
-<div class="line"><a name="l00362"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_clock.html#a99f4e7d8fead98f8e68e1b56bde4ab26">  362</a></span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="class_l_c_s_1_1_clock.html#a99f4e7d8fead98f8e68e1b56bde4ab26">End</a>()</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;        {</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;            <span class="comment">// TODO: make sure clock is started</span></div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;            <span class="keywordflow">if</span> (started_)</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;            {</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;                end_time_ = std::chrono::system_clock::now();</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;                started_ = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;                <span class="comment">// calculate elapsed time (in seconds) and add it to total_time_</span></div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;                elapsed_time_ = std::chrono::duration_cast&lt;std::chrono::nanoseconds&gt;</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;                    (end_time_ - begin_time_).count() / 1e9;</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;                total_elapsed_time_ += elapsed_time_;</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;            }</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;        }</div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;</div>
-<div class="line"><a name="l00380"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_clock.html#a358b6c7dc9242f4d029f7d6dc5154d5d">  380</a></span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">double</span> <a class="code" href="class_l_c_s_1_1_clock.html#a358b6c7dc9242f4d029f7d6dc5154d5d">GetElapsedTime</a>()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;            <span class="keywordflow">return</span> elapsed_time_;</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;        }</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;</div>
-<div class="line"><a name="l00388"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_clock.html#abfd2f4c8f90418b95096622e64f321c7">  388</a></span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">double</span> <a class="code" href="class_l_c_s_1_1_clock.html#abfd2f4c8f90418b95096622e64f321c7">GetTotalElapsedTime</a>()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;            <span class="keywordflow">return</span> total_elapsed_time_;</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;        }</div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;</div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;        <span class="keywordtype">double</span> total_elapsed_time_;</div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;        <span class="keywordtype">double</span> elapsed_time_;</div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;        std::chrono::time_point&lt;std::chrono::system_clock&gt; begin_time_;</div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;        std::chrono::time_point&lt;std::chrono::system_clock&gt; end_time_;</div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;        <span class="keywordtype">bool</span> started_; </div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;};</div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;</div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;</div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;}</div>
-<div class="ttc" id="class_l_c_s_1_1_tensor_html_a3825fc3377c89d9b58502c9d4263c8d2"><div class="ttname"><a href="class_l_c_s_1_1_tensor.html#a3825fc3377c89d9b58502c9d4263c8d2">LCS::Tensor::SetValue</a></div><div class="ttdeci">void SetValue(unsigned i, unsigned j, T value)</div><div class="ttdef"><b>Definition:</b> basic.hpp:271</div></div>
-<div class="ttc" id="class_l_c_s_1_1_clock_html_a358b6c7dc9242f4d029f7d6dc5154d5d"><div class="ttname"><a href="class_l_c_s_1_1_clock.html#a358b6c7dc9242f4d029f7d6dc5154d5d">LCS::Clock::GetElapsedTime</a></div><div class="ttdeci">double GetElapsedTime() const </div><div class="ttdef"><b>Definition:</b> basic.hpp:380</div></div>
-<div class="ttc" id="class_l_c_s_1_1_tensor_html_a3c0d906882259a635d81d86d332d0d5a"><div class="ttname"><a href="class_l_c_s_1_1_tensor.html#a3c0d906882259a635d81d86d332d0d5a">LCS::Tensor::Tensor</a></div><div class="ttdeci">Tensor(unsigned nx, unsigned ny)</div><div class="ttdef"><b>Definition:</b> basic.hpp:178</div></div>
-<div class="ttc" id="class_l_c_s_1_1_clock_html_a99f4e7d8fead98f8e68e1b56bde4ab26"><div class="ttname"><a href="class_l_c_s_1_1_clock.html#a99f4e7d8fead98f8e68e1b56bde4ab26">LCS::Clock::End</a></div><div class="ttdeci">void End()</div><div class="ttdef"><b>Definition:</b> basic.hpp:362</div></div>
-<div class="ttc" id="struct_l_c_s_1_1_vector_html_a72990997335947a41f4f550764a08406"><div class="ttname"><a href="struct_l_c_s_1_1_vector.html#a72990997335947a41f4f550764a08406">LCS::Vector::y</a></div><div class="ttdeci">T y</div><div class="ttdef"><b>Definition:</b> basic.hpp:92</div></div>
-<div class="ttc" id="struct_l_c_s_1_1_vector_html_a6a432a866d84805c3441c9837c99f7d2"><div class="ttname"><a href="struct_l_c_s_1_1_vector.html#a6a432a866d84805c3441c9837c99f7d2">LCS::Vector::Vector</a></div><div class="ttdeci">Vector(const T &amp;x, const T &amp;y)</div><div class="ttdef"><b>Definition:</b> basic.hpp:89</div></div>
-<div class="ttc" id="class_l_c_s_1_1_tensor_html_af69f2257054e594767a6ee2a13c1668d"><div class="ttname"><a href="class_l_c_s_1_1_tensor.html#af69f2257054e594767a6ee2a13c1668d">LCS::Tensor::SetAll</a></div><div class="ttdeci">void SetAll(std::vector&lt; T &gt; &amp;data)</div><div class="ttdef"><b>Definition:</b> basic.hpp:279</div></div>
-<div class="ttc" id="struct_l_c_s_1_1_vector_html_a5c5e441d378bdbbe7e330212ff35a297"><div class="ttname"><a href="struct_l_c_s_1_1_vector.html#a5c5e441d378bdbbe7e330212ff35a297">LCS::Vector::x</a></div><div class="ttdeci">T x</div><div class="ttdef"><b>Definition:</b> basic.hpp:91</div></div>
-<div class="ttc" id="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4_html_a8020d810aaac4b76fac4541b28eecd24"><div class="ttname"><a href="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4.html#a8020d810aaac4b76fac4541b28eecd24">LCS::Vector&lt; T, 1 &gt;::value</a></div><div class="ttdeci">T value</div><div class="ttdef"><b>Definition:</b> basic.hpp:161</div></div>
-<div class="ttc" id="class_l_c_s_1_1_tensor_html_a7a480682d197d9dc0db856f0758a66f4"><div class="ttname"><a href="class_l_c_s_1_1_tensor.html#a7a480682d197d9dc0db856f0758a66f4">LCS::Tensor::GetNearby</a></div><div class="ttdeci">auto GetNearby(const unsigned i, const unsigned j) const </div><div class="ttdef"><b>Definition:</b> basic.hpp:254</div></div>
-<div class="ttc" id="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4_html_a3fa258a497e6ebe25636aaef3a2c1dfc"><div class="ttname"><a href="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4.html#a3fa258a497e6ebe25636aaef3a2c1dfc">LCS::Vector&lt; T, 1 &gt;::Vector</a></div><div class="ttdeci">Vector()</div><div class="ttdef"><b>Definition:</b> basic.hpp:154</div></div>
-<div class="ttc" id="class_l_c_s_1_1_tensor_html"><div class="ttname"><a href="class_l_c_s_1_1_tensor.html">LCS::Tensor</a></div><div class="ttdoc">Class for tensors. </div><div class="ttdef"><b>Definition:</b> basic.hpp:171</div></div>
-<div class="ttc" id="class_l_c_s_1_1_clock_html"><div class="ttname"><a href="class_l_c_s_1_1_clock.html">LCS::Clock</a></div><div class="ttdoc">Class for time recording. </div><div class="ttdef"><b>Definition:</b> basic.hpp:342</div></div>
-<div class="ttc" id="class_l_c_s_1_1_tensor_html_ab704af17408a04bc9b8c4997259a114e"><div class="ttname"><a href="class_l_c_s_1_1_tensor.html#ab704af17408a04bc9b8c4997259a114e">LCS::Tensor::GetValue</a></div><div class="ttdeci">T GetValue(unsigned i, unsigned j) const </div><div class="ttdef"><b>Definition:</b> basic.hpp:236</div></div>
-<div class="ttc" id="struct_l_c_s_1_1_vector_html_afe6850de8c22687eaa2fad6aa43c9bd0"><div class="ttname"><a href="struct_l_c_s_1_1_vector.html#afe6850de8c22687eaa2fad6aa43c9bd0">LCS::Vector::Vector</a></div><div class="ttdeci">Vector()</div><div class="ttdef"><b>Definition:</b> basic.hpp:83</div></div>
-<div class="ttc" id="class_l_c_s_1_1_tensor_html_a93d0554e08ae223a2dcb017e4eb0621f"><div class="ttname"><a href="class_l_c_s_1_1_tensor.html#a93d0554e08ae223a2dcb017e4eb0621f">LCS::Tensor::Get</a></div><div class="ttdeci">T Get(unsigned i, unsigned j) const </div><div class="ttdef"><b>Definition:</b> basic.hpp:226</div></div>
-<div class="ttc" id="class_l_c_s_1_1_tensor_html_a37c5eec2358e2677cba7dd35c80f3f55"><div class="ttname"><a href="class_l_c_s_1_1_tensor.html#a37c5eec2358e2677cba7dd35c80f3f55">LCS::Tensor::operator()</a></div><div class="ttdeci">T &amp; operator()(unsigned i, unsigned j)</div><div class="ttdef"><b>Definition:</b> basic.hpp:195</div></div>
-<div class="ttc" id="class_l_c_s_1_1_tensor_html_a2a8741390845a9253a9fe193ffaaec12"><div class="ttname"><a href="class_l_c_s_1_1_tensor.html#a2a8741390845a9253a9fe193ffaaec12">LCS::Tensor::Get</a></div><div class="ttdeci">T &amp; Get(unsigned i, unsigned j)</div><div class="ttdef"><b>Definition:</b> basic.hpp:216</div></div>
-<div class="ttc" id="class_l_c_s_1_1_tensor_html_a083da0f18b0a2d05b35449c0d99633f9"><div class="ttname"><a href="class_l_c_s_1_1_tensor.html#a083da0f18b0a2d05b35449c0d99633f9">LCS::Tensor::operator=</a></div><div class="ttdeci">void operator=(const Tensor&lt; T, Dim &gt; &amp;t)</div><div class="ttdef"><b>Definition:</b> basic.hpp:184</div></div>
-<div class="ttc" id="class_l_c_s_1_1_clock_html_a972394d61b2aa167292a948a2d2105b8"><div class="ttname"><a href="class_l_c_s_1_1_clock.html#a972394d61b2aa167292a948a2d2105b8">LCS::Clock::Clock</a></div><div class="ttdeci">Clock()</div><div class="ttdef"><b>Definition:</b> basic.hpp:347</div></div>
-<div class="ttc" id="class_l_c_s_1_1_tensor_html_a1d895ea81c24dce13ac83798b842bf0a"><div class="ttname"><a href="class_l_c_s_1_1_tensor.html#a1d895ea81c24dce13ac83798b842bf0a">LCS::Tensor::GetAll</a></div><div class="ttdeci">auto &amp; GetAll() const </div><div class="ttdef"><b>Definition:</b> basic.hpp:244</div></div>
-<div class="ttc" id="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4_html_a70075ca3b80846a69c2ee67886281190"><div class="ttname"><a href="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4.html#a70075ca3b80846a69c2ee67886281190">LCS::Vector&lt; T, 1 &gt;::Vector</a></div><div class="ttdeci">Vector(const T &amp;x)</div><div class="ttdef"><b>Definition:</b> basic.hpp:159</div></div>
-<div class="ttc" id="class_l_c_s_1_1_tensor_html_ad70811f678b39be09f8c3243523756e3"><div class="ttname"><a href="class_l_c_s_1_1_tensor.html#ad70811f678b39be09f8c3243523756e3">LCS::Tensor::Size</a></div><div class="ttdeci">auto Size() const </div><div class="ttdef"><b>Definition:</b> basic.hpp:287</div></div>
-<div class="ttc" id="struct_l_c_s_1_1_vector_html"><div class="ttname"><a href="struct_l_c_s_1_1_vector.html">LCS::Vector</a></div><div class="ttdoc">Struct for vectors. </div><div class="ttdef"><b>Definition:</b> basic.hpp:80</div></div>
-<div class="ttc" id="class_l_c_s_1_1_clock_html_abfd2f4c8f90418b95096622e64f321c7"><div class="ttname"><a href="class_l_c_s_1_1_clock.html#abfd2f4c8f90418b95096622e64f321c7">LCS::Clock::GetTotalElapsedTime</a></div><div class="ttdeci">double GetTotalElapsedTime() const </div><div class="ttdef"><b>Definition:</b> basic.hpp:388</div></div>
-<div class="ttc" id="class_l_c_s_1_1_clock_html_abe9afbf1bb6a29fba4bf9c32b7616dea"><div class="ttname"><a href="class_l_c_s_1_1_clock.html#abe9afbf1bb6a29fba4bf9c32b7616dea">LCS::Clock::Begin</a></div><div class="ttdeci">void Begin()</div><div class="ttdef"><b>Definition:</b> basic.hpp:351</div></div>
+<div class="line"><a name="l00354"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_clock.html">  354</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_l_c_s_1_1_clock.html">Clock</a></div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;{</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00359"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_clock.html#a972394d61b2aa167292a948a2d2105b8">  359</a></span>&#160;        <a class="code" href="class_l_c_s_1_1_clock.html#a972394d61b2aa167292a948a2d2105b8">Clock</a>():</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;            total_elapsed_time_(0), begin_time_(), end_time_(), started_(false) {}</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;</div>
+<div class="line"><a name="l00363"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_clock.html#abe9afbf1bb6a29fba4bf9c32b7616dea">  363</a></span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="class_l_c_s_1_1_clock.html#abe9afbf1bb6a29fba4bf9c32b7616dea">Begin</a>()</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;        {</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;            <span class="comment">// TODO: make sure clock is not started</span></div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;            <span class="keywordflow">if</span> (!started_)</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;            {</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;                begin_time_ = std::chrono::system_clock::now();</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;                started_ = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;            }</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;        }</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;</div>
+<div class="line"><a name="l00374"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_clock.html#a99f4e7d8fead98f8e68e1b56bde4ab26">  374</a></span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="class_l_c_s_1_1_clock.html#a99f4e7d8fead98f8e68e1b56bde4ab26">End</a>()</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;        {</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;            <span class="comment">// TODO: make sure clock is started</span></div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;            <span class="keywordflow">if</span> (started_)</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;            {</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;                end_time_ = std::chrono::system_clock::now();</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;                started_ = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;                <span class="comment">// calculate elapsed time (in seconds) and add it to total_time_</span></div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;                elapsed_time_ = std::chrono::duration_cast&lt;std::chrono::nanoseconds&gt;</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;                    (end_time_ - begin_time_).count() / 1e9;</div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;                total_elapsed_time_ += elapsed_time_;</div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;            }</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;        }</div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;</div>
+<div class="line"><a name="l00392"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_clock.html#a358b6c7dc9242f4d029f7d6dc5154d5d">  392</a></span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">double</span> <a class="code" href="class_l_c_s_1_1_clock.html#a358b6c7dc9242f4d029f7d6dc5154d5d">GetElapsedTime</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;<span class="keyword">        </span>{</div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;            <span class="keywordflow">return</span> elapsed_time_;</div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;        }</div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;</div>
+<div class="line"><a name="l00400"></a><span class="lineno"><a class="line" href="class_l_c_s_1_1_clock.html#abfd2f4c8f90418b95096622e64f321c7">  400</a></span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">double</span> <a class="code" href="class_l_c_s_1_1_clock.html#abfd2f4c8f90418b95096622e64f321c7">GetTotalElapsedTime</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;<span class="keyword">        </span>{</div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;            <span class="keywordflow">return</span> total_elapsed_time_;</div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;        }</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;        <span class="keywordtype">double</span> total_elapsed_time_;</div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;        <span class="keywordtype">double</span> elapsed_time_;</div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;        std::chrono::time_point&lt;std::chrono::system_clock&gt; begin_time_;</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;        std::chrono::time_point&lt;std::chrono::system_clock&gt; end_time_;</div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;        <span class="keywordtype">bool</span> started_; </div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;};</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;</div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;}</div>
+<div class="ttc" id="class_l_c_s_1_1_tensor_html_a3825fc3377c89d9b58502c9d4263c8d2"><div class="ttname"><a href="class_l_c_s_1_1_tensor.html#a3825fc3377c89d9b58502c9d4263c8d2">LCS::Tensor::SetValue</a></div><div class="ttdeci">void SetValue(unsigned i, unsigned j, T value)</div><div class="ttdef"><b>Definition:</b> basic.hpp:283</div></div>
+<div class="ttc" id="class_l_c_s_1_1_clock_html_a358b6c7dc9242f4d029f7d6dc5154d5d"><div class="ttname"><a href="class_l_c_s_1_1_clock.html#a358b6c7dc9242f4d029f7d6dc5154d5d">LCS::Clock::GetElapsedTime</a></div><div class="ttdeci">double GetElapsedTime() const </div><div class="ttdef"><b>Definition:</b> basic.hpp:392</div></div>
+<div class="ttc" id="namespace_l_c_s_html_ae35e89bd9dca5a7017aa23d88ecfa33a"><div class="ttname"><a href="namespace_l_c_s.html#ae35e89bd9dca5a7017aa23d88ecfa33a">LCS::operator-</a></div><div class="ttdeci">std::vector&lt; T &gt; operator-(const std::vector&lt; T &gt; &amp;a, const std::vector&lt; T &gt; &amp;b)</div><div class="ttdef"><b>Definition:</b> basic.hpp:57</div></div>
+<div class="ttc" id="class_l_c_s_1_1_tensor_html_a3c0d906882259a635d81d86d332d0d5a"><div class="ttname"><a href="class_l_c_s_1_1_tensor.html#a3c0d906882259a635d81d86d332d0d5a">LCS::Tensor::Tensor</a></div><div class="ttdeci">Tensor(unsigned nx, unsigned ny)</div><div class="ttdef"><b>Definition:</b> basic.hpp:190</div></div>
+<div class="ttc" id="class_l_c_s_1_1_clock_html_a99f4e7d8fead98f8e68e1b56bde4ab26"><div class="ttname"><a href="class_l_c_s_1_1_clock.html#a99f4e7d8fead98f8e68e1b56bde4ab26">LCS::Clock::End</a></div><div class="ttdeci">void End()</div><div class="ttdef"><b>Definition:</b> basic.hpp:374</div></div>
+<div class="ttc" id="struct_l_c_s_1_1_vector_html_a72990997335947a41f4f550764a08406"><div class="ttname"><a href="struct_l_c_s_1_1_vector.html#a72990997335947a41f4f550764a08406">LCS::Vector::y</a></div><div class="ttdeci">T y</div><div class="ttdef"><b>Definition:</b> basic.hpp:104</div></div>
+<div class="ttc" id="struct_l_c_s_1_1_vector_html_a6a432a866d84805c3441c9837c99f7d2"><div class="ttname"><a href="struct_l_c_s_1_1_vector.html#a6a432a866d84805c3441c9837c99f7d2">LCS::Vector::Vector</a></div><div class="ttdeci">Vector(const T &amp;x, const T &amp;y)</div><div class="ttdef"><b>Definition:</b> basic.hpp:101</div></div>
+<div class="ttc" id="class_l_c_s_1_1_tensor_html_af69f2257054e594767a6ee2a13c1668d"><div class="ttname"><a href="class_l_c_s_1_1_tensor.html#af69f2257054e594767a6ee2a13c1668d">LCS::Tensor::SetAll</a></div><div class="ttdeci">void SetAll(std::vector&lt; T &gt; &amp;data)</div><div class="ttdef"><b>Definition:</b> basic.hpp:291</div></div>
+<div class="ttc" id="struct_l_c_s_1_1_vector_html_a5c5e441d378bdbbe7e330212ff35a297"><div class="ttname"><a href="struct_l_c_s_1_1_vector.html#a5c5e441d378bdbbe7e330212ff35a297">LCS::Vector::x</a></div><div class="ttdeci">T x</div><div class="ttdef"><b>Definition:</b> basic.hpp:103</div></div>
+<div class="ttc" id="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4_html_a8020d810aaac4b76fac4541b28eecd24"><div class="ttname"><a href="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4.html#a8020d810aaac4b76fac4541b28eecd24">LCS::Vector&lt; T, 1 &gt;::value</a></div><div class="ttdeci">T value</div><div class="ttdef"><b>Definition:</b> basic.hpp:173</div></div>
+<div class="ttc" id="class_l_c_s_1_1_tensor_html_a7a480682d197d9dc0db856f0758a66f4"><div class="ttname"><a href="class_l_c_s_1_1_tensor.html#a7a480682d197d9dc0db856f0758a66f4">LCS::Tensor::GetNearby</a></div><div class="ttdeci">auto GetNearby(const unsigned i, const unsigned j) const </div><div class="ttdef"><b>Definition:</b> basic.hpp:266</div></div>
+<div class="ttc" id="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4_html_a3fa258a497e6ebe25636aaef3a2c1dfc"><div class="ttname"><a href="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4.html#a3fa258a497e6ebe25636aaef3a2c1dfc">LCS::Vector&lt; T, 1 &gt;::Vector</a></div><div class="ttdeci">Vector()</div><div class="ttdef"><b>Definition:</b> basic.hpp:166</div></div>
+<div class="ttc" id="class_l_c_s_1_1_tensor_html"><div class="ttname"><a href="class_l_c_s_1_1_tensor.html">LCS::Tensor</a></div><div class="ttdoc">Class for tensors. </div><div class="ttdef"><b>Definition:</b> basic.hpp:183</div></div>
+<div class="ttc" id="namespace_l_c_s_html_ab9d127246f1e01de1b3cdb204fa5d645"><div class="ttname"><a href="namespace_l_c_s.html#ab9d127246f1e01de1b3cdb204fa5d645">LCS::interpolate</a></div><div class="ttdeci">T interpolate(T x1, T x2, T y1, T y2, T xm)</div><div class="ttdef"><b>Definition:</b> basic.hpp:321</div></div>
+<div class="ttc" id="class_l_c_s_1_1_field_html_a336b0729fc0eace2913767f4acbfdcf6"><div class="ttname"><a href="class_l_c_s_1_1_field.html#a336b0729fc0eace2913767f4acbfdcf6">LCS::Field::GetAll</a></div><div class="ttdeci">auto &amp; GetAll() const </div><div class="ttdef"><b>Definition:</b> field.hpp:47</div></div>
+<div class="ttc" id="class_l_c_s_1_1_clock_html"><div class="ttname"><a href="class_l_c_s_1_1_clock.html">LCS::Clock</a></div><div class="ttdoc">Class for time recording. </div><div class="ttdef"><b>Definition:</b> basic.hpp:354</div></div>
+<div class="ttc" id="class_l_c_s_1_1_tensor_html_ab704af17408a04bc9b8c4997259a114e"><div class="ttname"><a href="class_l_c_s_1_1_tensor.html#ab704af17408a04bc9b8c4997259a114e">LCS::Tensor::GetValue</a></div><div class="ttdeci">T GetValue(unsigned i, unsigned j) const </div><div class="ttdef"><b>Definition:</b> basic.hpp:248</div></div>
+<div class="ttc" id="struct_l_c_s_1_1_vector_html_afe6850de8c22687eaa2fad6aa43c9bd0"><div class="ttname"><a href="struct_l_c_s_1_1_vector.html#afe6850de8c22687eaa2fad6aa43c9bd0">LCS::Vector::Vector</a></div><div class="ttdeci">Vector()</div><div class="ttdef"><b>Definition:</b> basic.hpp:95</div></div>
+<div class="ttc" id="class_l_c_s_1_1_field_html_a05b3d133f5188ec1c9531ab16ef2d069"><div class="ttname"><a href="class_l_c_s_1_1_field.html#a05b3d133f5188ec1c9531ab16ef2d069">LCS::Field::SetAll</a></div><div class="ttdeci">void SetAll(Tensor&lt; Vector&lt; T, Size &gt;, Dim &gt; &amp;data)</div><div class="ttdef"><b>Definition:</b> field.hpp:71</div></div>
+<div class="ttc" id="class_l_c_s_1_1_field_html"><div class="ttname"><a href="class_l_c_s_1_1_field.html">LCS::Field</a></div><div class="ttdoc">Class for general physical fields. </div><div class="ttdef"><b>Definition:</b> field.hpp:35</div></div>
+<div class="ttc" id="class_l_c_s_1_1_tensor_html_a93d0554e08ae223a2dcb017e4eb0621f"><div class="ttname"><a href="class_l_c_s_1_1_tensor.html#a93d0554e08ae223a2dcb017e4eb0621f">LCS::Tensor::Get</a></div><div class="ttdeci">T Get(unsigned i, unsigned j) const </div><div class="ttdef"><b>Definition:</b> basic.hpp:238</div></div>
+<div class="ttc" id="class_l_c_s_1_1_tensor_html_a37c5eec2358e2677cba7dd35c80f3f55"><div class="ttname"><a href="class_l_c_s_1_1_tensor.html#a37c5eec2358e2677cba7dd35c80f3f55">LCS::Tensor::operator()</a></div><div class="ttdeci">T &amp; operator()(unsigned i, unsigned j)</div><div class="ttdef"><b>Definition:</b> basic.hpp:207</div></div>
+<div class="ttc" id="class_l_c_s_1_1_tensor_html_a2a8741390845a9253a9fe193ffaaec12"><div class="ttname"><a href="class_l_c_s_1_1_tensor.html#a2a8741390845a9253a9fe193ffaaec12">LCS::Tensor::Get</a></div><div class="ttdeci">T &amp; Get(unsigned i, unsigned j)</div><div class="ttdef"><b>Definition:</b> basic.hpp:228</div></div>
+<div class="ttc" id="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4_html"><div class="ttname"><a href="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4.html">LCS::Vector&lt; T, 1 &gt;</a></div><div class="ttdoc">Vector with one element. </div><div class="ttdef"><b>Definition:</b> basic.hpp:163</div></div>
+<div class="ttc" id="class_l_c_s_1_1_tensor_html_a083da0f18b0a2d05b35449c0d99633f9"><div class="ttname"><a href="class_l_c_s_1_1_tensor.html#a083da0f18b0a2d05b35449c0d99633f9">LCS::Tensor::operator=</a></div><div class="ttdeci">void operator=(const Tensor&lt; T, Dim &gt; &amp;t)</div><div class="ttdef"><b>Definition:</b> basic.hpp:196</div></div>
+<div class="ttc" id="class_l_c_s_1_1_clock_html_a972394d61b2aa167292a948a2d2105b8"><div class="ttname"><a href="class_l_c_s_1_1_clock.html#a972394d61b2aa167292a948a2d2105b8">LCS::Clock::Clock</a></div><div class="ttdeci">Clock()</div><div class="ttdef"><b>Definition:</b> basic.hpp:359</div></div>
+<div class="ttc" id="namespace_l_c_s_html_a4e73697b321d3105de6c8cbb7e5683d8"><div class="ttname"><a href="namespace_l_c_s.html#a4e73697b321d3105de6c8cbb7e5683d8">LCS::operator+</a></div><div class="ttdeci">std::vector&lt; T &gt; operator+(const std::vector&lt; T &gt; &amp;a, const std::vector&lt; T &gt; &amp;b)</div><div class="ttdef"><b>Definition:</b> basic.hpp:38</div></div>
+<div class="ttc" id="class_l_c_s_1_1_tensor_html_a1d895ea81c24dce13ac83798b842bf0a"><div class="ttname"><a href="class_l_c_s_1_1_tensor.html#a1d895ea81c24dce13ac83798b842bf0a">LCS::Tensor::GetAll</a></div><div class="ttdeci">auto &amp; GetAll() const </div><div class="ttdef"><b>Definition:</b> basic.hpp:256</div></div>
+<div class="ttc" id="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4_html_a70075ca3b80846a69c2ee67886281190"><div class="ttname"><a href="struct_l_c_s_1_1_vector_3_01_t_00_011_01_4.html#a70075ca3b80846a69c2ee67886281190">LCS::Vector&lt; T, 1 &gt;::Vector</a></div><div class="ttdeci">Vector(const T &amp;x)</div><div class="ttdef"><b>Definition:</b> basic.hpp:171</div></div>
+<div class="ttc" id="class_l_c_s_1_1_tensor_html_ad70811f678b39be09f8c3243523756e3"><div class="ttname"><a href="class_l_c_s_1_1_tensor.html#ad70811f678b39be09f8c3243523756e3">LCS::Tensor::Size</a></div><div class="ttdeci">auto Size() const </div><div class="ttdef"><b>Definition:</b> basic.hpp:299</div></div>
+<div class="ttc" id="namespace_l_c_s_html_aa67dceb84088fcbcc29658778de4aff7"><div class="ttname"><a href="namespace_l_c_s.html#aa67dceb84088fcbcc29658778de4aff7">LCS::operator*</a></div><div class="ttdeci">std::vector&lt; T &gt; operator*(const T2 c, std::vector&lt; T &gt; a)</div><div class="ttdef"><b>Definition:</b> basic.hpp:77</div></div>
+<div class="ttc" id="struct_l_c_s_1_1_vector_html"><div class="ttname"><a href="struct_l_c_s_1_1_vector.html">LCS::Vector</a></div><div class="ttdoc">Struct for vectors. </div><div class="ttdef"><b>Definition:</b> basic.hpp:92</div></div>
+<div class="ttc" id="class_l_c_s_1_1_clock_html_abfd2f4c8f90418b95096622e64f321c7"><div class="ttname"><a href="class_l_c_s_1_1_clock.html#abfd2f4c8f90418b95096622e64f321c7">LCS::Clock::GetTotalElapsedTime</a></div><div class="ttdeci">double GetTotalElapsedTime() const </div><div class="ttdef"><b>Definition:</b> basic.hpp:400</div></div>
+<div class="ttc" id="class_l_c_s_1_1_clock_html_abe9afbf1bb6a29fba4bf9c32b7616dea"><div class="ttname"><a href="class_l_c_s_1_1_clock.html#abe9afbf1bb6a29fba4bf9c32b7616dea">LCS::Clock::Begin</a></div><div class="ttdeci">void Begin()</div><div class="ttdef"><b>Definition:</b> basic.hpp:363</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.5-->
 <!-- start footer part -->
