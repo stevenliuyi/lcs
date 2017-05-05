@@ -12,7 +12,7 @@
 
 namespace LCS {
 /**
-    @namespace VelocityFunction
+    @namespace LCS::VelocityFunction
     @brief Namespace for demo velocity functions.
 
     All demo analytic velocity functions are included in this namespace.

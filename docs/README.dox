@@ -1,8 +1,10 @@
 /**
 
-@mainpage Documentation [![Build Status](https://travis-ci.org/stevenliuyi/lcs.svg?branch=master)](https://travis-ci.org/stevenliuyi/lcs)
+@mainpage Documentation
 
-LCS is a library for performing [Lagrangian coherent structure](https://en.wikipedia.org/wiki/Lagrangian_coherent_structure) (LCS) analysis of flow field. [OpenMP](www.openmp.org/) is supported for parallelization.
+![Build Status](https://travis-ci.org/stevenliuyi/lcs.svg?branch=master)
+
+LCS is a library for performing [Lagrangian coherent structure](https://en.wikipedia.org/wiki/Lagrangian_coherent_structure) (LCS) analysis of flow field. [OpenMP](http://www.openmp.org/) is supported for parallelization.
 
 It implements particle advection calculations for both discrete and continuous flow velocity data, and then uses finite-time Lyapunov exponent technique to obtain LCSs.
 
@@ -14,10 +16,11 @@ Suppose we have the flow map \f$\phi(t_0+T,\mathbf{x}_0,t_0)\f$ obtained after f
 
 where \f$\lambda_{\max}\f$ denotes the maximum eigenvalue of a matrix. Here, the matrix is called Cauchy-Green tensor.
 
-== Example ==
+## Example
 Here we show a demo of perform FTLE calculation for a double-gyre model. The implementation is included in double_gyre.cpp.
 
-![pFTLE](https://raw.githubusercontent.com/stevenliuyi/lcs/master/demo/double_gyre/double_gyre_ftle_pos.png)
-![nFTLE](https://github.com/stevenliuyi/lcs/blob/master/demo/double_gyre/double_gyre_ftle_neg.png)
+| pFTLE | nFTLE |
+| ----- | ----- |
+| ![pFTLE](https://raw.githubusercontent.com/stevenliuyi/lcs/master/demo/double_gyre/double_gyre_ftle_pos.png) | ![nFTLE](https://raw.githubusercontent.com/stevenliuyi/lcs/master/demo/double_gyre/double_gyre_ftle_neg.png) |
 
 */

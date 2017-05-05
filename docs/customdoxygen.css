@@ -1400,3 +1400,5 @@ tr.heading h2 {
 	text-shadow: none;
 }
 
+img[alt=pFTLE] { width: 200px; }
+img[alt=nFTLE] { width: 200px; }
