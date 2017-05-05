@@ -143,7 +143,7 @@ struct LCS::VelocityFunction::BowerModel&lt; T &gt;</h3>
 <p> where <img class="formulaInl" alt="$y_c'=A\sin(kx')$" src="form_13.png"/>, and <img class="formulaInl" alt="$\alpha'=\tan^{-1}[Ak\cos(kx')]$" src="form_14.png"/>.</p>
 <p>Then, the velocity in the moving frame can be obtained by calculating the partial derivatives of the streamfunction: </p>
 <p class="formulaDsp">
-<img class="formulaDsp" alt="\[ u'=-\frac{\partial\Psi'}{\partial y'},\quad v'=\frac{\partial\Psi'}{\partial x'}. \]" src="form_16.png"/>
+<img class="formulaDsp" alt="\[ u'=-\frac{\partial\Psi'}{\partial y'},\quad v'=\frac{\partial\Psi'}{\partial x'}. \]" src="form_15.png"/>
 </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -254,8 +254,8 @@ template&lt;typename T &gt; </div>
 <p>Get the velocity at a given point. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">x</td><td><img class="formulaInl" alt="$x$" src="form_0.png"/>-coordinate of the point. </td></tr>
-    <tr><td class="paramname">y</td><td><img class="formulaInl" alt="$y$" src="form_1.png"/>-coordinate of the point. </td></tr>
+    <tr><td class="paramname">x</td><td><img class="formulaInl" alt="$x$" src="form_2.png"/>-coordinate of the point. </td></tr>
+    <tr><td class="paramname">y</td><td><img class="formulaInl" alt="$y$" src="form_3.png"/>-coordinate of the point. </td></tr>
     <tr><td class="paramname">t</td><td>Time for velocity. Since the flow is steady (independent of time), <code>t</code> should be 0 here. </td></tr>
   </table>
   </dd>

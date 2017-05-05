@@ -126,15 +126,15 @@ struct LCS::VelocityFunction::DoubleGyreModel&lt; T &gt;</h3>
 
 <p>Double-gyre model. </p>
 <p>The velocity function of the double-gyre model is implemented here. The model consists of a pair of counter-rotating gyres. <a class="el" href="citelist.html#CITEREF_shadden2005">[2]</a></p>
-<p>The velocity for a given point <img class="formulaInl" alt="$(x,y)$" src="form_17.png"/> at time <img class="formulaInl" alt="$t$" src="form_18.png"/> is given by </p>
+<p>The velocity for a given point <img class="formulaInl" alt="$(x,y)$" src="form_16.png"/> at time <img class="formulaInl" alt="$t$" src="form_17.png"/> is given by </p>
 <p class="formulaDsp">
-<img class="formulaDsp" alt="\[ u = -\pi A\sin(\pi f)\cos(\pi y), \]" src="form_19.png"/>
+<img class="formulaDsp" alt="\[ u = -\pi A\sin(\pi f)\cos(\pi y), \]" src="form_18.png"/>
 </p>
 <p> and </p>
 <p class="formulaDsp">
-<img class="formulaDsp" alt="\[ v = \pi A\cos(\pi f)\sin(\pi y)\frac{\partial f}{\partial x}, \]" src="form_20.png"/>
+<img class="formulaDsp" alt="\[ v = \pi A\cos(\pi f)\sin(\pi y)\frac{\partial f}{\partial x}, \]" src="form_19.png"/>
 </p>
-<p> where <img class="formulaInl" alt="$f(x,t)=ax^2+bx$" src="form_21.png"/>, <img class="formulaInl" alt="$a(t)=\epsilon\sin(\omega t)$" src="form_24.png"/> and <img class="formulaInl" alt="$b(t)=1-2\epsilon\sin(\omega t)$" src="form_25.png"/>.</p>
+<p> where <img class="formulaInl" alt="$f(x,t)=ax^2+bx$" src="form_20.png"/>, <img class="formulaInl" alt="$a(t)=\epsilon\sin(\omega t)$" src="form_21.png"/> and <img class="formulaInl" alt="$b(t)=1-2\epsilon\sin(\omega t)$" src="form_22.png"/>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>Numeric data type of the values. </td></tr>
@@ -244,8 +244,8 @@ template&lt;typename T &gt; </div>
 <p>Get the velocity for a given point at a given time </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">x</td><td><img class="formulaInl" alt="$x$" src="form_0.png"/>-coordinate of the point. </td></tr>
-    <tr><td class="paramname">y</td><td><img class="formulaInl" alt="$y$" src="form_1.png"/>-coordinate of the point. </td></tr>
+    <tr><td class="paramname">x</td><td><img class="formulaInl" alt="$x$" src="form_2.png"/>-coordinate of the point. </td></tr>
+    <tr><td class="paramname">y</td><td><img class="formulaInl" alt="$y$" src="form_3.png"/>-coordinate of the point. </td></tr>
     <tr><td class="paramname">t</td><td>Time for velocity. </td></tr>
   </table>
   </dd>
@@ -280,7 +280,7 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Parameter <img class="formulaInl" alt="$\epsilon$" src="form_22.png"/> for the model. </p>
+<p>Parameter <img class="formulaInl" alt="$\epsilon$" src="form_23.png"/> for the model. </p>
 
 </div>
 </div>
@@ -295,7 +295,7 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Parameter <img class="formulaInl" alt="$\omega$" src="form_23.png"/> for the model. </p>
+<p>Parameter <img class="formulaInl" alt="$\omega$" src="form_24.png"/> for the model. </p>
 
 </div>
 </div>
