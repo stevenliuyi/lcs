@@ -330,7 +330,7 @@ inline T interpolate(T x1, T x2, T y1, T y2, T xm)
     @param f1 Field at time `x1`.
     @param f2 Field at time `x2`.
     @param xm Time that associated with the interpolated Field.
-    @return Interpolated Field of `f1` and `f2`.
+    @param result Interpolated Field of `f1` and `f2`.
     */
 template <typename Field, typename T>
 void interpolate(T x1, T x2, Field& f1, Field& f2, T xm, Field& result)
