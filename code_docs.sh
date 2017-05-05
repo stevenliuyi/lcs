@@ -10,7 +10,7 @@ rm -rf code_docs/*
 doxygen docs/Doxyfile
 
 # move documentation files to gh-pages branch
-mv docs/html code_docs/
+mv docs/html/* code_docs/
 
 cd code_docs
 
