@@ -13,5 +13,6 @@ var searchData=
   ['current_5fvel_5f',['current_vel_',['../class_l_c_s_1_1_flow_field.html#ab8b393ff7ea5d040f280fe43740b6fd4',1,'LCS::FlowField']]],
   ['currentdatavelocity',['CurrentDataVelocity',['../class_l_c_s_1_1_discrete_flow_field.html#ad3b8a2be47342dcbe9ce899447ba9e90',1,'LCS::DiscreteFlowField']]],
   ['currentposition',['CurrentPosition',['../class_l_c_s_1_1_flow_field.html#af2dc73fa15c684bebca7c78ffc33359a',1,'LCS::FlowField']]],
-  ['currentvelocity',['CurrentVelocity',['../class_l_c_s_1_1_flow_field.html#a0334ef29954c321af39d71abb3dc3ec4',1,'LCS::FlowField::CurrentVelocity()'],['../class_l_c_s_1_1_continuous_flow_field.html#a53fd8fe9145692375955c3b1b382d09c',1,'LCS::ContinuousFlowField::CurrentVelocity()']]]
+  ['currentvelocity',['CurrentVelocity',['../class_l_c_s_1_1_flow_field.html#a0334ef29954c321af39d71abb3dc3ec4',1,'LCS::FlowField::CurrentVelocity()'],['../class_l_c_s_1_1_continuous_flow_field.html#a53fd8fe9145692375955c3b1b382d09c',1,'LCS::ContinuousFlowField::CurrentVelocity()']]],
+  ['cx_5f',['cx_',['../struct_l_c_s_1_1_velocity_function_1_1_bower_model.html#a878a88b5c7518cb5bc318e67b1ff21fe',1,'LCS::VelocityFunction::BowerModel']]]
 ];
