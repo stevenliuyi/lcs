@@ -6,6 +6,5 @@ var searchData=
   ['vector_3c_20t_2c_201_20_3e',['Vector&lt; T, 1 &gt;',['../struct_l_c_s_1_1_vector_3_01_t_00_011_01_4.html',1,'LCS']]],
   ['velocity',['Velocity',['../class_l_c_s_1_1_velocity.html#a32db777853b4755a2dfff79078f13857',1,'LCS::Velocity']]],
   ['velocity',['Velocity',['../class_l_c_s_1_1_velocity.html',1,'LCS']]],
-  ['velocity_5ffunction_2ehpp',['velocity_function.hpp',['../velocity__function_8hpp.html',1,'']]],
-  ['velocityfunction',['VelocityFunction',['../namespace_velocity_function.html',1,'']]]
+  ['velocity_5ffunction_2ehpp',['velocity_function.hpp',['../velocity__function_8hpp.html',1,'']]]
 ];

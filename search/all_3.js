@@ -9,5 +9,5 @@ var searchData=
   ['discreteflowfield',['DiscreteFlowField',['../class_l_c_s_1_1_discrete_flow_field.html#a54ee3a70035f9844860c166d68bfc4fb',1,'LCS::DiscreteFlowField::DiscreteFlowField(unsigned nx, unsigned ny, unsigned data_nx, unsigned data_ny)'],['../class_l_c_s_1_1_discrete_flow_field.html#a61d73e1b4a903889505a7a002fbd3394',1,'LCS::DiscreteFlowField::DiscreteFlowField(unsigned nx, unsigned ny)']]],
   ['doublegyremodel',['DoubleGyreModel',['../struct_l_c_s_1_1_velocity_function_1_1_double_gyre_model.html',1,'LCS::VelocityFunction']]],
   ['doublegyremodel',['DoubleGyreModel',['../struct_l_c_s_1_1_velocity_function_1_1_double_gyre_model.html#a8d714ac6b31663390ef512fa13767495',1,'LCS::VelocityFunction::DoubleGyreModel::DoubleGyreModel()'],['../struct_l_c_s_1_1_velocity_function_1_1_double_gyre_model.html#a575feadc2e9b16bf1f4e03fad4a15aa5',1,'LCS::VelocityFunction::DoubleGyreModel::DoubleGyreModel(std::vector&lt; T &gt; &amp;p)']]],
-  ['documentation_20_5b_21_5bbuild_20status_5d_28https_3a_2f_2ftravis_2dci_2eorg_2fstevenliuyi_2flcs_2esvg_3fbranch_3dmaster_29_5d_28https_3a_2f_2ftravis_2dci_2eorg_2fstevenliuyi_2flcs_29',['Documentation [![Build Status](https://travis-ci.org/stevenliuyi/lcs.svg?branch=master)](https://travis-ci.org/stevenliuyi/lcs)',['../index.html',1,'']]]
+  ['documentation',['Documentation',['../index.html',1,'']]]
 ];
