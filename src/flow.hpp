@@ -1,3 +1,9 @@
+/**
+    @file flow.hpp
+    @brief Classes for flow fields.
+
+    This file contains classes for reprensenting flow fields. It includes a general FlowField class, and its subclasses DiscreteFlowField and ContinuousFlowField, which are for discrete input data (e.g. from experiments and simulations) and continuous input data (when analytic velocity function is known) respectively.
+    */
 #pragma once
 
 #include "field.hpp"
@@ -12,11 +18,13 @@ template <typename T, typename Func, unsigned Dim>
 class ContinuousFlowField;
 
 
-/** Direction for particle advection.  */
+/** @enum Direction
+    Enum for particle advection direction.
+    */
 enum Direction
 {
-    Forward,
-    Backward
+    Forward, /**< Forward in time. */
+    Backward /**< Backward in time.*/
 };
 
 /** @brief Class for flow field.

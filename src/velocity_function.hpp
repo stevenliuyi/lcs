@@ -1,12 +1,22 @@
+/**
+    @file velocity_function.hpp
+    @brief Demo analytic velocity fields.
+
+    This file contains implementations of demo velocity fields with analytic velocity functions.
+    */
 #pragma once
 
 #include <cmath>
 #include <tuple>
 #include <cassert>
 
-// analytic velocity function examples
-
 namespace LCS {
+/**
+    @namespace VelocityFunction
+    @brief Namespace for demo velocity functions.
+
+    All demo analytic velocity functions are included in this namespace.
+    */
 namespace VelocityFunction {
 
 /** @brief Bower model for meandering jet

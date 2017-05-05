@@ -1,3 +1,9 @@
+/**
+    @file basic.hpp
+    @brief Basic classes needed such as Vector and Tensor.
+    
+    This file contains the basic classes nedded in the project, including extensions of `std::vector` class to support vector arithemtic operations, functions to perfrom linear interpolations, and new Vecotr and Tensor classes to represent physical vectors (including scalars) and tensors (including matrices. It also contains elper class Clock to record program running time.
+    */
 #pragma once
 
 #include <vector>
@@ -14,6 +20,12 @@
 #include <iomanip>
 #include <omp.h>
 
+/**
+    @namespace LCS
+    @brief Namespace for the whole project.
+
+    All classes in this project are in this namespace.
+    */
 namespace LCS {
 
 /** Elementwise addition for STL vectors.

@@ -1,3 +1,10 @@
+/**
+    @file double_gype.cpp
+    @brief Demo for FTLE calculation of double-gyre model.
+
+    This file contains a demo for performing FTLE calculation of a double-gyre model. Both positive and negative FLTE are calculated here.
+    */
+
 #include <iostream>
 #include "../../src/ftle.hpp"
 #include "../../src/velocity_function.hpp"

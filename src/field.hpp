@@ -1,3 +1,9 @@
+/**
+    @file field.hpp
+    @brief Classes of physical fields.
+
+    This file contains a general Field class and its subclasses, including a Position class for representing displacement fields, and a Vector class for representing velocity fields. The fields are associated with structed grids.
+    */
 #pragma once
 
 #include "basic.hpp"

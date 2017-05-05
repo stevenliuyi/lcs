@@ -1,3 +1,9 @@
+/**
+    @file ftle.hpp
+    @brief Class for finite-time Lyapunov exponent calculation.
+
+    This file contains a FTLE class which is used for finite-time Lyapunov exponent calculation after flow map is obtained in a FlowField class after particle advections.
+    */
 #pragma once
 
 #include "flow.hpp"
