@@ -89,7 +89,7 @@ struct BowerModel
     \f[
         v = \pi A\cos(\pi f)\sin(\pi y)\frac{\partial f}{\partial x},
     \f]
-    where \f$f(x,t)=ax^2+bx\f$, $a(t)=\epsilon\sin(\omega t)$ and $b(t)=1-2\epsilon\sin(\omega t).
+    where \f$f(x,t)=ax^2+bx\f$, \f$a(t)=\epsilon\sin(\omega t)\f$ and \f$b(t)=1-2\epsilon\sin(\omega t)\f$.
 
     @tparam T Numeric data type of the values.
     */
