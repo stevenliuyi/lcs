@@ -81,22 +81,31 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">Documentation </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a href="https://travis-ci.org/stevenliuyi/lcs"></a></p>
-<p><a class="el" href="namespace_l_c_s.html" title="Namespace for the whole project. ">LCS</a> is a library for performing <a href="https://en.wikipedia.org/wiki/Lagrangian_coherent_structure">Lagrangian coherent structure</a> (<a class="el" href="namespace_l_c_s.html" title="Namespace for the whole project. ">LCS</a>) analysis of flow field. <a href="www.openmp.org/">OpenMP</a> is supported for parallelization.</p>
+<div class="textblock"><div class="image">
+<img src="https://travis-ci.org/stevenliuyi/lcs.svg?branch=master"  alt="Build Status"/>
+</div>
+<p><a class="el" href="namespace_l_c_s.html" title="Namespace for the whole project. ">LCS</a> is a library for performing <a href="https://en.wikipedia.org/wiki/Lagrangian_coherent_structure">Lagrangian coherent structure</a> (<a class="el" href="namespace_l_c_s.html" title="Namespace for the whole project. ">LCS</a>) analysis of flow field. <a href="http://www.openmp.org/">OpenMP</a> is supported for parallelization.</p>
 <p>It implements particle advection calculations for both discrete and continuous flow velocity data, and then uses finite-time Lyapunov exponent technique to obtain LCSs.</p>
 <p>Suppose we have the flow map <img class="formulaInl" alt="$\phi(t_0+T,\mathbf{x}_0,t_0)$" src="form_25.png"/> obtained after fluid particle advection, where <img class="formulaInl" alt="$\mathbf{x}_0$" src="form_26.png"/> and <img class="formulaInl" alt="$t_0$" src="form_27.png"/> are intial particle position and time, and <img class="formulaInl" alt="$T$" src="form_28.png"/> is the advection time (integration time). Then, FTLE is defined as</p>
 <p class="formulaDsp">
 <img class="formulaDsp" alt="\[ FTLE(\mathbf{x}_0,t_0) =\frac{1}{2T}\log\Big\{\lambda_{\max}\Big[\Big(\frac{\partial\phi}{\partial\mathbf{x}_0}\Big)^T\Big(\frac{\partial\phi}{\partial\mathbf{x}_0}\Big)\Big]\Big\}, \]" src="form_29.png"/>
 </p>
 <p>where <img class="formulaInl" alt="$\lambda_{\max}$" src="form_30.png"/> denotes the maximum eigenvalue of a matrix. Here, the matrix is called Cauchy-Green tensor.</p>
-<p>== Example == Here we show a demo of perform FTLE calculation for a double-gyre model. The implementation is included in double_gyre.cpp.</p>
-<div class="image">
+<h2>Example</h2>
+<p>Here we show a demo of perform FTLE calculation for a double-gyre model. The implementation is included in double_gyre.cpp.</p>
+<table class="doxtable">
+<tr>
+<th>pFTLE </th><th>nFTLE  </th></tr>
+<tr>
+<td><div class="image">
 <img src="https://raw.githubusercontent.com/stevenliuyi/lcs/master/demo/double_gyre/double_gyre_ftle_pos.png"  alt="pFTLE"/>
 </div>
- <div class="image">
-<img src="https://github.com/stevenliuyi/lcs/blob/master/demo/double_gyre/double_gyre_ftle_neg.png"  alt="nFTLE"/>
+ </td><td><div class="image">
+<img src="https://raw.githubusercontent.com/stevenliuyi/lcs/master/demo/double_gyre/double_gyre_ftle_neg.png"  alt="nFTLE"/>
 </div>
- </div></div><!-- contents -->
+ </td></tr>
+</table>
+</div></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.5-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
