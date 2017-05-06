@@ -2,8 +2,6 @@
 
 @mainpage Documentation
 
-![Build Status](https://travis-ci.org/stevenliuyi/lcs.svg?branch=master)
-
 LCS is a library for performing [Lagrangian coherent structure](https://en.wikipedia.org/wiki/Lagrangian_coherent_structure) (LCS) analysis of flow field. [OpenMP](http://www.openmp.org/) is supported for parallelization.
 
 It implements particle advection calculations for both discrete and continuous flow velocity data, and then uses finite-time Lyapunov exponent technique to obtain LCSs.
