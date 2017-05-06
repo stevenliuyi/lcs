@@ -34,51 +34,27 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="http://projectchrono.org/">
-            <span class="logo first">PROJECT</span><span class="logo second">CHRONO</span>
+          <a class="navbar-brand" href="https://github.com/stevenliuyi/lcs/">
+              <span class="logo second">LCS</span>
           </a>
         </div>
         <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li><a href="http://projectchrono.org/download">Download</a></li>
-            <li class="dropdown">
-            <a href="http://api.chrono.projectchrono.org" class="dropdown-toggle disabled" data-hover="dropdown" data-toggle="dropdown" data-delay="100" role="button" aria-haspopup="true" aria-expanded="false">Documentation <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a href="http://api.chrono.projectchrono.org">API main page</a></li>
-                <li><a href="http://api.chrono.projectchrono.org/faq_root.html">FAQ</a></li>
-                <li><a href="http://api.chrono.projectchrono.org/tutorial_table_of_content_install.html">Install Guide</a></li>
-                <li><a href="http://api.chrono.projectchrono.org/tutorial_root.html">Tutorials</a></li>
-                <li><a href="http://api.chrono.projectchrono.org/manual_root.html">Reference manual</a></li>
-                <li><a href="http://api.chrono.projectchrono.org/model_root.html">Model Library</a></li>
-                <li><a href="http://api.chrono.projectchrono.org/validation_studies_root.html">Validation Studies</a></li>
-                <li><a href="http://api.chrono.projectchrono.org/whitepaper_root.html">White Papers</a></li>
-                <li><a href="http://api.chrono.projectchrono.org/refman.pdf">PDF Version</a></li>
-              </ul>
-            </li>
-            <li class="dropdown">
-            <a href="http://projectchrono.org/gallery/" class="dropdown-toggle disabled" data-hover="dropdown" data-toggle="dropdown" data-delay="100" role="button" aria-haspopup="true" aria-expanded="false">Movies <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a href="http://projectchrono.org/gallery/">Gallery</a></li>
-                <li><a href="http://sbel.wisc.edu/Animations/">SBEL</a></li>
-                <li><a href="https://vimeo.com/uwsbel">On Vimeo</a></li>
-              </ul>
-            </li>
-            <li><a href="http://projectchrono.org/news/">News</a></li>
-            <li><a href="http://projectchrono.org/forum/">Forum</a></li>
-            <li class="dropdown">
-            <a href=http://projectchrono.org/about/" class="dropdown-toggle disabled" data-hover="dropdown" data-toggle="dropdown" data-delay="100" role="button" aria-haspopup="true" aria-expanded="false">About <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a href="http://projectchrono.org/about/">Quick Facts</a></li>
-                <li><a href="http://projectchrono.org/testimonials/">Current/Past Users</a></li>
-                <li><a href="http://projectchrono.org/consulting/">Consulting</a></li>
-              </ul>
-            </li>
-            <li><a href="http://projectchrono.org/status">Status</a></li>
+          <ul class="nav navbar-nav navbar-right">
             <li>
-              <form method="get" action="http://projectchrono.org/search" id="search_bar_triggered">
-                          <input type="submit" value="Search">
-                <input type="text" id="search_bar" name="query" value="" />
-              </form> 
+                        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
             </li>
           </ul>
         </div><!--/.navbar-collapse -->
@@ -258,25 +234,18 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <div class="row">
       <div class="col-md-4 col-xs-4 text-left">
 		<small>
-        <p class="">&copy; 2016 Project Chrono. <br> 
-		A community project led by the <a href="http://sbel.wisc.edu">University of Wisconsin-Madison</a> and <a href="http://www.projectchrono.org/tasora/">University of Parma-Italy</a>.</p>
+        <p class=""></p>
 		</small>
       </div>
       <div class="col-md-4 col-xs-4 text-center">
-	    <p class=""><a href="mailto:info@projectchrono.org"> <i class="fa fa-envelope fa-1x"></i> Contact us</a></p>
+          <p class=""><a href="mailto:stevenliuyi@gamil.com"><span class="glyphicon glyphicon-envelope"></span></a>&nbsp;&nbsp;<a href="https:github.com/stevenliuyi/lcs"><span class="glyphicon glyphicon-home"></span></a></p>
       </div>
 	  <div class="col-md-4 col-xs-4 text-left">
 		<small>
-        <p class="">ProjectChrono is open-source, hosted at <br>
-		</small>
-		<a href="https://github.com/projectchrono/chrono"> <i class="fa fa-github-square fa-1x"></i> Github </a> </p>
+            <p class="">Generated by <a href="http://www.doxygen.org/index.html">doxygen</a> 1.8.6 .</p>
+        </small>
       </div>
     </div> <!-- row -->
-	<address class="footer"><small>
-	Generated by &#160;<a href="http://www.doxygen.org/index.html">
-	<img class="footer" src="doxygen.png" alt="doxygen"/>
-	</a> 1.8.6 . <a href="mailto:info@projectchrono.org">
-	</small></address>
   </div> <!-- container -->
 </div> <!-- footer -->
 </body>
