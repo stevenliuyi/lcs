@@ -1189,7 +1189,8 @@ HTML_EXTRA_FILES       = docs/doxy-boot.js \
                             docs/fonts/glyphicons-halflings-regular.svg \
                             docs/fonts/glyphicons-halflings-regular.ttf \
                             docs/fonts/glyphicons-halflings-regular.woff \
-                            docs/fonts/glyphicons-halflings-regular.woff2
+                            docs/fonts/glyphicons-halflings-regular.woff2 \
+                            docs/GitHub-Mark-Light-32px.png
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output. Doxygen
 # will adjust the colors in the style sheet and background images according to
