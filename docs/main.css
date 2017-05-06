@@ -6427,5 +6427,7 @@ tr.inherit_header td{
   padding-top: 10px;
 }
 
+img[alt=pFTLE] { width: 300px; }
+img[alt=nFTLE] { width: 300px; }
 
 /* @end */
