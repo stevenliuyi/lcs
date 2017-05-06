@@ -1,37 +1,97 @@
+<!-- HTML header for doxygen 1.8.8-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.6"/>
-<title>LCS: LCS::VelocityFunction Namespace Reference</title>
-<link href="tabs.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="jquery.js"></script>
-<script type="text/javascript" src="dynsections.js"></script>
-<link href="search/search.css" rel="stylesheet" type="text/css"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- For Mobile Devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+    <meta name="generator" content="Doxygen 1.8.6"/>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <link rel="stylesheet" href='http://fonts.googleapis.com/css?family=Exo+2:400,200,700' type='text/css'>
+    <title>LCS: LCS::VelocityFunction Namespace Reference</title>
+    <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
+    <script type="text/javascript" src="dynsections.js"></script>
+    <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/search.js"></script>
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
-<link href="doxygen.css" rel="stylesheet" type="text/css" />
-<link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
+    <link href="main.css" rel="stylesheet" type="text/css" />
+    <!--  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"> -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="doxy-boot.js"></script>
+    <script type="text/javascript" src="bootstrap-hover-dropdown.min.js"></script>
 </head>
 <body>
+<!-- HERE STARTS THE NAVIGATION BAR (as in the index.html web site generated with bootstrap) -->
+    <nav class="navbar navbar-default role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="http://projectchrono.org/">
+            <span class="logo first">PROJECT</span><span class="logo second">CHRONO</span>
+          </a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="http://projectchrono.org/download">Download</a></li>
+            <li class="dropdown">
+            <a href="http://api.chrono.projectchrono.org" class="dropdown-toggle disabled" data-hover="dropdown" data-toggle="dropdown" data-delay="100" role="button" aria-haspopup="true" aria-expanded="false">Documentation <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="http://api.chrono.projectchrono.org">API main page</a></li>
+                <li><a href="http://api.chrono.projectchrono.org/faq_root.html">FAQ</a></li>
+                <li><a href="http://api.chrono.projectchrono.org/tutorial_table_of_content_install.html">Install Guide</a></li>
+                <li><a href="http://api.chrono.projectchrono.org/tutorial_root.html">Tutorials</a></li>
+                <li><a href="http://api.chrono.projectchrono.org/manual_root.html">Reference manual</a></li>
+                <li><a href="http://api.chrono.projectchrono.org/model_root.html">Model Library</a></li>
+                <li><a href="http://api.chrono.projectchrono.org/validation_studies_root.html">Validation Studies</a></li>
+                <li><a href="http://api.chrono.projectchrono.org/whitepaper_root.html">White Papers</a></li>
+                <li><a href="http://api.chrono.projectchrono.org/refman.pdf">PDF Version</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+            <a href="http://projectchrono.org/gallery/" class="dropdown-toggle disabled" data-hover="dropdown" data-toggle="dropdown" data-delay="100" role="button" aria-haspopup="true" aria-expanded="false">Movies <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="http://projectchrono.org/gallery/">Gallery</a></li>
+                <li><a href="http://sbel.wisc.edu/Animations/">SBEL</a></li>
+                <li><a href="https://vimeo.com/uwsbel">On Vimeo</a></li>
+              </ul>
+            </li>
+            <li><a href="http://projectchrono.org/news/">News</a></li>
+            <li><a href="http://projectchrono.org/forum/">Forum</a></li>
+            <li class="dropdown">
+            <a href=http://projectchrono.org/about/" class="dropdown-toggle disabled" data-hover="dropdown" data-toggle="dropdown" data-delay="100" role="button" aria-haspopup="true" aria-expanded="false">About <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="http://projectchrono.org/about/">Quick Facts</a></li>
+                <li><a href="http://projectchrono.org/testimonials/">Current/Past Users</a></li>
+                <li><a href="http://projectchrono.org/consulting/">Consulting</a></li>
+              </ul>
+            </li>
+            <li><a href="http://projectchrono.org/status">Status</a></li>
+            <li>
+              <form method="get" action="http://projectchrono.org/search" id="search_bar_triggered">
+                          <input type="submit" value="Search">
+                <input type="text" id="search_bar" name="query" value="" />
+              </form> 
+            </li>
+          </ul>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+<!-- HERE ENDS THE NAVIGATION BAR -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
-<div id="titlearea">
-<table cellspacing="0" cellpadding="0">
- <tbody>
- <tr style="height: 56px;">
-  <td style="padding-left: 0.5em;">
-   <div id="projectname">LCS
-   </div>
-   <div id="projectbrief">Lagrangian coherent structure analysis</div>
-  </td>
- </tr>
- </tbody>
-</table>
-</div>
-<!-- end header part -->
+    <div class="content" id="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 panel panel-default" style="padding-bottom: 15px;">
+                    <div style="margin-bottom: 15px;">
+                        <!-- end header part -->
 <!-- Generated by Doxygen 1.8.6 -->
 <script type="text/javascript">
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
@@ -110,10 +170,38 @@ Classes</h2></td></tr>
 <div class="textblock"><p>Namespace for demo velocity functions. </p>
 <p>All demo analytic velocity functions are included in this namespace. </p>
 </div></div><!-- contents -->
-<!-- HTML footer for doxygen 1.8.5-->
+<!-- HTML footer for doxygen 1.8.8-->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-        Generated by <a href="http://www.doxygen.org/index.html">doxygen</a> 1.8.6  &nbsp;&nbsp;-&nbsp;&nbsp; Theme adapted from <a href="https://github.com/nnen/doxygen-theme">doxygen-theme</a>
-</small></address>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+  <div class="container narrow row-fluid">
+    <div class="row">
+      <div class="col-md-4 col-xs-4 text-left">
+		<small>
+        <p class="">&copy; 2016 Project Chrono. <br> 
+		A community project led by the <a href="http://sbel.wisc.edu">University of Wisconsin-Madison</a> and <a href="http://www.projectchrono.org/tasora/">University of Parma-Italy</a>.</p>
+		</small>
+      </div>
+      <div class="col-md-4 col-xs-4 text-center">
+	    <p class=""><a href="mailto:info@projectchrono.org"> <i class="fa fa-envelope fa-1x"></i> Contact us</a></p>
+      </div>
+	  <div class="col-md-4 col-xs-4 text-left">
+		<small>
+        <p class="">ProjectChrono is open-source, hosted at <br>
+		</small>
+		<a href="https://github.com/projectchrono/chrono"> <i class="fa fa-github-square fa-1x"></i> Github </a> </p>
+      </div>
+    </div> <!-- row -->
+	<address class="footer"><small>
+	Generated by &#160;<a href="http://www.doxygen.org/index.html">
+	<img class="footer" src="doxygen.png" alt="doxygen"/>
+	</a> 1.8.6 . <a href="mailto:info@projectchrono.org">
+	</small></address>
+  </div> <!-- container -->
+</div> <!-- footer -->
 </body>
 </html>
