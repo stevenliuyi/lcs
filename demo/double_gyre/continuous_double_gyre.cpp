@@ -1,8 +1,8 @@
 /**
-    @file double_gyre.cpp
-    @brief Demo for FTLE calculation of double-gyre model.
+    @file continuous_double_gyre.cpp
+    @brief Demo for FTLE calculation of continuous double-gyre model.
 
-    This file contains a demo for performing FTLE calculation of a double-gyre model. Both positive and negative FLTE are calculated here.
+    This file contains a demo for performing FTLE calculation of a continous double-gyre model. Both positive and negative FLTE are calculated here.
     */
 
 #include <iostream>
