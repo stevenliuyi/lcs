@@ -174,7 +174,8 @@ class FlowField
             for (unsigned i = 0; i < step_; ++i)
             {
                 clock.Begin();
-                std::cout << "[" << std::setw(std::to_string(step_).length()) << (i+1)
+                std::stringstream ss;
+                ss << "[" << std::setw(std::to_string(step_).length()) << (i+1)
                     << "/" << step_ << "]" <<
                     " Simulation time: " << current_time_;
 
@@ -189,11 +190,12 @@ class FlowField
 
                 UpdateTime();
 
-                std::cout << " - " << current_time_;
+                ss << " - " << current_time_;
                 clock.End();
-                std::cout << " (Execution time: " <<
+                ss << " (Execution time: " <<
                     std::setprecision(4) << clock.GetTotalElapsedTime() <<
                     "s)" << std::endl;
+                std::cout << ss.str();
             }
             switch(direction_)
             {
@@ -313,11 +315,15 @@ class DiscreteFlowField : public FlowField<T, Dim>
                 #pragma omp single nowait
                 {
                     #pragma omp task
-                    previous_data_vel_->UpdateTime(current_data_time_);
-                    ReadDataVelocityFromFile(*previous_data_vel_);
+                    {
+                        previous_data_vel_->UpdateTime(current_data_time_);
+                        ReadDataVelocityFromFile(*previous_data_vel_);
+                    }
                     #pragma omp task
-                    next_data_vel_->UpdateTime(current_data_time_ + signed_data_delta);
-                    ReadDataVelocityFromFile(*next_data_vel_);
+                    {
+                        next_data_vel_->UpdateTime(current_data_time_ + signed_data_delta);
+                        ReadDataVelocityFromFile(*next_data_vel_);
+                    }
                 }
 
             // check if the current time is outside the time
@@ -339,12 +345,15 @@ class DiscreteFlowField : public FlowField<T, Dim>
                 #pragma omp single nowait
                 {
                     #pragma omp task
-                    previous_data_vel_->UpdateTime(current_data_time_);
-                    ReadDataVelocityFromFile(*previous_data_vel_);
-
+                    {
+                        previous_data_vel_->UpdateTime(current_data_time_);
+                        ReadDataVelocityFromFile(*previous_data_vel_);
+                    }
                     #pragma omp task
-                    next_data_vel_->UpdateTime(current_data_time_ + signed_data_delta);
-                    ReadDataVelocityFromFile(*next_data_vel_);
+                    {
+                        next_data_vel_->UpdateTime(current_data_time_ + signed_data_delta);
+                        ReadDataVelocityFromFile(*next_data_vel_);
+                    }
                 }
             }
             
