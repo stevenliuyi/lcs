@@ -24,41 +24,41 @@ Here we show a demo of perform FTLE calculation for a double-gyre model. The imp
 
 First, we create a ContinuousFlowField object, and set the grid shape as \f$(1000,500)\f$, the range of \f$x\f$-coordinate as $\f$(0,2)\f$, and the range of \f$y\f$-coordinate as \f$(0,1)\f$:
 
-```
+~~~~~~~~~~{.c}
 ContinuousFlowField<double,VelocityFunction::DoubleGyreModel<double>,2> double_gyre(1000,500);
 double_gyre.InitialPosition().SetAll(0,2,0,1);
-```
+~~~~~~~~~~
 
 Next, we set each integration time step as \f$\Delta t=0.1\f$, and the number of steps as \f$n=200\f$:
 
-```
+~~~~~~~~~~{.c}
 double_gyre.SetDelta(.1);
 double_gyre.SetStep(200);
-```
+~~~~~~~~~~
 
 Now we have done all the settings, and we could then simply advect the particles to obtain the flow map:
 
-```
+~~~~~~~~~~{.c}
 double_gyre.Run();
-```
+~~~~~~~~~~
 
 Finally, we could calculate FTLE based on the flow map we just obtained:
 
-```
+~~~~~~~~~~{.c}
 FTLE<douuble,2> ftle(double_gyre);
 ftle.Calculate();
 ftle.WriteToFile("double_gyre_ftle_pos.txt");
-```
+~~~~~~~~~~
 
 If we would like to obtain the flow map in backward direction and then calculate the negative FTLE corresponding to it, we could simply flip the advect direction and redo the calculations as:
 
-```
+~~~~~~~~~~{.c}
 double_gyre.SetDirection(Direction::Backward);
 double_gyre.SetInitialTime(20);
 double_gyre.Run();
 
 ftle.Calculate();
 ftle.WriteToFile("double_gyre_ftle_neg.txt");
-```
+~~~~~~~~~~
 
 */
