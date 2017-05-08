@@ -11,19 +11,24 @@ CXXFLAGS = -g -Wall -O2 -std=c++14 -fopenmp
 
 INCLUDES = -I./include
 
-SRCS = demo/double_gyre/double_gyre.cpp
+SRC1 = demo/double_gyre/continuous_double_gyre.cpp
+SRC2 = demo/double_gyre/discrete_double_gyre.cpp
 
 BINDIR = ./bin
 
-TARGET = $(BINDIR)/demo_double_gyre
+TARGET1 = $(BINDIR)/demo_continuous_double_gyre
+TARGET2 = $(BINDIR)/demo_discrete_double_gyre
 
-all: $(TARGET)
+all: $(TARGET1) $(TARGET2)
 
-$(TARGET): | $(BINDIR)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) $(SRCS) -o $(TARGET)
+$(TARGET1): | $(BINDIR)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(SRC1) -o $(TARGET1)
+
+$(TARGET2): | $(BINDIR)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(SRC2) -o $(TARGET2)
 
 $(BINDIR):
 	mkdir -p $(BINDIR)
 
 clean:
-	rm -f $(TARGET)
+	rm -f $(TARGET1) $(TARGET2)
