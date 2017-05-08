@@ -129,17 +129,25 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
  </td></tr>
 </table>
 <p>First, we create a ContinuousFlowField object, and set the grid shape as <img class="formulaInl" alt="$(1000,500)$" src="form_31.png"/>, the range of <img class="formulaInl" alt="$x$" src="form_2.png"/>-coordinate as $ <img class="formulaInl" alt="$(0,2)$" src="form_32.png"/>, and the range of <img class="formulaInl" alt="$y$" src="form_3.png"/>-coordinate as <img class="formulaInl" alt="$(0,1)$" src="form_33.png"/>:</p>
-<p>``` ContinuousFlowField&lt;double,VelocityFunction::DoubleGyreModel&lt;double&gt;,2&gt; double_gyre(1000,500); double_gyre.InitialPosition().SetAll(0,2,0,1); ```</p>
-<p>Next, we set each integration time step as <img class="formulaInl" alt="$\Delta t=0.1$" src="form_34.png"/>, and the number of steps as <img class="formulaInl" alt="$n=200$" src="form_35.png"/>:</p>
-<p>``` double_gyre.SetDelta(.1); double_gyre.SetStep(200); ```</p>
-<p>Now we have done all the settings, and we could then simply advect the particles to obtain the flow map:</p>
-<p>``` double_gyre.Run(); ```</p>
-<p>Finally, we could calculate FTLE based on the flow map we just obtained:</p>
-<p>``` FTLE&lt;douuble,2&gt; ftle(double_gyre); ftle.Calculate(); ftle.WriteToFile("double_gyre_ftle_pos.txt"); ```</p>
-<p>If we would like to obtain the flow map in backward direction and then calculate the negative FTLE corresponding to it, we could simply flip the advect direction and redo the calculations as:</p>
-<p>``` double_gyre.SetDirection(Direction::Backward); double_gyre.SetInitialTime(20); double_gyre.Run();</p>
-<p>ftle.Calculate(); ftle.WriteToFile("double_gyre_ftle_neg.txt"); ``` </p>
-</div></div><!-- contents -->
+<div class="fragment"><div class="line">ContinuousFlowField&lt;double,VelocityFunction::DoubleGyreModel&lt;double&gt;,2&gt; double_gyre(1000,500);</div>
+<div class="line">double_gyre.InitialPosition().SetAll(0,2,0,1);</div>
+</div><!-- fragment --><p>Next, we set each integration time step as <img class="formulaInl" alt="$\Delta t=0.1$" src="form_34.png"/>, and the number of steps as <img class="formulaInl" alt="$n=200$" src="form_35.png"/>:</p>
+<div class="fragment"><div class="line">double_gyre.SetDelta(.1);</div>
+<div class="line">double_gyre.SetStep(200);</div>
+</div><!-- fragment --><p>Now we have done all the settings, and we could then simply advect the particles to obtain the flow map:</p>
+<div class="fragment"><div class="line">double_gyre.Run();</div>
+</div><!-- fragment --><p>Finally, we could calculate FTLE based on the flow map we just obtained:</p>
+<div class="fragment"><div class="line">FTLE&lt;douuble,2&gt; ftle(double_gyre);</div>
+<div class="line">ftle.Calculate();</div>
+<div class="line">ftle.WriteToFile(<span class="stringliteral">&quot;double_gyre_ftle_pos.txt&quot;</span>);</div>
+</div><!-- fragment --><p>If we would like to obtain the flow map in backward direction and then calculate the negative FTLE corresponding to it, we could simply flip the advect direction and redo the calculations as:</p>
+<div class="fragment"><div class="line">double_gyre.SetDirection(<a class="code" href="namespace_l_c_s.html#a29a79a797248330fdb006f46542174e7a5dcf40d8a29f7909004f7adbf96101cf">Direction::Backward</a>);</div>
+<div class="line">double_gyre.SetInitialTime(20);</div>
+<div class="line">double_gyre.Run();</div>
+<div class="line"></div>
+<div class="line">ftle.Calculate();</div>
+<div class="line">ftle.WriteToFile(<span class="stringliteral">&quot;double_gyre_ftle_neg.txt&quot;</span>);</div>
+</div><!-- fragment --> </div></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.8-->
 <!-- start footer part -->
 </div>
