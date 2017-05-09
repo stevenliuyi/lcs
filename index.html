@@ -128,7 +128,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
  </td></tr>
 </table>
-<p>First, we create a ContinuousFlowField object, and set the grid shape as <img class="formulaInl" alt="$(1000,500)$" src="form_31.png"/>, the range of <img class="formulaInl" alt="$x$" src="form_2.png"/>-coordinate as $ <img class="formulaInl" alt="$(0,2)$" src="form_32.png"/>, and the range of <img class="formulaInl" alt="$y$" src="form_3.png"/>-coordinate as <img class="formulaInl" alt="$(0,1)$" src="form_33.png"/>:</p>
+<p>First, we create a ContinuousFlowField object, and set the grid shape as <img class="formulaInl" alt="$(1000,500)$" src="form_31.png"/>, the range of <img class="formulaInl" alt="$x$" src="form_2.png"/>-coordinate as <img class="formulaInl" alt="$(0,2)$" src="form_32.png"/>, and the range of <img class="formulaInl" alt="$y$" src="form_3.png"/>-coordinate as <img class="formulaInl" alt="$(0,1)$" src="form_33.png"/>. Note that this is a 2D flow field, so we should set the dimension to be 2 for the object.</p>
 <div class="fragment"><div class="line">ContinuousFlowField&lt;double,VelocityFunction::DoubleGyreModel&lt;double&gt;,2&gt; double_gyre(1000,500);</div>
 <div class="line">double_gyre.InitialPosition().SetAll(0,2,0,1);</div>
 </div><!-- fragment --><p>Next, we set each integration time step as <img class="formulaInl" alt="$\Delta t=0.1$" src="form_34.png"/>, and the number of steps as <img class="formulaInl" alt="$n=200$" src="form_35.png"/>:</p>
@@ -147,7 +147,40 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"></div>
 <div class="line">ftle.Calculate();</div>
 <div class="line">ftle.WriteToFile(<span class="stringliteral">&quot;double_gyre_ftle_neg.txt&quot;</span>);</div>
-</div><!-- fragment --> </div></div><!-- contents -->
+</div><!-- fragment --><h3>Discrete data</h3>
+<p>Normally, discrete velocity data are obtained from experiments or CFD simulations. But here we will use the discrete data genereted by the analytic velocity function in the above example, so we could directly compare the results.</p>
+<p>The implementation is included in <a class="el" href="discrete__double__gyre_8cpp.html" title="Demo for FTLE calculation of discrete double-gyre model. ">discrete_double_gyre.cpp</a>.</p>
+<p>First, we use the double-gyre velocity function to generete velocity data at <img class="formulaInl" alt="$t=0,1,2,\cdot 20$" src="form_36.png"/> with 100 grid points in <img class="formulaInl" alt="$x$" src="form_2.png"/>-direction and 50 grid points in <img class="formulaInl" alt="$y$" src="form_3.png"/>-direction.</p>
+<div class="fragment"><div class="line">Position&lt;double,2&gt; pos(100,50);</div>
+<div class="line">pos.SetAll(0,2,0,1);</div>
+<div class="line">ContinuousVelocity&lt;double, VelocityFunction::DoubleGyreModel&lt;double&gt;,2&gt; double_gyre_vel(100,50,pos);</div>
+<div class="line"></div>
+<div class="line"><span class="keywordflow">for</span> (<span class="keywordtype">int</span> t=0; t &lt;= 20; ++t)</div>
+<div class="line">{</div>
+<div class="line">    std::stringstream ss;</div>
+<div class="line">    ss &lt;&lt; <span class="stringliteral">&quot;double_gyre_&quot;</span> &lt;&lt; t &lt;&lt; <span class="stringliteral">&quot;.txt&quot;</span>;</div>
+<div class="line">    double_gyre_vel.UpdateTime(t);</div>
+<div class="line">    double_gyre_vel.SetAll();</div>
+<div class="line">    double_gyre_vel.WriteToFile(ss.str());</div>
+<div class="line">}</div>
+</div><!-- fragment --><p>Next, we create a DiscreteFlowField object with the same grid shape and <img class="formulaInl" alt="$x$" src="form_2.png"/>-, <img class="formulaInl" alt="$y$" src="form_3.png"/>-range as in the continuous data example. Note that we also need to set the grid shape of the velocity data to be <img class="formulaInl" alt="$(100,50)$" src="form_37.png"/>, as we defined above.</p>
+<div class="fragment"><div class="line">DiscreteFlowField&lt;double,2&gt; double_gyre(1000,500,100,50);</div>
+<div class="line">double_gyre.DataPosition().SetAll(0,2,0,1);</div>
+<div class="line">double_gyre.InitialPosition().SetAll(0,2,0,1);</div>
+</div><!-- fragment --><p>To correctly read the velocity data, we also need to define the format of the file names:</p>
+<div class="fragment"><div class="line">double_gyre.SetVelocityFileNamePrefix(<span class="stringliteral">&quot;double_gyre_&quot;</span>);</div>
+</div><!-- fragment --><p>Now we can set the integration time step and the number of steps as before, but for discrete data, we also need to set the time step between two adjacent data files, as well as the total time range all data files cover:</p>
+<div class="fragment"><div class="line">double_gyre.SetDataDelta(1);</div>
+<div class="line">double_gyre.SetDataTimeRange(0,20);</div>
+<div class="line">double_gyre.SetDelta(.1);</div>
+<div class="line">double_gyre.SetStep(200);</div>
+</div><!-- fragment --><p>Now we can advect the particles and calculate FTLE:</p>
+<div class="fragment"><div class="line">double_gyre.Run();</div>
+<div class="line">FTLE&lt;douuble,2&gt; ftle(double_gyre);</div>
+<div class="line">ftle.Calculate();</div>
+<div class="line">ftle.WriteToFile(<span class="stringliteral">&quot;double_gyre_ftle_pos.txt&quot;</span>);</div>
+</div><!-- fragment --><p>We can also calculate negative FTLE the same way as we did in the continous data example. </p>
+</div></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.8-->
 <!-- start footer part -->
 </div>
@@ -165,7 +198,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       </div>
       <div class="col-md-4 col-xs-4 text-center">
           <small>
-            <p class="">Yi Liu 2017&nbsp;&nbsp;&nbsp;<a href="mailto:stevenliuyi@gamil.com"><span class="glyphicon glyphicon-envelope glyphicon-white"></span></a></p>
+            <p class="">Yi Liu 2017&nbsp;&nbsp;&nbsp;<a href="mailto:stevenliuyi@gmail.com"><span class="glyphicon glyphicon-envelope glyphicon-white"></span></a></p>
           </small>
       </div>
 	  <div class="col-md-4 col-xs-4 text-right">
