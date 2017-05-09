@@ -22,7 +22,7 @@ Here we show a demo of perform FTLE calculation for a double-gyre model. The imp
 | ----- | ----- |
 | ![pFTLE](https://raw.githubusercontent.com/stevenliuyi/lcs/master/demo/double_gyre/double_gyre_ftle_pos.png) | ![nFTLE](https://raw.githubusercontent.com/stevenliuyi/lcs/master/demo/double_gyre/double_gyre_ftle_neg.png) |
 
-First, we create a ContinuousFlowField object, and set the grid shape as \f$(1000,500)\f$, the range of \f$x\f$-coordinate as $\f$(0,2)\f$, and the range of \f$y\f$-coordinate as \f$(0,1)\f$:
+First, we create a ContinuousFlowField object, and set the grid shape as \f$(1000,500)\f$, the range of \f$x\f$-coordinate as \f$(0,2)\f$, and the range of \f$y\f$-coordinate as \f$(0,1)\f$. Note that this is a 2D flow field, so we should set the dimension to be 2 for the object.
 
 ~~~~~~~~~~{.c}
 ContinuousFlowField<double,VelocityFunction::DoubleGyreModel<double>,2> double_gyre(1000,500);
@@ -60,5 +60,62 @@ double_gyre.Run();
 ftle.Calculate();
 ftle.WriteToFile("double_gyre_ftle_neg.txt");
 ~~~~~~~~~~
+
+### Discrete data
+
+Normally, discrete velocity data are obtained from experiments or CFD simulations. But here we will use the discrete data genereted by the analytic velocity function in the above example, so we could directly compare the results.
+
+The implementation is included in discrete_double_gyre.cpp.
+
+First, we use the double-gyre velocity function to generete velocity data at \f$t=0,1,2,\cdot 20\f$ with 100 grid points in \f$x\f$-direction and 50 grid points in \f$y\f$-direction.
+
+~~~~~~~~~~{.c}
+Position<double,2> pos(100,50);
+pos.SetAll(0,2,0,1);
+ContinuousVelocity<double, VelocityFunction::DoubleGyreModel<double>,2> double_gyre_vel(100,50,pos);
+
+for (int t=0; t <= 20; ++t)
+{
+    std::stringstream ss;
+    ss << "double_gyre_" << t << ".txt";
+    double_gyre_vel.UpdateTime(t);
+    double_gyre_vel.SetAll();
+    double_gyre_vel.WriteToFile(ss.str());
+}
+~~~~~~~~~~
+
+Next, we create a DiscreteFlowField object with the same grid shape and \f$x\f$-, \f$y\f$-range as in the continuous data example. Note that we also need to set the grid shape of the velocity data to be \f$(100,50)\f$, as we defined above.
+
+~~~~~~~~~~{.c}
+DiscreteFlowField<double,2> double_gyre(1000,500,100,50);
+double_gyre.DataPosition().SetAll(0,2,0,1);
+double_gyre.InitialPosition().SetAll(0,2,0,1);
+~~~~~~~~~~
+
+To correctly read the velocity data, we also need to define the format of the file names:
+
+~~~~~~~~~~{.c}
+double_gyre.SetVelocityFileNamePrefix("double_gyre_");
+~~~~~~~~~~
+
+Now we can set the integration time step and the number of steps as before, but for discrete data, we also need to set the time step between two adjacent data files, as well as the total time range all data files cover:
+
+~~~~~~~~~~{.c}
+double_gyre.SetDataDelta(1);
+double_gyre.SetDataTimeRange(0,20);
+double_gyre.SetDelta(.1);
+double_gyre.SetStep(200);
+~~~~~~~~~~
+
+Now we can advect the particles and calculate FTLE:
+
+~~~~~~~~~~{.c}
+double_gyre.Run();
+FTLE<douuble,2> ftle(double_gyre);
+ftle.Calculate();
+ftle.WriteToFile("double_gyre_ftle_pos.txt");
+~~~~~~~~~~
+
+We can also calculate negative FTLE the same way as we did in the continous data example.
 
 */
