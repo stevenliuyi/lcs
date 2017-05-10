@@ -14,13 +14,52 @@ Suppose we have the flow map \f$\phi(t_0+T,\mathbf{x}_0,t_0)\f$ obtained after f
 
 where \f$\lambda_{\max}\f$ denotes the maximum eigenvalue of a matrix. Here, the matrix is called Cauchy-Green tensor.
 
-## Example
+## Installation and Running
+First, clone the repository from Gitub and enter the repository folder:
+
+~~~~~~~~~~
+git clone https://github.com/stevenliuyi/lcs
+cd lcs
+~~~~~~~~~~
+
+Please make sure that your compiler supports C++14 standard, and then compile the program:
+
+~~~~~~~~~~
+make
+~~~~~~~~~~
+
+The compiled programs will be in the `bin` folder. There are two demo programs `demo_continuous_double_gyre` and `demo_discrete_double_gyre`, for continous and discrete data respectively. Please refer to the examples below for more details. You could run the program as:
+
+~~~~~~~~~~
+bin/demo_continuous_double_gyre
+~~~~~~~~~~
+
+If you'd like to change the threads for OpenMP, you could set the environment variable `OMP_NUM_THREADS`.
+
+The demo result files are `double_gyre_ftle_pos.txt` and `double_gyre_ftle_neg.txt`, for positive FTLE (forward advection) and negative FTLE (backward advection) respectively.
+
+### Plotting
+There is no graphics support in the program, but you could easily make plots in other programs with the result data files. For example, the contour FTLE plots below shown in the examples can be easily generated in python as:
+
+~~~~~~~~~~{.py}
+import numpy as np
+import matplotlib.pyplot as plt
+
+ftle = np.genfromtxt('double_gyre_ftle_neg.txt', skip_header=3).reshape((1000,500))
+x = np.linspace(0,2,num=1000)
+y = np.linspace(0,1,num=500)
+X, Y = np.meshgrid(x, y, indexing='ij')
+plt.contourf(X, Y, ftle, 100, cmap=plt.cm.Reds)
+plt.show()
+~~~~~~~~~~
+
+## Examples
 ### Continuous data
 Here we show a demo of perform FTLE calculation for a double-gyre model. The implementation is included in continuous_double_gyre.cpp.
 
 | pFTLE | nFTLE |
 | ----- | ----- |
-| ![pFTLE](https://raw.githubusercontent.com/stevenliuyi/lcs/master/demo/double_gyre/double_gyre_ftle_pos.png) | ![nFTLE](https://raw.githubusercontent.com/stevenliuyi/lcs/master/demo/double_gyre/double_gyre_ftle_neg.png) |
+| ![pFTLE](https://raw.githubusercontent.com/stevenliuyi/lcs/master/demo/double_gyre/continuous_double_gyre_ftle_pos.png) | ![nFTLE](https://raw.githubusercontent.com/stevenliuyi/lcs/master/demo/double_gyre/continuous_double_gyre_ftle_neg.png) |
 
 First, we create a ContinuousFlowField object, and set the grid shape as \f$(1000,500)\f$, the range of \f$x\f$-coordinate as \f$(0,2)\f$, and the range of \f$y\f$-coordinate as \f$(0,1)\f$. Note that this is a 2D flow field, so we should set the dimension to be 2 for the object.
 
@@ -67,7 +106,11 @@ Normally, discrete velocity data are obtained from experiments or CFD simulation
 
 The implementation is included in discrete_double_gyre.cpp.
 
-First, we use the double-gyre velocity function to generete velocity data at \f$t=0,1,2,\cdot 20\f$ with 100 grid points in \f$x\f$-direction and 50 grid points in \f$y\f$-direction.
+| pFTLE | nFTLE |
+| ----- | ----- |
+| ![pFTLE](https://raw.githubusercontent.com/stevenliuyi/lcs/master/demo/double_gyre/discrete_double_gyre_ftle_pos.png) | ![nFTLE](https://raw.githubusercontent.com/stevenliuyi/lcs/master/demo/double_gyre/discrete_double_gyre_ftle_neg.png) |
+
+First, we use the double-gyre velocity function to generete velocity data at \f$t=0,1,2,\cdots 20\f$ with 100 grid points in \f$x\f$-direction and 50 grid points in \f$y\f$-direction.
 
 ~~~~~~~~~~{.c}
 Position<double,2> pos(100,50);
