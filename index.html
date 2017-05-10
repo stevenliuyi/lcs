@@ -113,7 +113,28 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <img class="formulaDsp" alt="\[ FTLE(\mathbf{x}_0,t_0) =\frac{1}{2T}\log\Big\{\lambda_{\max}\Big[\Big(\frac{\partial\phi}{\partial\mathbf{x}_0}\Big)^T\Big(\frac{\partial\phi}{\partial\mathbf{x}_0}\Big)\Big]\Big\}, \]" src="form_29.png"/>
 </p>
 <p>where <img class="formulaInl" alt="$\lambda_{\max}$" src="form_30.png"/> denotes the maximum eigenvalue of a matrix. Here, the matrix is called Cauchy-Green tensor.</p>
-<h2>Example</h2>
+<h2>Installation and Running</h2>
+<p>First, clone the repository from Gitub and enter the repository folder:</p>
+<div class="fragment"><div class="line">git clone https:<span class="comment">//github.com/stevenliuyi/lcs</span></div>
+<div class="line">cd lcs</div>
+</div><!-- fragment --><p>Please make sure that your compiler supports C++14 standard, and then compile the program:</p>
+<div class="fragment"><div class="line">make</div>
+</div><!-- fragment --><p>The compiled programs will be in the <code>bin</code> folder. There are two demo programs <code>demo_continuous_double_gyre</code> and <code>demo_discrete_double_gyre</code>, for continous and discrete data respectively. Please refer to the examples below for more details. You could run the program as:</p>
+<div class="fragment"><div class="line">bin/demo_continuous_double_gyre</div>
+</div><!-- fragment --><p>If you'd like to change the threads for OpenMP, you could set the environment variable <code>OMP_NUM_THREADS</code>.</p>
+<p>The demo result files are <code>double_gyre_ftle_pos.txt</code> and <code>double_gyre_ftle_neg.txt</code>, for positive FTLE (forward advection) and negative FTLE (backward advection) respectively.</p>
+<h3>Plotting</h3>
+<p>There is no graphics support in the program, but you could easily make plots in other programs with the result data files. For example, the contour FTLE plots below shown in the examples can be easily generated in python as:</p>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;import numpy <span class="keyword">as</span> np</div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;ftle = np.genfromtxt(<span class="stringliteral">&#39;double_gyre_ftle_neg.txt&#39;</span>, skip_header=3).reshape((1000,500))</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;x = np.linspace(0,2,num=1000)</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;y = np.linspace(0,1,num=500)</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;X, Y = np.meshgrid(x, y, indexing=<span class="stringliteral">&#39;ij&#39;</span>)</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;plt.contourf(X, Y, ftle, 100, cmap=plt.cm.Reds)</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;plt.show()</div>
+</div><!-- fragment --><h2>Examples</h2>
 <h3>Continuous data</h3>
 <p>Here we show a demo of perform FTLE calculation for a double-gyre model. The implementation is included in <a class="el" href="continuous__double__gyre_8cpp.html" title="Demo for FTLE calculation of continuous double-gyre model. ">continuous_double_gyre.cpp</a>.</p>
 <table class="doxtable">
@@ -121,10 +142,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <th>pFTLE </th><th>nFTLE  </th></tr>
 <tr>
 <td><div class="image">
-<img src="https://raw.githubusercontent.com/stevenliuyi/lcs/master/demo/double_gyre/double_gyre_ftle_pos.png"  alt="pFTLE"/>
+<img src="https://raw.githubusercontent.com/stevenliuyi/lcs/master/demo/double_gyre/continuous_double_gyre_ftle_pos.png"  alt="pFTLE"/>
 </div>
  </td><td><div class="image">
-<img src="https://raw.githubusercontent.com/stevenliuyi/lcs/master/demo/double_gyre/double_gyre_ftle_neg.png"  alt="nFTLE"/>
+<img src="https://raw.githubusercontent.com/stevenliuyi/lcs/master/demo/double_gyre/continuous_double_gyre_ftle_neg.png"  alt="nFTLE"/>
 </div>
  </td></tr>
 </table>
@@ -150,7 +171,19 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --><h3>Discrete data</h3>
 <p>Normally, discrete velocity data are obtained from experiments or CFD simulations. But here we will use the discrete data genereted by the analytic velocity function in the above example, so we could directly compare the results.</p>
 <p>The implementation is included in <a class="el" href="discrete__double__gyre_8cpp.html" title="Demo for FTLE calculation of discrete double-gyre model. ">discrete_double_gyre.cpp</a>.</p>
-<p>First, we use the double-gyre velocity function to generete velocity data at <img class="formulaInl" alt="$t=0,1,2,\cdot 20$" src="form_36.png"/> with 100 grid points in <img class="formulaInl" alt="$x$" src="form_2.png"/>-direction and 50 grid points in <img class="formulaInl" alt="$y$" src="form_3.png"/>-direction.</p>
+<table class="doxtable">
+<tr>
+<th>pFTLE </th><th>nFTLE  </th></tr>
+<tr>
+<td><div class="image">
+<img src="https://raw.githubusercontent.com/stevenliuyi/lcs/master/demo/double_gyre/discrete_double_gyre_ftle_pos.png"  alt="pFTLE"/>
+</div>
+ </td><td><div class="image">
+<img src="https://raw.githubusercontent.com/stevenliuyi/lcs/master/demo/double_gyre/discrete_double_gyre_ftle_neg.png"  alt="nFTLE"/>
+</div>
+ </td></tr>
+</table>
+<p>First, we use the double-gyre velocity function to generete velocity data at <img class="formulaInl" alt="$t=0,1,2,\cdots 20$" src="form_36.png"/> with 100 grid points in <img class="formulaInl" alt="$x$" src="form_2.png"/>-direction and 50 grid points in <img class="formulaInl" alt="$y$" src="form_3.png"/>-direction.</p>
 <div class="fragment"><div class="line">Position&lt;double,2&gt; pos(100,50);</div>
 <div class="line">pos.SetAll(0,2,0,1);</div>
 <div class="line">ContinuousVelocity&lt;double, VelocityFunction::DoubleGyreModel&lt;double&gt;,2&gt; double_gyre_vel(100,50,pos);</div>
